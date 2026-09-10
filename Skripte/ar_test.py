@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import trimesh
 
 # ==============================================================================
 # 1. KALIBRIERUNGSDATEN & PARAMETER KONFIGURIEREN
@@ -19,9 +20,20 @@ if camera_matrix is None or dist_coeffs is None:
         f"Enthaltene Schlüssel: {list(data.keys())}"
     )
 
+#==============================================================================
+# 2. 3D-GEOMETRIE AUS FUSION 360 LADEN (.obj-Datei)
 # ==============================================================================
-# 2. 3D-GEOMETRIE DES AR-KRISTALLS DEFINIEREN (in Metern, Markerzentriert)
-# ==============================================================================
+# Lade die OBJ-Datei
+mesh = trimesh.load("Katze_Test.obj", force="mesh")
+
+# Falls Fusion in Millimetern exportiert hat: in Meter umrechnen (mm -> m)
+mesh.apply_scale(0.001)
+
+# Vertices (3D-Punkte) und Faces (Dreiecke) für OpenCV vorbereiten
+crystal_3d_pts = np.array(mesh.vertices, dtype=np.float32)
+faces = mesh.faces.tolist()
+edges = mesh.edges_unique
+
 # 3D-Ecken des ArUco-Markers (Z=0 Ebene)
 marker_3d_edges = np.array([
     [-MARKER_SIZE / 2,  MARKER_SIZE / 2, 0],
@@ -29,34 +41,6 @@ marker_3d_edges = np.array([
     [ MARKER_SIZE / 2, -MARKER_SIZE / 2, 0],
     [-MARKER_SIZE / 2, -MARKER_SIZE / 2, 0]
 ], dtype=np.float32)
-
-# 3D-Punkte des Kristalls (Doppelpyramide/Oktaeder), schwebt auf der Z-Achse nach oben
-h_bottom = MARKER_SIZE * 0.8  # Untere Spitze schwebt leicht über dem Marker
-h_middle = MARKER_SIZE * 1.6  # Breiter Gürtel in der Mitte
-h_top    = MARKER_SIZE * 2.4  # Obere Spitze
-w        = MARKER_SIZE * 0.4  # Halbe Breite des Kristalls
-
-crystal_3d_pts = np.array([
-    [ 0,  0, h_top],     # Index 0: Obere Spitze
-    [-w, -w, h_middle],  # Index 1: Mitte Links-Unten
-    [ w, -w, h_middle],  # Index 2: Mitte Rechts-Unten
-    [ w,  w, h_middle],  # Index 3: Mitte Rechts-Oben
-    [-w,  w, h_middle],  # Index 4: Mitte Links-Oben
-    [ 0,  0, h_bottom]   # Index 5: Untere Spitze
-], dtype=np.float32)
-
-# Kantenverbindungen (Indizes der Kristallpunkte)
-edges = [
-    (0, 1), (0, 2), (0, 3), (0, 4),  # Obere Pyramide
-    (1, 2), (2, 3), (3, 4), (4, 1),  # Mittlerer Ring
-    (5, 1), (5, 2), (5, 3), (5, 4)   # Untere Pyramide
-]
-
-# Polygon-Dreiecke für die Seitenflächen
-faces = [
-    [0, 1, 2], [0, 2, 3], [0, 3, 4], [0, 4, 1],  # Oben
-    [5, 2, 1], [5, 3, 2], [5, 4, 3], [5, 1, 4]   # Unten
-]
 
 # ==============================================================================
 # 3. LIVE-STREAM & TRACKING LOOP
@@ -107,29 +91,31 @@ while True:
                 )
 
                 if success:
-                    # 3D-Punkte des Kristalls auf die 2D-Bildebene projizieren
+
+                    # 1. 3D-Punkte des geladenen Meshes auf 2D projizieren
                     img_pts, _ = cv2.projectPoints(
                         crystal_3d_pts, rvec, tvec, camera_matrix, dist_coeffs
                     )
                     img_pts = np.int32(img_pts.reshape(-1, 2))
 
-                    # 1. Halbtransparente rote Flächen zeichnen
+                    # 2. Modell zeichnen (Halbtransparente Flächen)
                     overlay = frame.copy()
                     for face in faces:
                         pts = img_pts[face]
-                        cv2.fillPoly(overlay, [pts], (20, 20, 180)) # Dunkelrot als Basis
-                    
-                    # Overlay mit Originalbild blenden (40% Deckkraft)
+                        cv2.fillPoly(overlay, [pts], (20, 180, 20))
+
+                    # Overlay über den Frame legen (40% Transparenz)
                     cv2.addWeighted(overlay, 0.4, frame, 0.6, 0, frame)
 
-                    # 2. Leuchtend rote Kanten darüberzeichnen
+                    # 3. Kanten in Dunkelrot nachzeichnen
+                    # Farbschema in BGR: (0, 0, 100) entspricht einem tiefen Dunkelrot
                     for edge in edges:
                         pt1 = tuple(img_pts[edge[0]])
                         pt2 = tuple(img_pts[edge[1]])
-                        cv2.line(frame, pt1, pt2, (0, 0, 255), 2, cv2.LINE_AA)
+                        cv2.line(frame, pt1, pt2, (0, 100, 0), 1, cv2.LINE_AA)
 
-                    # Markerumriss hervorheben
-                    cv2.polylines(frame, [np.int32(corners_2d)], True, (0, 255, 0), 2)
+                    # Markerumriss zur Kontrolle hervorheben
+                    cv2.polylines(frame, [np.int32(corners_2d)], True, (0, 0, 255), 2)
 
     cv2.imshow(window_name, frame)
 
