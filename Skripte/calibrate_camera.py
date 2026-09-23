@@ -21,7 +21,7 @@ board = cv2.aruco.CharucoBoard(
 )
 
 # Pfadnamen für Bildverwaltung
-img_path = "bilder_für_kalibrierung/Iphone/"
+img_path = "bilder_für_kalibrierung/Pi_lens_position_4_0/"
 output_dir = os.path.join(img_path, "detection_results")
 os.makedirs(output_dir, exist_ok=True)  # Ordner fuer Kontrollbilder erstellen
 
