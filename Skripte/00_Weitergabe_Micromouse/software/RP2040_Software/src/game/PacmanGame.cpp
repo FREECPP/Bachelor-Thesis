@@ -156,7 +156,8 @@ static void latchRequestedDirection(uint16_t sw)
 }
 
 static int chooseDirectionAtNode(bool requireControllerStart)
-{
+{   
+    
     if (requireControllerStart && g_requestedDir < 0)
         return -1;
 
@@ -168,6 +169,7 @@ static int chooseDirectionAtNode(bool requireControllerStart)
 
     g_moveDir = -1;
     return -1;
+   
 }
 
 static void requestCenterStopForQueuedTurn()

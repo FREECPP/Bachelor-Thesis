@@ -36,8 +36,8 @@ void setup()
 
 void loop()
 {
-  uartL3.update();
-  buttonAdvanced.update();
+  uartL3.update(); // Kommunikation mit ESP unteranderem
+  buttonAdvanced.update(); // Button abfrage A, B und C
   ledUpdate();
 
   // Top level State machine
