@@ -1,0 +1,35 @@
+#ifndef MICROMOUSE_GHOST_COORDINATOR_H
+#define MICROMOUSE_GHOST_COORDINATOR_H
+
+#include <Arduino.h>
+
+void ghostCoordinatorReset();
+void ghostCoordinatorObservePeer(uint8_t peerId, uint8_t x, uint8_t y, uint32_t nowMs);
+void ghostCoordinatorObservePeerReservation(uint8_t peerId, uint8_t x, uint8_t y, uint32_t nowMs);
+
+// Passt ein Jagdziel an, wenn dort gerade ein anderer Geist steht.
+// Gibt true zurueck, wenn targetX/targetY vom Wunschziel abweichen.
+bool ghostCoordinatorAdjustTarget(int ownX, int ownY,
+                                  int desiredX, int desiredY,
+                                  int &targetX, int &targetY,
+                                  uint32_t nowMs);
+
+// True, wenn die naechste Solver-Zelle momentan von einem anderen Geist
+// belegt ist. Der Aufrufer soll dann kurz warten und neu planen.
+bool ghostCoordinatorShouldPauseBeforeMove(int ownX, int ownY,
+                                           int nextX, int nextY,
+                                           uint32_t nowMs);
+
+bool ghostCoordinatorShouldYieldCurrentCell(int ownX, int ownY, uint32_t nowMs);
+bool ghostCoordinatorFindYieldCell(int ownX, int ownY,
+                                   int &yieldX, int &yieldY,
+                                   uint32_t nowMs);
+
+bool ghostCoordinatorIsPeerCell(int x, int y, uint32_t nowMs);
+
+// Wie ghostCoordinatorIsPeerCell, aber nur fuer Geister mit hoeherer oder
+// gleicher Prioritaet als ownRole. Fuer die Heim-Pfadplanung (Reihenfolge der
+// Rueckkehr regelt sich ueber die Blockier-Relation, verhindert Live-Lock).
+bool ghostCoordinatorIsHomeBlockingPeer(int x, int y, uint8_t ownRole, uint32_t nowMs);
+
+#endif

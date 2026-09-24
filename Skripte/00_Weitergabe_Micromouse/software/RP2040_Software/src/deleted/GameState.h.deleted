@@ -1,0 +1,105 @@
+#pragma once
+#include <Arduino.h>
+#include "MicromouseGameIdentity.h"  // GAME_ROLE_*
+
+// ============================================================
+// GameState.h  –  Globale Spiel-State-Machine
+//
+// Der gesamte Spielablauf (Jagd, Fangen, Heimfahrt, Handshake,
+// Neustart) ist hier als nicht-blockierende Zustandsmaschine
+// modelliert. gameStateTick() wird einmal pro menuAppLoop()-Zyklus
+// aufgerufen und treibt die Maschine genau einen Schritt voran –
+// keine langen while-Schleifen mehr.
+//
+// Trennung der Verantwortlichkeiten (MVC-artig):
+//   - GameState  = Modell + Steuerung (Logik, Kommunikation, Solving)
+//   - View (Menu/GameUI) = liest gameStatePhase()/Accessoren und
+//                          zeichnet den passenden Screen.
+// GameState selbst kennt KEIN u8g2 → kompiliert ohne Display-Abhaengigkeit.
+//
+// Kommunikation laeuft ausschliesslich ueber GameComm:
+//   - Positionen (mit Heading) via sendPosData
+//   - Capture / At-Home als Spielereignisse via sendControlData
+// Sender-Identifikation immer ueber die Rolle (aus der gepackten ID
+// des ESP), nie ueber Bit-Flags in den Koordinaten.
+//
+// Reservierungen (Kollisionsvermeidung der Geister) werden NICHT mehr
+// separat gesendet, sondern vom GhostCoordinator aus Position+Heading
+// des Peers abgeleitet (naechste Zelle = pos + Richtungsvektor).
+//
+// Voraussetzung: gameCommInit() muss vor gameStateInit() laufen.
+// ============================================================
+
+// ------------------------------------------------------------
+// Phasen der Zustandsmaschine
+// ------------------------------------------------------------
+enum GamePhase
+{
+  GS_INACTIVE,                 // Kein Spiel aktiv – Menue laeuft normal
+
+  // --- Geister-Ablauf ---
+  GS_GHOST_WAIT_FIRST_POS,     // Warten auf erste Pacman-Position
+  GS_GHOST_HUNTING,            // Aktive Jagd: Replanning + solvingLoop-Tick
+  GS_GHOST_TARGET_REACHED,     // Ziel erreicht, Pacman nicht da → auf Update warten
+  GS_GHOST_RETURN_WAIT_PEER,   // (Speedy) wartet auf Shadow-At-Home vor Heimfahrt
+  GS_GHOST_RETURNING,          // Heimfahrt (nicht-blockierend, zellenweise)
+  GS_GHOST_RETURN_BLOCKED,     // Heimweg blockiert → warten, dann Retry
+  GS_GHOST_AT_HOME,            // Zuhause, At-Home gesendet, wartet auf alle Peers
+
+  // --- Pacman-Ablauf ---
+  GS_PAC_PLAYING,              // Pacman-Steuerung (delegiert an pacmanGameLoop)
+
+  GS_DONE                      // Spiel beendet → View raeumt auf, dann gameStateReset()
+};
+
+// ============================================================
+// Lebenszyklus
+// ============================================================
+
+// Einmalig nach gameCommInit() aufrufen. Registriert die GameComm-
+// Callbacks (Position + Ereignis) und setzt den Zustand auf GS_INACTIVE.
+void gameStateInit();
+
+// Geister-Jagd starten. Vorbedingung (durch Aufrufer/View):
+//   - Karte geladen (solvingResetToStart auf die Startpose des Geistes)
+//   - Liniensensoren kalibriert
+//   - buildGraphFromMaze() ausgefuehrt
+// smoothTurns = Kurvenfahrt-Praeferenz (solveKurvenModusIdx == 0).
+void gameStateStartGhost(uint8_t role, bool smoothTurns);
+
+// Pacman-Spiel starten. Vorbedingung: solvingResetToStart(PAC_START_*),
+// Kalibrierung und buildGraphFromMaze() bereits erfolgt (wie bisher).
+void gameStateStartPacman();
+
+// Vom User-Abbruch (Taste A) aufgerufen: stoppt Motoren und geht nach GS_DONE.
+void gameStateAbort();
+
+// Nach Behandlung von GS_DONE durch die View aufrufen → zurueck auf GS_INACTIVE.
+void gameStateReset();
+
+// Einen Schritt der Zustandsmaschine ausfuehren. Pro menuAppLoop()-Zyklus
+// genau einmal aufrufen, solange gameStateActive() true ist.
+void gameStateTick();
+
+// Aus dem Mapping-Background-Hook (waehrend blockierender Dreh-/Fahr-
+// operationen) aufrufen. Pumpt die Kommunikation und erledigt die
+// rollenabhaengige Mid-Drive-Arbeit (Geister-Bumperfang, Pacman-Bumper/HUD).
+void gameStateBackgroundUpdate();
+
+// ============================================================
+// Abfragen fuer die View (Rendering)
+// ============================================================
+
+GamePhase gameStatePhase();
+bool      gameStateActive();          // phase != GS_INACTIVE
+uint8_t   gameStateRole();
+
+void gameStateGetTarget(int &x, int &y);   // aktuell geplantes Jagdziel
+void gameStateGetPacman(int &x, int &y);   // zuletzt empfangene Pacman-Position
+void gameStateGetHome(int &x, int &y);      // eigene Heimkoordinaten
+uint8_t gameStateCapturePeerRole();         // Rolle des Geistes der zuletzt fing
+bool    gameStateWasLocalCapture();         // true = selbst gefangen, false = Peer
+
+// Handshake-Abfragen (von Pacmans Heimkehr-Logik genutzt)
+bool gameStateGhostsAtHome();               // beide Geister zuhause?
+void gameStateClearPeerAtHome();            // At-Home-Status zuruecksetzen (Rundenstart)

@@ -1,0 +1,159 @@
+#include "GameComm.h"
+#include "MicromouseMappingState.h"  // inBounds()
+#include <UART_L3.h>
+#include <COMMUNICATION_CODES.h>
+#include <Arduino.h>
+
+extern UART_L3 uartL3;
+
+// ============================================================
+// Interne Zustandsvariablen
+// ============================================================
+
+static GameCommPosCallback   s_posCallback   = nullptr;
+static GameCommEventCallback s_eventCallback = nullptr;
+
+// Heartbeat / Throttling für Positionssendungen
+static uint8_t   s_lastSentX       = 0xFF;
+static uint8_t   s_lastSentY       = 0xFF;
+static int       s_lastSentHeading = -1;
+static uint32_t  s_lastSentMs      = 0;
+
+static const uint32_t GAME_COMM_POS_INTERVAL_MS = 400;  // Heartbeat-Interval
+
+// ============================================================
+// Interne UART-Callbacks (von uartL3 aufgerufen)
+// ============================================================
+
+// Wird von uartL3 aufgerufen, wenn eine OPC_POS_DATA Nachricht
+// von einem anderen Roboter eingetroffen ist.
+// senderPackedId = gepackte ID des Absenders (bits[7:5]=Rolle, bits[4:0]=localId)
+// enc_x, enc_y   = position mit Heading in MSBs (GameConfig-Format)
+static void onRawPosReceived(uint8_t senderPackedId, uint8_t enc_x, uint8_t enc_y)
+{
+    // Eigene Nachrichten und Broadcast ignorieren
+    if (gameIdentityIsBroadcast(senderPackedId) ||
+        senderPackedId == gameIdentityPackedId())
+        return;
+
+    const uint8_t role    = gameIdentityRole(senderPackedId);
+    const uint8_t x       = gamePosDecodeX(enc_x);
+    const uint8_t y       = gamePosDecodeY(enc_y);
+    const int     heading = gamePosDecodeHeading(enc_x, enc_y);
+
+    // Plausibilitätsprüfung
+    if (!inBounds(x, y))
+        return;
+
+    if (s_posCallback)
+        s_posCallback(role, x, y, heading);
+}
+
+// Wird von uartL3 aufgerufen, wenn eine OPC_GAME_CONTROL Nachricht
+// von einem anderen Roboter eingetroffen ist.
+// senderPackedId = gepackte ID des Absenders
+// length, data   = Nutzdaten (data[0] = Ereigniscode, data[1..] = Payload)
+static void onRawControlReceived(uint8_t senderPackedId,
+                                 uint8_t length, uint8_t *data)
+{
+    // Eigene Nachrichten und Broadcast ignorieren
+    if (gameIdentityIsBroadcast(senderPackedId) ||
+        senderPackedId == gameIdentityPackedId())
+        return;
+
+    if (length < 1 || data == nullptr)
+        return;
+
+    const uint8_t role = gameIdentityRole(senderPackedId);
+    const uint8_t evt  = data[0];
+
+    if (s_eventCallback)
+        s_eventCallback(role,
+                        evt,
+                        (length > 1) ? &data[1] : nullptr,
+                        (length > 1) ? (uint8_t)(length - 1) : 0);
+}
+
+// ============================================================
+// Öffentliche API
+// ============================================================
+
+void gameCommInit()
+{
+    s_posCallback   = nullptr;
+    s_eventCallback = nullptr;
+    s_lastSentX       = 0xFF;
+    s_lastSentY       = 0xFF;
+    s_lastSentHeading = -1;
+    s_lastSentMs      = 0;
+
+    uartL3.registerCbReceivePosData(onRawPosReceived);
+    uartL3.registerCbReceiveControlData(onRawControlReceived);
+}
+
+void gameCommSetPosCallback(GameCommPosCallback cb)  { s_posCallback   = cb; }
+void gameCommSetEventCallback(GameCommEventCallback cb) { s_eventCallback = cb; }
+
+// -------------------------------------------------------
+// Senden
+// -------------------------------------------------------
+
+void gameCommSendPosForce(uint8_t x, uint8_t y, int heading)
+{
+    const uint8_t enc_x = gamePosEncodeX(x, heading);
+    const uint8_t enc_y = gamePosEncodeY(y, heading);
+    uartL3.sendPosData(GAME_ID_BROADCAST, enc_x, enc_y);
+    uartL3.update();
+
+    s_lastSentX       = x;
+    s_lastSentY       = y;
+    s_lastSentHeading = heading;
+    s_lastSentMs      = millis();
+}
+
+void gameCommSendPos(uint8_t x, uint8_t y, int heading)
+{
+    const uint32_t now = millis();
+    const bool posChanged = (x != s_lastSentX ||
+                             y != s_lastSentY ||
+                             heading != s_lastSentHeading);
+    const bool heartbeatDue = ((uint32_t)(now - s_lastSentMs) >= GAME_COMM_POS_INTERVAL_MS);
+
+    if (!posChanged && !heartbeatDue)
+        return;
+
+    gameCommSendPosForce(x, y, heading);
+}
+
+void gameCommSendCapture()
+{
+    const uint8_t payload[1] = { GAME_EVT_CAPTURE };
+    // 3x senden für Robustheit
+    for (uint8_t i = 0; i < 3; i++)
+    {
+        uartL3.sendControlData(GAME_ID_BROADCAST, sizeof(payload), payload);
+        uartL3.update();
+        delay(15);
+    }
+}
+
+void gameCommSendAtHome(uint8_t x, uint8_t y)
+{
+    const uint8_t payload[3] = { GAME_EVT_AT_HOME, x, y };
+    // 4x senden als Heartbeat-Burst; bei waitForReady wird es wiederholt
+    for (uint8_t i = 0; i < 4; i++)
+    {
+        uartL3.sendControlData(GAME_ID_BROADCAST, sizeof(payload), payload);
+        uartL3.update();
+        delay(15);
+    }
+}
+
+// -------------------------------------------------------
+// Update
+// -------------------------------------------------------
+
+void gameCommUpdate()
+{
+    uartL3.update();
+}

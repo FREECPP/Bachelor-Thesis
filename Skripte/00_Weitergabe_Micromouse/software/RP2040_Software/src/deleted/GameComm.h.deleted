@@ -1,0 +1,88 @@
+#pragma once
+#include <Arduino.h>
+#include "GameConfig.h"
+#include "MicromouseGameIdentity.h"  // GAME_ROLE_*, gameIdentityRole()
+
+// ============================================================
+// GameComm.h  –  Spielkommunikation
+//
+// Kapselt die gesamte drahtlose Kommunikation für den Spielmodus.
+// Nutzt zwei getrennte Kanäle:
+//
+//  1. sendPosData   → Positionen (x, y, heading kodiert in MSBs)
+//     Alle Roboter senden ihre aktuelle Position regelmäßig.
+//
+//  2. sendControlData → Spielereignisse (GAME_EVT_*)
+//     Capture, At-Home-Signal, zukünftige Erweiterungen.
+//
+// Sender-Identifikation:
+//   - sendPosData:    senderPackedId via cbReceivePosData-Argument
+//   - sendControlData: senderPackedId via cbReceiveControlData-Argument
+//   Der xbox-ESP32 hängt die ownId automatisch an → kein Role-Byte
+//   im Payload nötig. Die Rolle wird via gameIdentityRole(senderPackedId)
+//   abgefragt.
+//
+// Initialisierung:
+//   gameCommInit() einmalig in setup() nach UART_L3::begin() aufrufen.
+//   Registriert die internen Callbacks bei uartL3.
+// ============================================================
+
+// ============================================================
+// Callback-Typen
+// ============================================================
+
+// Wird aufgerufen wenn eine Positionsmeldung eines anderen Roboters
+// eingetroffen ist. heading = -1 wenn in beiden MSBs uncodiert (sollte
+// nicht vorkommen, aber defensiv behandeln).
+using GameCommPosCallback =
+    void (*)(uint8_t senderRole, uint8_t x, uint8_t y, int heading);
+
+// Wird aufgerufen bei einer Spielereignis-Meldung (sendControlData).
+// event   = data[0] (GAME_EVT_*)
+// payload = &data[1], payloadLen = length - 1
+using GameCommEventCallback =
+    void (*)(uint8_t senderRole, uint8_t event,
+             const uint8_t *payload, uint8_t payloadLen);
+
+// ============================================================
+// Initialisierung & Callbacks registrieren
+// ============================================================
+
+// Einmalig aufrufen (nach uartL3.begin()) – registriert interne
+// Callbacks bei uartL3 und setzt alle internen Zustandsvariablen zurück.
+void gameCommInit();
+
+// Callback für empfangene Positionsmeldungen registrieren.
+// Ersetzt einen ggf. bereits registrierten Callback.
+void gameCommSetPosCallback(GameCommPosCallback cb);
+
+// Callback für empfangene Spielereignisse registrieren.
+void gameCommSetEventCallback(GameCommEventCallback cb);
+
+// ============================================================
+// Senden
+// ============================================================
+
+// Position mit Heading senden (alle Roboter, regelmäßig).
+// Nur gesendet wenn sich x/y/heading geändert haben ODER
+// seit mehr als GAME_COMM_POS_INTERVAL_MS keine Meldung raus ging
+// (Heartbeat). Ruft intern uartL3.sendPosData auf.
+void gameCommSendPos(uint8_t x, uint8_t y, int heading);
+
+// Wie gameCommSendPos, aber erzwingt immer eine Sendung (kein Throttling).
+void gameCommSendPosForce(uint8_t x, uint8_t y, int heading);
+
+// GAME_EVT_CAPTURE senden: dieser Ghost hat Pacman gefangen.
+void gameCommSendCapture();
+
+// GAME_EVT_AT_HOME senden: dieser Roboter ist auf seinem Startnode.
+// x/y = tatsächliche Heimkoordinaten.
+void gameCommSendAtHome(uint8_t x, uint8_t y);
+
+// ============================================================
+// Update (muss regelmäßig aufgerufen werden)
+// ============================================================
+
+// Verarbeitet anstehende UART-Nachrichten und ruft ggf. Callbacks.
+// Aus menuBackgroundUpdate() UND dem Hauptloop aufrufen.
+void gameCommUpdate();

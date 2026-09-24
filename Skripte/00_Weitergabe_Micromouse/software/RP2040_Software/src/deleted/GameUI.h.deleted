@@ -1,0 +1,24 @@
+#pragma once
+
+// ============================================================
+// GameUI.h  –  Display-Ausgabe der Spiel-State-Machine
+//
+// Liest gameStatePhase() + Accessoren und zeichnet den passenden
+// Screen. Bewusst getrennt von GameState (das kein u8g2 kennt) und
+// aus MicromouseMenu.cpp ausgelagert, um die Menue-Datei schlank zu
+// halten.
+//
+// Edge-getriggert: zeichnet nur, wenn sich die Phase aendert. Dadurch
+// wird der Display-Buffer NICHT in jeder Fahrzelle neu uebertragen
+// (wichtig wegen des GP0/ButtonC-Workarounds waehrend des Fahrens).
+//
+// Pacman-Spielablauf (GS_PAC_PLAYING) zeichnet sein eigenes HUD in
+// MicromousePacman – GameUI laesst diese Phase unberuehrt.
+// ============================================================
+
+// Einmal pro menuAppLoop()-Zyklus aufrufen, solange gameStateActive().
+void gameUIRender();
+
+// Erzwingt beim naechsten gameUIRender() ein Neuzeichnen (z.B. nach
+// Rueckkehr aus einem blockierenden Screen).
+void gameUIResetView();

@@ -1,0 +1,20 @@
+#ifndef MICROMOUSE_GAME_IDENTITY_H
+#define MICROMOUSE_GAME_IDENTITY_H
+
+#include <Arduino.h>
+
+const uint8_t GAME_ROLE_PACMAN  = 0;
+const uint8_t GAME_ROLE_SHADOW  = 1;
+const uint8_t GAME_ROLE_SPEEDY  = 2;
+const uint8_t GAME_ROLE_BASHFUL = 3;
+const uint8_t GAME_ROLE_POKEY   = 4;
+const uint8_t GAME_ID_BROADCAST = 255;
+
+void gameIdentitySet(uint8_t role, uint8_t localId);
+uint8_t gameIdentityPackedId();
+uint8_t gameIdentityPack(uint8_t role, uint8_t localId);
+uint8_t gameIdentityRole(uint8_t packedId);
+uint8_t gameIdentityLocalId(uint8_t packedId);
+bool gameIdentityIsBroadcast(uint8_t packedId);
+
+#endif

@@ -1,0 +1,35 @@
+#include "MicromouseGameIdentity.h"
+
+static uint8_t s_role = GAME_ROLE_PACMAN;
+static uint8_t s_localId = 0;
+
+void gameIdentitySet(uint8_t role, uint8_t localId)
+{
+  s_role = role & 0x07;
+  s_localId = localId & 0x1F;
+}
+
+uint8_t gameIdentityPack(uint8_t role, uint8_t localId)
+{
+  return ((role & 0x07) << 5) | (localId & 0x1F);
+}
+
+uint8_t gameIdentityPackedId()
+{
+  return gameIdentityPack(s_role, s_localId);
+}
+
+uint8_t gameIdentityRole(uint8_t packedId)
+{
+  return (packedId >> 5) & 0x07;
+}
+
+uint8_t gameIdentityLocalId(uint8_t packedId)
+{
+  return packedId & 0x1F;
+}
+
+bool gameIdentityIsBroadcast(uint8_t packedId)
+{
+  return packedId == GAME_ID_BROADCAST;
+}

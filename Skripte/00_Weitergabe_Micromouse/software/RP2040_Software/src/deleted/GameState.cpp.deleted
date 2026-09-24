@@ -1,0 +1,811 @@
+#include "GameState.h"
+
+//#include "GameComm.h"                    // GameComm-API, GameConfig (GAME_EVT_*)
+#include "MicromouseSolving.h"           // startSolving, solvingLoop, solveCurrent*
+#include "MicromouseGhostCoordinator.h"  // Kollisionsvermeidung der Geister
+#include "MicromousePinkGhost.h"         // Speedy-Praediktion
+#include "MicromousePacman.h"            // pacmanGameLoop, Startposen, pacmanGameNotifyCaptured
+#include "MicromouseMapping.h"           // stopMotors, mappingSetPose, setSolveSmoothTurns? (Solving)
+#include "MicromouseMappingState.h"      // dxDir/dyDir, inBounds, Richtungen, dirName
+#include "Globals.h"             // g_abortRequested, g_btnAPressed
+
+#include <Pololu3piPlus2040BumpSensors.h>
+#include <Arduino.h>
+
+using namespace Pololu3piPlus2040;
+
+// Debug-Ausgaben fuer den Hardware-Test (auf 0 setzen zum Abschalten).
+#define GAME_DEBUG 1
+
+// turnTo() ist global in MicromouseMapping.cpp definiert, aber ohne Header-
+// Deklaration – wie in MicromouseMenu.cpp manuell extern einbinden.
+extern void turnTo(int target);
+extern bool followLineToNextIntersectionFast(bool centerAndStop);
+
+// ============================================================
+// Konstanten
+// ============================================================
+static const uint32_t RETURN_TIMEOUT_MS      = 20000;  // Heimfahrt-Timeout → BLOCKED
+static const uint32_t RETURN_WAIT_PEER_MS     = 20000;  // Speedy wartet max. auf Shadow
+static const uint32_t RETURN_BLOCKED_RETRY_MS = 3000;   // BLOCKED: Wartezeit vor Retry
+static const uint32_t AT_HOME_RESEND_MS       = 700;    // At-Home-Heartbeat-Intervall
+
+// ============================================================
+// Interner Zustand
+// ============================================================
+static GamePhase s_phase = GS_INACTIVE;
+static uint8_t   s_role  = GAME_ROLE_PACMAN;
+static bool      s_smoothTurns = true;
+
+// Eigene Heimpose (Startnode)
+static int s_homeX = 0, s_homeY = 0, s_homeHeading = EAST;
+
+// Zuletzt empfangene Pacman-Position (Ziel der Geister)
+static volatile int  s_pacX = 0, s_pacY = 0, s_pacHeading = -1;
+static volatile bool s_pacFresh = false;
+
+// Zuletzt an startSolving uebergebenes Ziel (nur neu planen bei Aenderung)
+static int s_plannedX = -1, s_plannedY = -1;
+
+// Capture-Signale
+static volatile bool    s_peerCapture      = false;  // Peer-Geist meldete Fang
+static volatile uint8_t s_capturePeerRole  = 0;
+static bool             s_lastCaptureLocal = false;  // letzter Fang: selbst (true) / Peer
+
+// At-Home-Status je Rolle (Index = Rolle 0..4)
+static volatile bool s_peerAtHome[5] = {false, false, false, false, false};
+
+// Heimfahrt-Hilfsvariablen
+static bool     s_returnYielding = false;
+static uint32_t s_returnDeadline = 0;
+static uint32_t s_waitPeerStart  = 0;
+static uint32_t s_blockedStart   = 0;
+static uint32_t s_atHomeSentMs   = 0;
+
+// Bumper fuer Geister-Fangerkennung
+static BumpSensors    s_bumpers;
+static bool           s_bumpersReady = false;
+// Vom Background-Hook gesetzt, wenn der Bumper waehrend der Fahrzelle AUF
+// Pacman zu ausloest. Wird im naechsten HUNTING-Tick konsumiert.
+static volatile bool  s_localCaptureFlag = false;
+
+// ============================================================
+// Vorwaertsdeklarationen interner Helfer
+// ============================================================
+static void transitionTo(GamePhase next);
+static void gameHomePose(uint8_t role, int &x, int &y, int &heading);
+static void chooseTarget(int &targetX, int &targetY);
+static void startHunt();
+static void enterGhostReturn(bool recoverFromEdge);
+static void beginReturnDrive();
+static void localCapture(bool recoverFromEdge);
+static void restartHunt();
+
+// ============================================================
+// Helfer: Heimpose je Rolle
+// ============================================================
+static void gameHomePose(uint8_t role, int &x, int &y, int &heading)
+{
+  if (role == GAME_ROLE_PACMAN)
+  {
+    x = PAC_START_X; y = PAC_START_Y; heading = PAC_START_HEADING;
+  }
+  else if (role == GAME_ROLE_SHADOW)
+  {
+    x = SHADOW_START_X; y = SHADOW_START_Y; heading = SHADOW_START_HEADING;
+  }
+  else if (role == GAME_ROLE_SPEEDY)
+  {
+    x = SPEEDY_START_X; y = SPEEDY_START_Y; heading = SPEEDY_START_HEADING;
+  }
+  else
+  {
+    x = 0; y = 0; heading = EAST;
+  }
+}
+
+static void clearPeerAtHome()
+{
+  for (int i = 0; i < 5; i++) s_peerAtHome[i] = false;
+}
+
+static bool allRequiredAtHome()
+{
+  return s_peerAtHome[GAME_ROLE_PACMAN] &&
+         s_peerAtHome[GAME_ROLE_SHADOW] &&
+         s_peerAtHome[GAME_ROLE_SPEEDY];
+}
+
+static void resetHuntState()
+{
+  s_pacFresh        = false;
+  s_peerCapture     = false;
+  s_capturePeerRole = 0;
+  s_plannedX         = -1;
+  s_plannedY         = -1;
+  s_returnYielding   = false;
+  s_localCaptureFlag = false;
+}
+
+// ============================================================
+// Fang-Geometrie (gegen die zuletzt empfangene Pacman-Position)
+// ============================================================
+static bool atPacmanNode() { return solveCurrentX() == s_pacX && solveCurrentY() == s_pacY; }
+
+// Faehrt der Geist GERADE in Pacmans Zelle hinein? Strikte Fang-Bedingung:
+// die physisch befahrene Zielzelle (aktuelle Pose + Heading) muss EXAKT
+// Pacmans gemeldete Position sein. Damit loest ein Bumper-Treffer NUR aus,
+// wenn der Geist wirklich in Pacmans Node einfaehrt – eine Geister-Geister-
+// Kollision an einer Kreuzung (Zielzelle != Pacman-Node) wird ignoriert.
+static bool drivingIntoPacmanCell()
+{
+  const int nx = solveCurrentX() + dxDir(solveCurrentHeading());
+  const int ny = solveCurrentY() + dyDir(solveCurrentHeading());
+  return nx == s_pacX && ny == s_pacY;
+}
+
+// Heading aus einem Einheits-Delta (fuer gerichtete Reservierungs-Broadcasts).
+static int headingFromDelta(int dx, int dy)
+{
+  if (dx ==  1) return EAST;
+  if (dx == -1) return WEST;
+  if (dy ==  1) return SOUTH;
+  if (dy == -1) return NORTH;
+  return -1;
+}
+
+static bool bumperPressed()
+{
+  if (!s_bumpersReady) return false;
+  s_bumpers.read();
+  return s_bumpers.leftIsPressed() || s_bumpers.rightIsPressed();
+}
+
+// Kurzes Verhandlungsfenster: pumpt die Kommunikation, damit die (aus
+// Position+Heading abgeleitete) Reservierung des anderen Geistes ankommt,
+// bevor wir den Zug freigeben. Shadow wartet kuerzer → hat Vorfahrt.
+static void negotiationWindow(uint32_t ms)
+{
+  const uint32_t start = millis();
+  while ((uint32_t)(millis() - start) < ms)
+  {
+    gameCommUpdate();
+    delay(5);
+  }
+}
+
+// ============================================================
+// Zielwahl (Speedy praediktiv, sonst direkt Pacman; danach Coordinator)
+// ============================================================
+static void chooseTarget(int &targetX, int &targetY)
+{
+  int desiredX, desiredY;
+  if (s_role == GAME_ROLE_SPEEDY)
+  {
+    pinkGhostChooseTarget((uint8_t)s_pacX, (uint8_t)s_pacY,
+                          solveCurrentX(), solveCurrentY(),
+                          desiredX, desiredY);
+  }
+  else
+  {
+    desiredX = s_pacX;
+    desiredY = s_pacY;
+  }
+
+  ghostCoordinatorAdjustTarget(solveCurrentX(), solveCurrentY(),
+                               desiredX, desiredY,
+                               targetX, targetY, millis());
+}
+
+// ============================================================
+// GameComm-Callbacks
+// ============================================================
+static void onGamePos(uint8_t role, uint8_t x, uint8_t y, int heading)
+{
+  if (role == GAME_ROLE_PACMAN)
+  {
+    s_pacX       = x;
+    s_pacY       = y;
+    s_pacHeading = heading;
+    s_pacFresh   = true;
+    pinkGhostObservePacman(x, y, heading);
+    return;
+  }
+
+  // Anderer Geist: Position + abgeleitete Reservierung in den Coordinator.
+  if (role >= GAME_ROLE_SHADOW && role <= GAME_ROLE_POKEY)
+  {
+    const uint8_t  pid = gameIdentityPack(role, 0);  // gepackte ID, NICHT rohe Rolle!
+    const uint32_t now = millis();
+    ghostCoordinatorObservePeer(pid, x, y, now);
+
+#if GAME_DEBUG
+    // Bestaetigt, dass ein Peer-Geist mit KORREKTER Rolle erkannt wird.
+    // Kommt hier nichts, sind die IDs falsch → Coordinator ist blind →
+    // keine Kollisionsvermeidung. Gedrosselt auf ~1 Hz.
+    static uint32_t s_lastPeerDbg = 0;
+    if ((uint32_t)(now - s_lastPeerDbg) > 1000)
+    {
+      s_lastPeerDbg = now;
+      Serial.print("[PEER] role="); Serial.print(role);
+      Serial.print(" @"); Serial.print(x); Serial.print(",");
+      Serial.print(y); Serial.print(" hdg="); Serial.println(heading);
+    }
+#endif
+
+    if (heading >= 0)
+    {
+      const int rx = (int)x + dxDir(heading);
+      const int ry = (int)y + dyDir(heading);
+      if (inBounds(rx, ry))
+        ghostCoordinatorObservePeerReservation(pid, (uint8_t)rx, (uint8_t)ry, now);
+    }
+  }
+}
+
+static void onGameEvent(uint8_t role, uint8_t event,
+                        const uint8_t *payload, uint8_t payloadLen)
+{
+  if (event == GAME_EVT_CAPTURE)
+  {
+    if (s_role == GAME_ROLE_PACMAN)
+      pacmanGameNotifyCaptured(gameIdentityPack(role, 0));
+    else
+    {
+      s_peerCapture     = true;
+      s_capturePeerRole = role;
+    }
+    return;
+  }
+
+  if (event == GAME_EVT_AT_HOME)
+  {
+    if (role <= GAME_ROLE_POKEY)
+      s_peerAtHome[role] = true;
+    // Heimkoordinaten zusaetzlich dem Coordinator melden (Geister)
+    if (payloadLen >= 2 && role >= GAME_ROLE_SHADOW && role <= GAME_ROLE_POKEY)
+      ghostCoordinatorObservePeer(gameIdentityPack(role, 0),
+                                  payload[0], payload[1], millis());
+  }
+}
+
+// ============================================================
+// Uebergaenge mit Eintritts-Aktionen
+// ============================================================
+static void transitionTo(GamePhase next)
+{
+  s_phase = next;
+
+  switch (next)
+  {
+    case GS_GHOST_RETURN_WAIT_PEER:
+      s_waitPeerStart = millis();
+      break;
+
+    case GS_GHOST_RETURN_BLOCKED:
+      s_blockedStart = millis();
+      break;
+
+    case GS_GHOST_AT_HOME:
+      // At-Home senden und sich selbst als bereit markieren.
+      gameCommSendAtHome((uint8_t)s_homeX, (uint8_t)s_homeY);
+      s_peerAtHome[s_role] = true;
+      s_atHomeSentMs = millis();
+      break;
+
+    default:
+      break;
+  }
+}
+
+// ============================================================
+// Jagd beginnen / fortsetzen
+// ============================================================
+static void startHunt()
+{
+  int tx, ty;
+  chooseTarget(tx, ty);
+  s_pacFresh = false;
+  s_plannedX = tx;
+  s_plannedY = ty;
+
+  if (startSolving(tx, ty))
+    transitionTo(GS_GHOST_HUNTING);
+  else
+    transitionTo(GS_GHOST_TARGET_REACHED);  // kein Pfad jetzt – auf Update warten
+}
+
+// ============================================================
+// Physische Recovery nach Catch mitten in der Fahrt.
+//
+// Bei einem Fang waehrend der Fahrzelle steht der Roboter physisch
+// zwischen Abgangsnode und Zielnode – und nach einem Bumper-Stoss auf
+// Pacman oft leicht verdreht. Die Solver-Pose behauptet aber weiterhin
+// "auf dem Abgangsnode". Plant man von dort die Heimfahrt, dreht/faehrt
+// der Roboter um die FALSCHE Position → er faengt die Linie nicht sauber
+// ein → "line lost" → Position verloren.
+//
+// Loesung (symmetrisch zu recoverPacmanToLastNodeIfNeeded() in
+// MicromousePacman.cpp): um 180° drehen und vorwaerts bis zur naechsten
+// Kreuzung fahren. Das ist exakt der Abgangsnode – dort zentrieren. Danach
+// ist die physische Pose wieder eindeutig auf einem echten Node, mit Blick
+// rueckwaerts (von Pacman weg), was fuer die Heimfahrt ideal ist.
+// ============================================================
+static void recoverGhostToLastNode(int nodeX, int nodeY, int driveHeading)
+{
+  mappingSetPose(nodeX, nodeY, driveHeading);
+  turnTo(oppositeOf(driveHeading));
+  const bool ok = followLineToNextIntersectionFast(true);
+  stopMotors();
+
+  // Erfolg: zentriert auf dem Abgangsnode, Blick rueckwaerts.
+  // Fehlschlag: best effort – Pose bleibt auf dem Abgangsnode (Originalheading).
+  const int newHead = ok ? oppositeOf(driveHeading) : driveHeading;
+  mappingSetPose(nodeX, nodeY, newHead);
+  solveSetPose(nodeX, nodeY, newHead);
+}
+
+// ============================================================
+// Heimfahrt einleiten (Pose stabilisieren, Speedy ggf. warten)
+// ============================================================
+static void enterGhostReturn(bool recoverFromEdge)
+{
+  const int safeX    = solveCurrentX();
+  const int safeY    = solveCurrentY();
+  const int safeHead = solveCurrentHeading();
+
+  stopMotors();
+  g_abortRequested = false;
+  g_btnAPressed    = false;
+  s_bumpersReady   = false;
+  clearPeerAtHome();
+
+  setSolveSmoothTurns(false);  // Punktfahrt: zuverlaessiger fuer Heimfahrt
+
+  if (recoverFromEdge)
+  {
+    // Physisch zurueck auf den Abgangsnode – sonst Positionsverlust.
+    recoverGhostToLastNode(safeX, safeY, safeHead);
+  }
+  else
+  {
+    // Catch durch Ankunft: Roboter steht bereits zentriert auf dem Node.
+    solveSetPose(safeX, safeY, safeHead);
+  }
+
+  // Reihenfolge regelt sich selbst ueber die Blockier-Relation (siehe
+  // fillReturnObstacles): Wer einen freien Heimweg hat, faehrt sofort; wer durch
+  // einen hoeher priorisierten Geist blockiert ist, findet keinen Pfad und
+  // wartet in GS_GHOST_RETURN_BLOCKED, bis der Weg frei ist. Das ersetzt das
+  // starre "Speedy wartet immer auf Shadow", das verklemmte, wenn Speedy weiter
+  // hinten (z.B. in einer Sackgasse) stand und eigentlich zuerst raus muesste.
+  beginReturnDrive();
+}
+
+// Markiert bewegliche Roboter als dynamische Hindernisse fuer die Heimplanung.
+//
+// Wichtige Unterscheidung:
+//   - Pacman BEWEGT SICH NICHT, solange die Geister heimfahren (er wartet auf
+//     ihr At-Home). Ihn dauerhaft als Wand zu behandeln kann den einzigen Weg
+//     versperren → Deadlock. Darum nur optional (blockPacman) und mit Fallback.
+//   - Andere Geister BEWEGEN SICH (fahren selbst heim). Nur hoeher/gleich-
+//     priorisierte als Wand → der Niederpriore wartet (GS_GHOST_RETURN_BLOCKED)
+//     und faehrt, sobald der Hoeherpriore den Weg freigemacht hat. Das regelt
+//     die Rueckkehr-Reihenfolge ohne starres "Speedy wartet immer auf Shadow".
+static void fillReturnObstacles(bool blockPacman)
+{
+  solveClearDynamicObstacles();
+  const uint32_t now = millis();
+
+  if (blockPacman && inBounds(s_pacX, s_pacY))
+    solveBlockCell(s_pacX, s_pacY);
+
+  for (int x = 0; x < MAZE_W; x++)
+    for (int y = 0; y < MAZE_H; y++)
+      if (ghostCoordinatorIsHomeBlockingPeer(x, y, s_role, now))
+        solveBlockCell(x, y);
+}
+
+static void beginReturnDrive()
+{
+  gameHomePose(s_role, s_homeX, s_homeY, s_homeHeading);
+  s_returnYielding = false;
+  s_returnDeadline = millis() + RETURN_TIMEOUT_MS;
+
+  // 1. Versuch: Pacman + hoeherpriore Geister als Wand (sauberer Pfad weg von Pac).
+  fillReturnObstacles(true);
+  bool planned = startSolving(s_homeX, s_homeY);
+
+  // 2. Versuch: Pacman ignorieren (er steht still → sonst Deadlock). Geister
+  //    bleiben Wand. Findet jetzt ein Pfad, faehrt der Geist knapp an Pacman
+  //    vorbei – die Laufzeit-Bumpervermeidung verhindert eine Kollision.
+  if (!planned)
+  {
+    fillReturnObstacles(false);
+    planned = startSolving(s_homeX, s_homeY);
+  }
+
+  // 3. Immer noch kein Pfad → ein hoeherpriorer Geist versperrt den einzigen
+  //    Weg. Warten und neu planen, sobald er weitergefahren ist.
+  if (planned)
+    transitionTo(GS_GHOST_RETURNING);
+  else
+    transitionTo(GS_GHOST_RETURN_BLOCKED);
+}
+
+static void localCapture(bool recoverFromEdge)
+{
+  stopMotors();
+  s_lastCaptureLocal = true;
+#if GAME_DEBUG
+  // Diagnose fuer den Hardware-Test: zeigt Ausloeser (Bumper mitten in der
+  // Fahrt vs. Ankunft auf dem Node) und Geist- vs. Pacman-Position.
+  Serial.print("[CAPTURE] ghost@");
+  Serial.print(solveCurrentX()); Serial.print(",");
+  Serial.print(solveCurrentY());
+  Serial.print(" pac@"); Serial.print(s_pacX); Serial.print(",");
+  Serial.print(s_pacY);
+  Serial.println(recoverFromEdge ? " via=bumper" : " via=arrival");
+#endif
+  gameCommSendCapture();
+  enterGhostReturn(recoverFromEdge);
+}
+
+// ============================================================
+// Nach erfolgreicher Heimkehr aller: naechste Runde vorbereiten
+// ============================================================
+static void restartHunt()
+{
+  resetHuntState();
+  clearPeerAtHome();
+  ghostCoordinatorReset();
+  solveClearDynamicObstacles();  // Heimfahrt-Hindernisse weg – Jagd plant frei
+  setSolveSmoothTurns(s_smoothTurns);
+
+  s_bumpers.calibrate();
+  s_bumpersReady = true;
+  if (s_role == GAME_ROLE_SPEEDY)
+    pinkGhostReset();
+
+  gameHomePose(s_role, s_homeX, s_homeY, s_homeHeading);
+  gameCommSendPosForce((uint8_t)s_homeX, (uint8_t)s_homeY, s_homeHeading);
+
+  transitionTo(GS_GHOST_WAIT_FIRST_POS);
+}
+
+// ============================================================
+// Oeffentlicher Lebenszyklus
+// ============================================================
+void gameStateInit()
+{
+  s_phase = GS_INACTIVE;
+  gameCommSetPosCallback(onGamePos);
+  gameCommSetEventCallback(onGameEvent);
+}
+
+void gameStateStartGhost(uint8_t role, bool smoothTurns)
+{
+  s_role        = role;
+  s_smoothTurns = smoothTurns;
+
+  resetHuntState();
+  clearPeerAtHome();
+  ghostCoordinatorReset();
+  solveClearDynamicObstacles();
+
+  s_bumpers.calibrate();
+  s_bumpersReady = true;
+  if (role == GAME_ROLE_SPEEDY)
+    pinkGhostReset();
+
+  gameHomePose(role, s_homeX, s_homeY, s_homeHeading);
+  // Eigene Startposition sofort senden, damit der andere Geist sie kennt,
+  // bevor beide gleichzeitig losfahren.
+  gameCommSendPosForce((uint8_t)s_homeX, (uint8_t)s_homeY, s_homeHeading);
+
+  transitionTo(GS_GHOST_WAIT_FIRST_POS);
+}
+
+void gameStateStartPacman()
+{
+  s_role = GAME_ROLE_PACMAN;
+  clearPeerAtHome();
+  pacmanGameInit();
+  transitionTo(GS_PAC_PLAYING);
+}
+
+void gameStateAbort()
+{
+  stopMotors();
+  g_abortRequested = true;
+  s_bumpersReady   = false;
+  transitionTo(GS_DONE);
+}
+
+void gameStateReset()
+{
+  s_phase = GS_INACTIVE;
+}
+
+// ============================================================
+// Zustandsmaschine – ein Schritt
+// ============================================================
+void gameStateTick()
+{
+  gameCommUpdate();  // Comm pumpen → Callbacks feuern
+
+  switch (s_phase)
+  {
+    // --------------------------------------------------------
+    case GS_GHOST_WAIT_FIRST_POS:
+    {
+      gameCommSendPos((uint8_t)s_homeX, (uint8_t)s_homeY, s_homeHeading);
+      if (s_pacFresh)
+        startHunt();
+      break;
+    }
+
+    // --------------------------------------------------------
+    case GS_GHOST_HUNTING:
+    {
+      // 1) Peer hat gefangen → Heimfahrt
+      if (s_peerCapture)
+      {
+        s_peerCapture = false;
+        s_lastCaptureLocal = false;
+        const bool recoverFromEdge = solveIsDrivingCell();
+        g_abortRequested = true;
+        stopMotors();
+        enterGhostReturn(recoverFromEdge);
+        break;
+      }
+
+      // 2) Neue Pacman-Position → ggf. neu planen (von aktueller Pose)
+      if (s_pacFresh)
+      {
+        int tx, ty;
+        chooseTarget(tx, ty);
+        s_pacFresh = false;
+        if (tx != s_plannedX || ty != s_plannedY)
+        {
+          s_plannedX = tx;
+          s_plannedY = ty;
+          startSolving(tx, ty);
+        }
+      }
+
+      // 3) Reservierung + Kollisionsvermeidung. Broadcast mit der BEABSICHTIGTEN
+      //    Fahrtrichtung (auch bei Abbiegung an einer Kreuzung), damit der Peer
+      //    die korrekte reservierte Zelle ableitet. Danach kurzes Verhandlungs-
+      //    fenster, damit seine Reservierung ankommt, bevor wir den Zug freigeben.
+      bool pausedForPeer = false;
+      int nextX, nextY;
+      if (solvePlannedNextCell(nextX, nextY))
+      {
+        const int moveHdg = headingFromDelta(nextX - solveCurrentX(),
+                                             nextY - solveCurrentY());
+        gameCommSendPosForce(solveCurrentX(), solveCurrentY(),
+                             moveHdg >= 0 ? moveHdg : solveCurrentHeading());
+        // Speedy (niedrigere Prioritaet) wartet deutlich laenger, damit Shadows
+        // Reservierung trotz ESP-NOW-Latenz sicher ankommt, bevor Speedy faehrt.
+        negotiationWindow(s_role == GAME_ROLE_SHADOW ? 80 : 180);
+
+        if (ghostCoordinatorShouldPauseBeforeMove(solveCurrentX(), solveCurrentY(),
+                                                  nextX, nextY, millis()))
+        {
+          solvePauseMotion();
+          delay(80);
+          pausedForPeer = true;
+#if GAME_DEBUG
+          Serial.print("[YIELD] role="); Serial.print(s_role);
+          Serial.print(" weicht Peer-Zelle "); Serial.print(nextX);
+          Serial.print(","); Serial.print(nextY); Serial.println(" aus");
+#endif
+        }
+      }
+
+      // 4) Einen Solving-Schritt fahren (blockiert die Fahrzelle; der
+      //    Background-Hook erkennt waehrenddessen einen Bumper-Fang).
+      const bool done = pausedForPeer ? false : solvingLoop();
+      gameCommSendPos(solveCurrentX(), solveCurrentY(), solveCurrentHeading());
+
+      // 5) Bumper-Fang waehrend der Fahrt (vom Background-Hook signalisiert)
+      if (s_localCaptureFlag)
+      {
+        s_localCaptureFlag = false;
+        localCapture(true);
+        break;
+      }
+      // 6) Exakt auf Pacmans Node angekommen → Fang
+      if (done && atPacmanNode())
+      {
+        localCapture(false);
+        break;
+      }
+      // 7) Ziel erreicht, Pacman nicht dort → auf Update warten
+      if (done)
+      {
+        stopMotors();
+        transitionTo(GS_GHOST_TARGET_REACHED);
+      }
+      break;
+    }
+
+    // --------------------------------------------------------
+    case GS_GHOST_TARGET_REACHED:
+    {
+      if (s_peerCapture)
+      {
+        s_peerCapture = false;
+        s_lastCaptureLocal = false;
+        enterGhostReturn(false);
+        break;
+      }
+      gameCommSendPos(solveCurrentX(), solveCurrentY(), solveCurrentHeading());
+      if (s_pacFresh)
+        startHunt();
+      break;
+    }
+
+    // --------------------------------------------------------
+    case GS_GHOST_RETURN_WAIT_PEER:
+    {
+      gameCommSendPos(solveCurrentX(), solveCurrentY(), solveCurrentHeading());
+      if (s_peerAtHome[GAME_ROLE_SHADOW] ||
+          (uint32_t)(millis() - s_waitPeerStart) >= RETURN_WAIT_PEER_MS)
+        beginReturnDrive();
+      break;
+    }
+
+    // --------------------------------------------------------
+    case GS_GHOST_RETURNING:
+    {
+      if ((uint32_t)(millis()) >= s_returnDeadline)
+      {
+        transitionTo(GS_GHOST_RETURN_BLOCKED);
+        break;
+      }
+
+      // Kollisionsvermeidung wie in der Jagd
+      bool pausedForPeer = false;
+      int nextX, nextY;
+      if (solvePlannedNextCell(nextX, nextY))
+      {
+        gameCommSendPos(solveCurrentX(), solveCurrentY(), solveCurrentHeading());
+        if (ghostCoordinatorShouldPauseBeforeMove(solveCurrentX(), solveCurrentY(),
+                                                  nextX, nextY, millis()))
+        {
+          solvePauseMotion();
+          delay(80);
+          pausedForPeer = true;
+        }
+      }
+
+      // Ausweichen, wenn ein hoeher priorisierter Geist die eigene Zelle reserviert
+      if (!pausedForPeer && !s_returnYielding &&
+          ghostCoordinatorShouldYieldCurrentCell(solveCurrentX(), solveCurrentY(), millis()))
+      {
+        int yX, yY;
+        if (ghostCoordinatorFindYieldCell(solveCurrentX(), solveCurrentY(),
+                                          yX, yY, millis()) &&
+            startSolving(yX, yY))
+          s_returnYielding = true;
+      }
+
+      const bool done = pausedForPeer ? false : solvingLoop();
+      gameCommSendPos(solveCurrentX(), solveCurrentY(), solveCurrentHeading());
+
+      if (done)
+      {
+        if (s_returnYielding)
+        {
+          // Ausweichzelle erreicht → erneut Richtung Heim planen
+          s_returnYielding = false;
+          startSolving(s_homeX, s_homeY);
+          break;
+        }
+        // Zuhause: sauber ausrichten und At-Home melden
+        mappingSetPose(s_homeX, s_homeY, solveCurrentHeading());
+        turnTo(s_homeHeading);
+        solveSetPose(s_homeX, s_homeY, s_homeHeading);
+        transitionTo(GS_GHOST_AT_HOME);
+      }
+      break;
+    }
+
+    // --------------------------------------------------------
+    case GS_GHOST_RETURN_BLOCKED:
+    {
+      // Eigene Position senden, damit Pacman ausweichen kann; dann Retry.
+      gameCommSendPos(solveCurrentX(), solveCurrentY(), solveCurrentHeading());
+      if ((uint32_t)(millis() - s_blockedStart) >= RETURN_BLOCKED_RETRY_MS)
+      {
+        solveSetPose(solveCurrentX(), solveCurrentY(), solveCurrentHeading());
+        beginReturnDrive();
+      }
+      break;
+    }
+
+    // --------------------------------------------------------
+    case GS_GHOST_AT_HOME:
+    {
+      if ((uint32_t)(millis() - s_atHomeSentMs) >= AT_HOME_RESEND_MS)
+      {
+        gameCommSendAtHome((uint8_t)s_homeX, (uint8_t)s_homeY);
+        s_atHomeSentMs = millis();
+      }
+      if (allRequiredAtHome())
+        restartHunt();
+      break;
+    }
+
+    // --------------------------------------------------------
+    case GS_PAC_PLAYING:
+    {
+      if (pacmanGameLoop())
+        transitionTo(GS_DONE);
+      break;
+    }
+
+    // --------------------------------------------------------
+    case GS_INACTIVE:
+    case GS_DONE:
+    default:
+      break;
+  }
+}
+
+// ============================================================
+// Abfragen fuer die View
+// ============================================================
+GamePhase gameStatePhase()       { return s_phase; }
+bool      gameStateActive()      { return s_phase != GS_INACTIVE; }
+uint8_t   gameStateRole()        { return s_role; }
+uint8_t   gameStateCapturePeerRole() { return s_capturePeerRole; }
+bool      gameStateWasLocalCapture() { return s_lastCaptureLocal; }
+
+void gameStateGetTarget(int &x, int &y) { x = s_plannedX; y = s_plannedY; }
+void gameStateGetPacman(int &x, int &y) { x = s_pacX;     y = s_pacY; }
+void gameStateGetHome(int &x, int &y)   { x = s_homeX;    y = s_homeY; }
+
+// Beide Geister zuhause? (von Pacmans Heimkehr-Handshake genutzt)
+bool gameStateGhostsAtHome()
+{
+  return s_peerAtHome[GAME_ROLE_SHADOW] && s_peerAtHome[GAME_ROLE_SPEEDY];
+}
+
+// At-Home-Status aller Peers loeschen (Rundenstart, von Pacman aufgerufen).
+void gameStateClearPeerAtHome()
+{
+  clearPeerAtHome();
+}
+
+// ============================================================
+// Background-Update (aus dem Mapping-Hook waehrend blockierender Fahrten)
+// ============================================================
+void gameStateBackgroundUpdate()
+{
+  gameCommUpdate();
+
+  // Geister: Bumper-Fang waehrend der Fahrzelle. Das eigentliche Auftreffen
+  // passiert hier, mitten in der blockierenden Linienverfolgung; der naechste
+  // HUNTING-Tick konsumiert das Flag.
+  if (s_phase == GS_GHOST_HUNTING && s_bumpersReady && !s_localCaptureFlag &&
+      solveIsDrivingCell())
+  {
+    if (bumperPressed() && drivingIntoPacmanCell())
+    {
+      s_localCaptureFlag = true;
+      g_abortRequested   = true;
+      stopMotors();
+    }
+  }
+
+  // Pacman: eigene Bumper-Kollision + HUD-Live-Update waehrend der Fahrt.
+  // Nur waehrend aktiven Spiels (s_role allein waere ausserhalb veraltet).
+  if (s_phase == GS_PAC_PLAYING)
+  {
+    pacmanCheckBumpers();
+    pacmanUpdateHUDDuringDrive();
+  }
+}

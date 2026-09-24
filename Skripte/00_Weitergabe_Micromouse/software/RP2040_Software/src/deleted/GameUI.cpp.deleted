@@ -1,0 +1,137 @@
+#include "GameUI.h"
+#include "GameState.h"
+
+#include "MicromouseGraphics.h"        // u8g2, oledSendBuffer
+#include "MicromouseGameIdentity.h"    // GAME_ROLE_*
+
+#include <Arduino.h>
+#include <string.h>
+
+// Letzte gezeichnete Phase – Neuzeichnen nur bei Aenderung (edge-getriggert).
+static GamePhase s_lastDrawn = GS_INACTIVE;
+static bool      s_forceRedraw = true;
+
+// ------------------------------------------------------------
+// Rollennamen (gleiche Reihenfolge wie mausModi in MicromouseMenu.cpp)
+// ------------------------------------------------------------
+static const char *roleName(uint8_t role)
+{
+  switch (role)
+  {
+    case GAME_ROLE_PACMAN:  return "Pacman";
+    case GAME_ROLE_SHADOW:  return "Shadow";
+    case GAME_ROLE_SPEEDY:  return "Speedy";
+    case GAME_ROLE_BASHFUL: return "Bashful";
+    case GAME_ROLE_POKEY:   return "Pokey";
+    default:                return "Ghost";
+  }
+}
+
+// ------------------------------------------------------------
+// Gemeinsamer Screen-Aufbau: invertierter Header + bis zu 3 Zeilen + Footer.
+// ------------------------------------------------------------
+static void drawScreen(const char *title,
+                       const char *l1, const char *l2, const char *l3,
+                       const char *footer)
+{
+  u8g2.clearBuffer();
+  u8g2.setFont(u8g2_font_6x10_tf);
+
+  u8g2.drawBox(0, 0, 128, 12);
+  u8g2.setDrawColor(0);
+  u8g2.drawUTF8(2, 10, title);
+  u8g2.setDrawColor(1);
+
+  if (l1 && l1[0]) u8g2.drawUTF8(2, 28, l1);
+  if (l2 && l2[0]) u8g2.drawUTF8(2, 40, l2);
+  if (l3 && l3[0]) u8g2.drawUTF8(2, 50, l3);
+
+  if (footer && footer[0])
+  {
+    u8g2.drawLine(0, 53, 128, 53);
+    u8g2.drawUTF8(2, 63, footer);
+  }
+
+  oledSendBuffer();
+}
+
+// ------------------------------------------------------------
+// Fang-Hinweiszeile fuer die Heimfahrt-Screens.
+// ------------------------------------------------------------
+static void captureLine(char *buf, size_t n)
+{
+  if (gameStateWasLocalCapture())
+    snprintf(buf, n, "Selbst gefangen!");
+  else
+    snprintf(buf, n, "%s fing Pacman", roleName(gameStateCapturePeerRole()));
+}
+
+void gameUIResetView()
+{
+  s_forceRedraw = true;
+}
+
+void gameUIRender()
+{
+  const GamePhase p = gameStatePhase();
+
+  // Edge-getriggert: nur bei Phasenwechsel (oder erzwungen) neu zeichnen.
+  if (p == s_lastDrawn && !s_forceRedraw)
+    return;
+  s_lastDrawn   = p;
+  s_forceRedraw = false;
+
+  char l1[28], l2[28];
+  int tx, ty, hx, hy;
+
+  switch (p)
+  {
+    case GS_GHOST_WAIT_FIRST_POS:
+      drawScreen("JAGD", "Warte auf Pacman...", "Position via UART", nullptr,
+                 "A = abbrechen");
+      break;
+
+    case GS_GHOST_HUNTING:
+      gameStateGetTarget(tx, ty);
+      snprintf(l1, sizeof(l1), "Verfolge Pacman");
+      snprintf(l2, sizeof(l2), "Ziel: %d,%d", tx, ty);
+      drawScreen(roleName(gameStateRole()), l1, l2, nullptr, "A = abbrechen");
+      break;
+
+    case GS_GHOST_TARGET_REACHED:
+      gameStateGetPacman(tx, ty);
+      snprintf(l1, sizeof(l1), "Pacman @ %d,%d", tx, ty);
+      drawScreen("ZIEL ERREICHT", l1, "Warte auf Update...", nullptr,
+                 "A = abbrechen");
+      break;
+
+    case GS_GHOST_RETURN_WAIT_PEER:
+      captureLine(l1, sizeof(l1));
+      drawScreen("WARTEN", l1, "Warte auf Shadow...", nullptr, nullptr);
+      break;
+
+    case GS_GHOST_RETURNING:
+      gameStateGetHome(hx, hy);
+      captureLine(l1, sizeof(l1));
+      snprintf(l2, sizeof(l2), "Heim -> %d,%d", hx, hy);
+      drawScreen("HEIMFAHRT", l1, l2, nullptr, "A = abbrechen");
+      break;
+
+    case GS_GHOST_RETURN_BLOCKED:
+      drawScreen("BLOCKIERT", "Warte auf Pacman", "dann Retry...", nullptr,
+                 "A = abbrechen");
+      break;
+
+    case GS_GHOST_AT_HOME:
+      drawScreen("ZUHAUSE", "Warte auf alle", "Spiel geht weiter", nullptr,
+                 nullptr);
+      break;
+
+    // GS_PAC_PLAYING zeichnet sein eigenes HUD; GS_INACTIVE/GS_DONE: nichts.
+    case GS_PAC_PLAYING:
+    case GS_INACTIVE:
+    case GS_DONE:
+    default:
+      break;
+  }
+}

@@ -1,0 +1,2194 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<link rel="icon" type="image/png" href="https://a.pololu-files.com/assets/favicon_32x32-f40058cd34e1fec5906522ec0c9eb39b303192067c0e353a30796e859ce41106.png" sizes="32x32">
+<link rel="icon" type="image/png" href="https://a.pololu-files.com/assets/favicon_192x192-52532413e1c353491bfa0a2dd977aacf020e8ca4104064094121739bad21c4bf.png" sizes="192x192">
+<link rel="icon" type="image/png" href="https://a.pololu-files.com/assets/favicon_96x96-fcf7f6d6568f76d479e5ae1822ded335e0bbd75ab7efd0de7e010bb41fd83e41.png" sizes="96x96">
+<link rel="icon" type="image/png" href="https://a.pololu-files.com/assets/favicon_16x16-13632635dc6dd0e11ba9a38071e8218d26d62e71f8ebafacd9929c3136117372.png" sizes="16x16">
+<link rel="apple-touch-icon" type="image/png" href="https://a.pololu-files.com/assets/favicon_96x96-fcf7f6d6568f76d479e5ae1822ded335e0bbd75ab7efd0de7e010bb41fd83e41.png">
+<link crossorigin="anonymous" href="Pololu_docs_files/font-awesome.min.css" integrity="sha256-AIodEDkC8V/bHBkfyxzolUMw57jeQ9CauwhVW6YJ9CA=" media="all" rel="stylesheet">
+<link crossorigin="anonymous" href="Pololu_docs_files/slick.css" integrity="sha256-2RdmDD1veq0y68SwASxtC7hKE+IBoBLjNLzKS59Ghsk=" media="all" rel="stylesheet">
+<link crossorigin="anonymous" href="Pololu_docs_files/slick-theme.css" integrity="sha256-etrwgFLGpqD4oNAFW08ZH9Bzif5ByXK2lXNHKy7LQGo=" media="all" rel="stylesheet">
+<link rel="stylesheet" crossorigin="anonymous" href="Pololu_docs_files/application-5e7245cb97344a44fe805023cc14b21e8b357db44e3197ef.css" media="all" integrity="sha256-VouqKBpzZizjTeSzfiHxIGk+4HNbnWyZnwQxAMbk4bw=">
+<script crossorigin="anonymous" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" src="Pololu_docs_files/jquery-1.12.4.min.js"></script>
+<script crossorigin="anonymous" integrity="sha256-4Cr335oZDYg4Di3OwgUOyqSTri0jUm2+7Gf2kH3zp1I=" src="Pololu_docs_files/slick.min.js"></script>
+<script crossorigin="anonymous" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" src="Pololu_docs_files/jquery-ui.min.js"></script>
+<link crossorigin="anonymous" href="Pololu_docs_files/jquery-ui.css" integrity="sha256-RPilbUJ5F7X6DdeTO6VFZ5vl5rO5MJnmSk4pwhWfV8A" media="all" rel="stylesheet">
+<script class="braintree-gateway" src="Pololu_docs_files/client.min.js"></script>
+<script class="braintree-gateway" src="Pololu_docs_files/hosted-fields.min.js"></script>
+<script src="Pololu_docs_files/application-c44c8456ebd557c1e5d5c6d6b490b97e730d7493d84cc3a6b.js" crossorigin="anonymous" integrity="sha256-kYZ7+Tw5HHNT8kP95bQ4iNk49RZkys0k2KsvSoKPY6U="></script>
+<script type="importmap" data-turbo-track="reload">{
+  "integrity":
+{"https://a.pololu-files.com/assets/application_module-765f0f526c59caa9c9857c01889e68833710c17121ab6f9093f3a0a809af7bd4.js":"sha256-s+WZHcA06TsuXtPz2xeDSGgG6j+QSXvT2ghPYhJLLow=","https://a.pololu-files.com/assets/price_notification-f64b0ae30b1bb595d10d8954f34036fbff24e2c81e1c7a9e581f03692cc149c3.js":"sha256-nL1KwUBafy6EPV1yoK+yXM1O5GODfiG083pcMsXgCxs=","https://a.pololu-files.com/assets/stock_notification-87bb320c31885d5b381c69e4a05013db3f11fb479d693729b0e5de58ae356892.js":"sha256-yqOxxloFhGTJ98f3K+XH50QttcrJOBxnARzUT78kLCc="},
+  "imports": {
+    "application": "https://a.pololu-files.com/assets/application_module-765f0f526c59caa9c9857c01889e68833710c17121ab6f9093f3a0a809af7bd4.js",
+    "price_notification": "https://a.pololu-files.com/assets/price_notification-f64b0ae30b1bb595d10d8954f34036fbff24e2c81e1c7a9e581f03692cc149c3.js",
+    "stock_notification": "https://a.pololu-files.com/assets/stock_notification-87bb320c31885d5b381c69e4a05013db3f11fb479d693729b0e5de58ae356892.js"
+  }
+}</script>
+
+<script type="module">import "application"</script>
+<script>
+  if(document.domain.indexOf("pololu-files.com") == -1) {
+    $.ajax({
+    url: "https://www.googletagmanager.com/gtag/js?id=G-G4ENPJ5RV1",
+    dataType: "script"
+    });
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', "G-G4ENPJ5RV1");
+  }
+</script>
+
+<link rel="stylesheet" href="Pololu_docs_files/print-ac5d562ac93a31ac3e5c942e261bf17032bf5da61b940dea46300f.css" media="print">
+
+<title>Pololu 3pi+ 2040 User’s Guide</title>
+
+<meta name="description" content="User’s manual for the Pololu 3pi+ 2040 robot.">
+<meta name="keywords" content="Pololu,robotics,robot electronics,robot kits,robot parts,ir beacon,servo controller,motor controller,robot sensors,robot chassis,robot gearboxes,robot tires, ball casters, tamiya parts,elenco kits">
+<meta property="og:url" content="https://www.pololu.com/docs/0J86/all">
+<meta property="og:title" content="Pololu 3pi+ 2040 User’s Guide">
+<meta property="og:description" content="User’s manual for the Pololu 3pi+ 2040 robot.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@Pololu">
+<meta name="twitter:title" content="Pololu 3pi+ 2040 User’s Guide">
+<meta name="twitter:description" content="User’s manual for the Pololu 3pi+ 2040 robot.">
+<script class="structured_data" type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Support","item":"https://www.pololu.com/support"}]}
+</script>
+
+<script src="Pololu_docs_files/syntaxhighlight-91017fb9868118fd42306075e0164112dd3d3e16331dc.js" defer="defer"></script>
+</head>
+
+<body class="math_ignore" onload="externalLinksNewWindow(); if(document.onLoadHandler){document.onLoadHandler();}  ">
+<div class="top_notice" style="cursor: pointer;">
+<style>
+.top_notice { display: block; }
+#main { margin-top: 122px; }
+@media screen and (max-width: 1023px) {
+  #main { margin-top: 185px; }
+  .top_notice{ height: 85px; }
+}
+#header_holder { top: 32px; }
+#header_small_top { top: 85px; }
+#header_small_bottom { top: 135px;}
+#header_small_menu { top: 185px; }
+#left_col, #right_col { top: 120px; }
+
+</style>
+<div class="top_notice_content">
+<!-- top_notice --><a href="https://www.pololu.com/25thanniversary">25th Anniversary Sale – click here for details!</a>
+<style>div.top_notice { background-color: #000000; color:#FFFF00; }</style>
+</div>
+<script>
+top_notice.setup_events()
+</script>
+</div>
+
+<div id="main">
+<h2 id="breadcrumbs"><a href="https://www.pololu.com/support">Support</a> »</h2>
+<h1 id="page_title">Pololu 3pi+ 2040 User’s Guide</h1>
+<div data-url="/docs/0J86/all" id="contents">
+<!-- CONTENTS_BEGIN /docs/0J86/all -->
+<div data-javascript-not-loaded-message="&lt;!-- javascript_not_loaded_message --&gt;&lt;strong&gt;Warning:&lt;/strong&gt; Your browser failed to load our JavaScript files, which are required for checkout.  Please check that you are not blocking or disabling our scripts and &lt;a href=&quot;/contact&quot;&gt;contact us&lt;/a&gt; if you are still unable to proceed." id="javascript_not_loaded_message" style="display:none;"></div>
+<div data-braintree-not-loaded-message="&lt;!-- braintree_not_loaded_message --&gt;&lt;p&gt;&lt;strong&gt;Warning:&lt;/strong&gt; Your browser failed to connect to our secure payment processor, Braintree Payments.  You will be unable to enter your credit card information at  the payment step of checkout unless this is fixed.&lt;/p&gt;
+&lt;p&gt;Some things to try:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Check for network problems or things like script blockers that could be blocking &lt;a href=&quot;https://js.braintreegateway.com/web/3.58.0/js/client.min.js&quot;&gt;this file&lt;/a&gt;.&lt;/li&gt;
+	&lt;li&gt;Try completing checkout on a device on a different network, such as a phone with Wi-Fi disabled.&lt;/li&gt;
+	&lt;li&gt;Select the option to pay with PayPal and enter your credit card on their site. (You don&amp;#8217;t need a PayPal account.)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Please &lt;a href=&quot;/contact&quot;&gt;contact us&lt;/a&gt; if you continue to have trouble with checkout!&lt;/p&gt;" id="braintree_not_loaded_message" style="display:none;"></div>
+
+<div id="main_document_picture">
+<img alt="3pi+ 2040 Robot." src="Pololu_docs_files/0J12003.300.jpg">
+</div>
+<p class="no_print">
+<a href="https://www.pololu.com/docs/0J86">View document on multiple pages.</a>
+</p>
+<dl class="document_sections">
+<dt><a href="#1">1. Overview</a></dt>
+<dd><dl>
+<dt><a href="#1.1">1.1. Configurations and included components</a></dt>
+<dt><a href="#1.2">1.2. What you will need</a></dt>
+<dt><a href="#1.3">1.3. Supported operating systems</a></dt>
+</dl></dd>
+<dt><a href="#2">2. Contacting Pololu</a></dt>
+<dt><a href="#3">3. Assembling the 3pi+ 2040 kit</a></dt>
+<dt><a href="#4">4. Using the preloaded example programs</a></dt>
+<dt><a href="#5">5. Programming the 3pi+ with MicroPython</a></dt>
+<dd><dl>
+<dt><a href="#5.1">5.1. Updating the MicroPython firmware</a></dt>
+<dt><a href="#5.2">5.2. Editing Python programs</a></dt>
+<dt><a href="#5.3">5.3. Using the Thonny editor</a></dt>
+<dt><a href="#5.4">5.4. Using the Mu editor</a></dt>
+</dl></dd>
+<dt><a href="#6">6. The 3pi+ 2040 in detail</a></dt>
+<dd><dl>
+<dt><a href="#6.1">6.1. Microcontroller</a></dt>
+<dt><a href="#6.2">6.2. User interface</a></dt>
+<dt><a href="#6.3">6.3. Motors</a></dt>
+<dt><a href="#6.4">6.4. Quadrature encoders</a></dt>
+<dt><a href="#6.5">6.5. Line and bump sensors</a></dt>
+<dt><a href="#6.6">6.6. Inertial sensors</a></dt>
+<dt><a href="#6.7">6.7. Power</a></dt>
+<dt><a href="#6.8">6.8. Expansion headers and power distribution</a></dt>
+<dt><a href="#6.9">6.9. Pin assignments</a></dt>
+<dt><a href="#6.10">6.10. Adding electronics</a></dt>
+<dt><a href="#6.11">6.11. Schematics and dimensions</a></dt>
+</dl></dd>
+<dt><a href="#7">7. Related resources</a></dt>
+</dl>
+
+<h2 class="document_section"><a name="1"></a>1. <span>Overview</span></h2>
+<div class="document_section_text">
+<p>The 3pi+ 2040 is a versatile, high-performance, user-programmable 
+robot that measures just 9.7&nbsp;cm (3.8″) in diameter.  At its heart 
+is a Raspberry Pi RP2040 microcontroller (like the one on the Raspberry 
+Pi Pico), a 32-bit dual-core Arm Cortex-M0+ processor running at 125 
+MHz, which can be programmed with C, C++, Arduino, or Python.  The 3pi+ 
+2040 has 16&nbsp;MB (128&nbsp;Mbit) of flash memory that ships preloaded
+ with a MicroPython interpreter, so you can get started right away by 
+plugging into its USB C port and editing the included example Python 
+programs.  For advanced users who want to customize or enhance their 
+robots with additional peripherals, the robot’s power rails, power 
+system controls, and microcontroller’s I/O lines can be accessed via 
+several 0.1″-pitch expansion ports.</p>
+<table class="side_by_side_pics" id="prince_edit_side_by_side_pic">
+	<tbody><tr>
+		<td><table class="picture_with_caption right"><tbody><tr><td style="max-width: 220px"><a href="https://a.pololu-files.com/picture/0J12006.1200.jpg?6393c76c25b38cfddb9bce3ac10428fe" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12006&quot;,&quot;caption&quot;:&quot;\u003cp\u003e3pi+ 2040 Robot, front view.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12006.98x98.jpg?6393c76c25b38cfddb9bce3ac10428fe&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12006.600x480.jpg?6393c76c25b38cfddb9bce3ac10428fe&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12006.1200.jpg?6393c76c25b38cfddb9bce3ac10428fe&quot;,&quot;longest_side&quot;:1200}]" data-picture-id="0J12006" data-picture-longest_side="1200" src="Pololu_docs_files/0J12006.220.jpg"><span class="zoom"></span></a></td></tr><tr><th style="max-width: 220px"><p>3pi+ 2040 Robot, front view.</p></th></tr></tbody></table></td>
+		<td><table class="picture_with_caption right"><tbody><tr><td style="max-width: 220px"><a href="https://a.pololu-files.com/picture/0J12007.1200.jpg?c4b69707ad345a134bbe042997da7ecc" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12007&quot;,&quot;caption&quot;:&quot;\u003cp\u003e3pi+ 2040 Robot, side view.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12007.98x98.jpg?c4b69707ad345a134bbe042997da7ecc&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12007.600x480.jpg?c4b69707ad345a134bbe042997da7ecc&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12007.1200.jpg?c4b69707ad345a134bbe042997da7ecc&quot;,&quot;longest_side&quot;:1200}]" data-picture-id="0J12007" data-picture-longest_side="1200" src="Pololu_docs_files/0J12007.220.jpg"><span class="zoom"></span></a></td></tr><tr><th style="max-width: 220px"><p>3pi+ 2040 Robot, side view.</p></th></tr></tbody></table></td>
+		<td><table class="picture_with_caption right"><tbody><tr><td style="max-width: 220px"><a href="https://a.pololu-files.com/picture/0J12008.1200.jpg?e92efa8b917af15352a391274b2d8177" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12008&quot;,&quot;caption&quot;:&quot;\u003cp\u003e3pi+ 2040 Robot, rear view.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12008.98x98.jpg?e92efa8b917af15352a391274b2d8177&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12008.600x480.jpg?e92efa8b917af15352a391274b2d8177&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12008.1200.jpg?e92efa8b917af15352a391274b2d8177&quot;,&quot;longest_side&quot;:1200}]" data-picture-id="0J12008" data-picture-longest_side="1200" src="Pololu_docs_files/0J12008.220.jpg"><span class="zoom"></span></a></td></tr><tr><th style="max-width: 220px"><p>3pi+ 2040 Robot, rear view.</p></th></tr></tbody></table></td>
+	</tr>
+</tbody></table>
+<p>The 3pi+ (or 3𝜋+) 2040 features two H-bridge motor drivers and a 
+variety of integrated sensors, including a pair of quadrature encoders 
+for closed-loop motor control, a complete inertial measurement unit 
+(3-axis accelerometer, gyro, and magnetometer), five downward-facing 
+reflectance sensors for line-following or edge-detection, and left and 
+right bump sensors along the front face of the robot. Three on-board 
+pushbuttons offer a convenient interface for user input, and a 128×64 
+graphical OLED display, buzzer, and six RGB LEDs allow the robot to 
+provide feedback.</p>
+<p></p><table class="picture_with_caption center wide"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J12017.1200.jpg?d1c609085b6b7fe8ca0e44a8ea946d2e" class="noscript-fallback" target="_blank"><img alt="" class="wide zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12017&quot;,&quot;caption&quot;:&quot;\u003cp\u003e3pi+ 2040 Robot features, top view.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12017.98x98.jpg?d1c609085b6b7fe8ca0e44a8ea946d2e&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12017.600x480.jpg?d1c609085b6b7fe8ca0e44a8ea946d2e&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12017.1200.jpg?d1c609085b6b7fe8ca0e44a8ea946d2e&quot;,&quot;longest_side&quot;:1200}]" data-picture-id="0J12017" data-picture-longest_side="1200" src="Pololu_docs_files/0J12017.700.jpg"><span class="zoom"></span></a></td></tr></tbody></table>
+<table class="picture_with_caption center wide"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J12018.1200.jpg?40bb0a53e13fc25df4b5bda1dc77d390" class="noscript-fallback" target="_blank"><img alt="" class="wide zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12018&quot;,&quot;caption&quot;:&quot;\u003cp\u003e3pi+ 2040 Robot features, bottom view.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12018.98x98.jpg?40bb0a53e13fc25df4b5bda1dc77d390&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12018.600x480.jpg?40bb0a53e13fc25df4b5bda1dc77d390&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12018.1200.jpg?40bb0a53e13fc25df4b5bda1dc77d390&quot;,&quot;longest_side&quot;:1200}]" data-picture-id="0J12018" data-picture-longest_side="1200" src="Pololu_docs_files/0J12018.700.jpg"><span class="zoom"></span></a></td></tr></tbody></table><p></p>
+<p>The robot also features a unique power system that runs the motors at
+ a constant 8&nbsp;V independent of the battery charge level, so the 
+speed of the motors does not vary with the battery voltage.</p>
+
+</div>
+<h3 class="document_section"><a name="1.1"></a>1.1. <span>Configurations and included components</span></h3>
+<div class="document_section_text">
+<p>The 3pi+ 2040 robot is available as a kit or fully assembled with three different motor options:</p>
+<table style="line-height:100%; text-align: right;" class="reference">
+	<tbody><tr style="line-height: 150%;">
+		<th>3pi+ 2040 Version</th>
+		<th>Products</th>
+		<th>Micro Metal Gearmotor</th>
+		<th>Top Speed</th>
+		<th>Comments</th>
+	</tr>
+	<tr>
+		<th>Standard Edition</th>
+		<td style="text-align:center;"><a href="https://www.pololu.com/product/5001">assembled</a> or&nbsp;<a href="https://www.pololu.com/product/5004">kit</a></td>
+		<td style="text-align:center;"><a href="https://www.pololu.com/product/2378">30:1 MP 6V</a></td>
+		<td>1.5&nbsp;m/s</td>
+		<td style="text-align:left;">good combination of speed and controllability</td>
+	</tr>
+	<tr>
+		<th>Turtle Edition</th>
+		<td style="text-align:center;"><a href="https://www.pololu.com/product/5002">assembled</a> or&nbsp;<a href="https://www.pololu.com/product/5005">kit</a></td>
+		<td style="text-align:center;"><a href="https://www.pololu.com/product/2209">75:1 LP 6V</a></td>
+		<td>0.4&nbsp;m/s</td>
+		<td style="text-align:left;">longest battery life, easiest to control, good for swarm robots or introductory robotics courses</td>
+	</tr>
+	<tr>
+		<th>Hyper Edition</th>
+		<td style="text-align:center;"><a href="https://www.pololu.com/product/5000">assembled</a> or&nbsp;<a href="https://www.pololu.com/product/5003">kit</a></td>
+		<td style="text-align:center;"><a href="https://www.pololu.com/product/4787">15:1 HPCB 6V</a></td>
+		<td>~4&nbsp;m/s</td>
+		<td style="text-align:left;"><strong>very fast and difficult to control, easy to damage</strong>; only recommended for advanced users</td>
+	</tr>
+</tbody></table>
+<p>In addition, the <a href="https://www.pololu.com/product/3725">3pi+ chassis</a> and <a href="https://www.pololu.com/product/5006">3pi+ 2040 control board</a> are available separately and can be combined with the <a href="https://www.pololu.com/category/141/micro-metal-gearmotors-with-extended-motor-shafts">motors</a> of your choice to make a custom kit.</p>
+<p class="note">A version of the 3pi+ robot based on the Arduino-compatible ATmega32U4 MCU is also available.  See the <a href="https://www.pololu.com/category/280/3pi-plus-32u4-oled-robot">3pi+ 32U4 OLED Robot</a> for more information.</p>
+<h4>3pi+ 2040 robot kit contents</h4>
+<p></p><table class="picture_with_caption center wide"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J11996.1200.jpg?461f129019958c8296658e854278c9b4" class="noscript-fallback" target="_blank"><img alt="" class="wide zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J11996&quot;,&quot;caption&quot;:&quot;\u003cp\u003e3pi+ 2040 Robot Kit (Standard or Turtle Edition).\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J11996.98x98.jpg?461f129019958c8296658e854278c9b4&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J11996.600x480.jpg?461f129019958c8296658e854278c9b4&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J11996.1200.jpg?461f129019958c8296658e854278c9b4&quot;,&quot;longest_side&quot;:1200}]" data-picture-id="0J11996" data-picture-longest_side="1200" src="Pololu_docs_files/0J11996.600.jpg"><span class="zoom"></span></a></td></tr></tbody></table><p></p>
+<p>The <strong>kit versions</strong> of the 3pi+ 2040 robot include the following items:</p>
+<ul>
+	<li><a href="https://www.pololu.com/product/3725"><strong>3pi+ Chassis Kit</strong></a>, which includes:
+	<ul>
+		<li>3pi+ chassis, with integrated 4×AAA battery holder and ball caster</li>
+		<li>3pi+ bumper skirt</li>
+		<li>two 3pi+ motor clips</li>
+		<li>two 32×7 mm Pololu wheel hubs and silicone tires</li>
+		<li>four single AAA battery contacts</li>
+		<li>two double AAA battery contacts</li>
+		<li>1/2″-diameter plastic ball</li>
+	</ul></li>
+	<li><a href="https://www.pololu.com/product/5006"><strong>3pi+ 2040 Control Board</strong></a>, which includes:
+	<ul>
+		<li>control board</li>
+		<li><a href="https://www.pololu.com/product/1484">buzzer</a></li>
+		<li>jumper wires (for soldering motors to the main board)</li>
+		<li>1×7 low-profile male header for OLED display</li>
+		<li>two <a href="https://www.pololu.com/product/2599">magnetic encoder discs</a> (12 CPR)</li>
+		<li>four <a href="https://www.pololu.com/product/2701">3/16″ #2-56 screws</a> and <a href="https://www.pololu.com/product/1067">nuts</a></li>
+		<li>two <a href="https://www.pololu.com/product/1940">1/4″ #2-56 standoffs</a></li>
+	</ul></li>
+	<li>two <a href="https://www.pololu.com/category/141/micro-metal-gearmotors-with-extended-motor-shafts">Micro Metal Gearmotors</a> (the table above lists the specific motors included with each edition)</li>
+	<li><a href="https://www.pololu.com/product/3761">graphical OLED display</a> with black PCB</li>
+	<li>spare 15:1 gearbox (Hyper Edition only)</li>
+</ul>
+<p></p><table class="picture_with_caption center wide"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J11993.1200.png?8fa30df1b5db6d1a6dcc02136eef45da" class="noscript-fallback" target="_blank"><img alt="" class="wide zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J11993&quot;,&quot;caption&quot;:&quot;\u003cp\u003eContents of the 3pi+ 2040 robot kit (page 1 of 2).\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J11993.98x98.jpg?8fa30df1b5db6d1a6dcc02136eef45da&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J11993.600x480.jpg?8fa30df1b5db6d1a6dcc02136eef45da&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J11993.1200.png?8fa30df1b5db6d1a6dcc02136eef45da&quot;,&quot;longest_side&quot;:1470}]" data-picture-id="0J11993" data-picture-longest_side="1470" src="Pololu_docs_files/0J11993.600.jpg"><span class="zoom"></span></a></td></tr></tbody></table>
+<table class="picture_with_caption center wide"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J11994.1200.png?d96241f30b52e633cecdb84f9d66d2dd" class="noscript-fallback" target="_blank"><img alt="" class="wide zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J11994&quot;,&quot;caption&quot;:&quot;\u003cp\u003eContents of the 3pi+ 2040 robot kit (page 2 of 2).\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J11994.98x98.jpg?d96241f30b52e633cecdb84f9d66d2dd&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J11994.600x480.jpg?d96241f30b52e633cecdb84f9d66d2dd&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J11994.1200.png?d96241f30b52e633cecdb84f9d66d2dd&quot;,&quot;longest_side&quot;:1868}]" data-picture-id="0J11994" data-picture-longest_side="1868" src="Pololu_docs_files/0J11994.600.jpg"><span class="zoom"></span></a></td></tr></tbody></table><p></p>
+<p class="note">The robot and chassis kit might include extra parts like
+ jumper wires, screws, and nuts, so do not be concerned if you have some
+ leftover hardware after assembling your 3pi+.</p>
+<h4>Assembled 3pi+ 2040 robot</h4>
+<p>The <strong>assembled versions</strong> of the 3pi+ 2040 robot are 
+complete, ready-to-program robot platforms built from the same 
+components found in the 3pi+ 2040 robot kits; no soldering or assembly 
+is required.</p>
+<p></p><table class="picture_with_caption center"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J12003.1200.jpg?afe1131c6d71cc10bc34d0244f259d84" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12003&quot;,&quot;caption&quot;:&quot;\u003cp\u003e3pi+ 2040 Robot.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12003.98x98.jpg?afe1131c6d71cc10bc34d0244f259d84&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12003.600x480.jpg?afe1131c6d71cc10bc34d0244f259d84&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12003.1200.jpg?afe1131c6d71cc10bc34d0244f259d84&quot;,&quot;longest_side&quot;:1200}]" data-picture-id="0J12003" data-picture-longest_side="1200" src="Pololu_docs_files/0J12003.500.jpg"><span class="zoom"></span></a></td></tr></tbody></table><p></p>
+
+</div>
+<h3 class="document_section"><a name="1.2"></a>1.2. <span>What you will need</span></h3>
+<div class="document_section_text">
+<p>These additional items are needed for using the 3pi+ 2040 robot:</p>
+<ul>
+	<li>four AAA batteries—the robot works with both alkaline and NiMH batteries, though we recommend using rechargeable <a href="https://www.pololu.com/product/1002">AAA NiMH cells</a></li>
+	<li>USB C cable to connect the robot to your computer for programming and debugging</li>
+</ul>
+<h4>Kit assembly tools</h4>
+<p>These additional items are needed or helpful for assembling the 3pi+ 2040 robot kit:</p>
+<ul>
+	<li>soldering iron and solder (we recommend one with adjustable temperature control)</li>
+	<li>wire cutter</li>
+	<li>small #1 Phillips screwdriver</li>
+	<li>flush cutter, knife, and/or file for cutting supports on the bumper skirt (optional but recommended)</li>
+	<li>Tape or small clamps (for holding parts together when soldering)</li>
+</ul>
+<h4>Additional optional components</h4>
+<p>You might also consider getting these for your 3pi+ 2040 robot:</p>
+<ul>
+	<li><a href="https://www.pololu.com/category/7/sensors">Sensors</a>, such as <a href="https://www.pololu.com/category/189/proximity-sensors-and-range-finders">proximity sensors or range finders</a></li>
+	<li><a href="https://www.pololu.com/category/19/connectors">Connectors and jumper wires</a>, for connecting additional sensors and components</li>
+	<li>Battery charger, if you are using rechargeable batteries; since the
+ 3pi+ just uses ordinary AAA batteries, we recommend basic AAA chargers 
+(into which you stick the individual cells) available at most general 
+electronics stores, though we carry a much fancier <a href="https://www.pololu.com/product/2588">iMAX-B6AC V2 balance charger/discharger</a> that can be also used for this</li>
+</ul>
+
+</div>
+<h3 class="document_section"><a name="1.3"></a>1.3. <span>Supported operating systems</span></h3>
+<div class="document_section_text">
+<p>The Pololu 3pi+ 2040 Robot can be programmed from practically any 
+desktop or mobile operating system as long as it has a text editor and 
+the ability to copy files to a USB drive.  This includes Windows, Linux,
+ macOS, and ChromeOS.</p>
+
+</div>
+<h2 class="document_section"><a name="2"></a>2. <span>Contacting Pololu</span></h2>
+<div class="document_section_text">
+<p>We would be delighted to hear from you about any of your projects and about your experience with the 3pi+ 2040. You can <a href="https://www.pololu.com/contact">contact us</a> directly or post on our <a href="http://forum.pololu.com/" target="_blank">forum</a>.
+ Tell us what we did well, what we could improve, what you would like to
+ see in the future, or anything else you would like to say!</p>
+
+</div>
+<h2 class="document_section"><a name="3"></a>3. <span>Assembling the 3pi+ 2040 kit</span></h2>
+<div class="document_section_text">
+<p>This section explains how to assemble the kit version of the 3pi+ 
+2040 robot.  If you have the pre-assembled version, you can skip to <a href="#4">Section 4</a>.</p>
+<p class="note">See <a href="#1.1">Section 1.1</a> for a diagram to help you identify the contents of the 3pi+ 2040 robot kit.</p>
+<p>The following video shows the steps to assemble a different version of the 3pi+ robot (the <a href="https://www.pololu.com/category/280/3pi-plus-32u4-oled-robot">3pi+ 32U4 OLED robot</a>), but it is applicable to the 3pi+ 2040 robot as well (the physical differences do not affect the assembly process):</p>
+<div class="center"><div class="video video_16_9"><div>
+<iframe id="ytplayer" type="text/html" src="Pololu_docs_files/D6UmjlBW8Ns.html" frameborder="0" allowfullscreen="1"></iframe>
+</div></div></div><p><br></p>
+<h3>Testing the control board before assembly</h3>
+<ol>
+	<li>Before beginning assembly, plug the 3pi+ 2040 control board into 
+USB and verify that it works by observing the behavior of its LEDs. You 
+should see the six RGB LEDs flash briefly and the yellow indicator LED 
+should also turn on and start fading in and out after six seconds.  
+Disconnect the control board after you confirm it is working.</li>
+</ol>
+<h3>Battery contacts</h3>
+<ol start="2">
+	<li>Insert the two double battery contacts into the <ins>bottom</ins> of the chassis as shown, making sure to put them on the correct side.</li>
+</ol>
+<p></p><table class="picture_with_caption center"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J11973.1200.png?2229f6051033b5a9f04a81fc94c42fea" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J11973&quot;,&quot;caption&quot;:&quot;\u003cp\u003eInserting the double battery contacts into the 3pi+ chassis.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J11973.98x98.jpg?2229f6051033b5a9f04a81fc94c42fea&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J11973.600x480.jpg?2229f6051033b5a9f04a81fc94c42fea&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J11973.1200.png?2229f6051033b5a9f04a81fc94c42fea&quot;,&quot;longest_side&quot;:1200}]" data-picture-id="0J11973" data-picture-longest_side="1200" src="Pololu_docs_files/0J11973.450.jpg"><span class="zoom"></span></a></td></tr></tbody></table><p></p>
+<ol start="3">
+	<li>Insert the four single battery contacts into the <ins>top</ins> of the chassis as shown. Adjust them until they are centered, straight, and match the height of the double battery contacts.</li>
+</ol>
+<p></p><table class="picture_with_caption center"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J11974.1200.png?9a9bafe0e73af20c263442b4d40945f9" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J11974&quot;,&quot;caption&quot;:&quot;\u003cp\u003eInserting the single battery contacts into the 3pi+ chassis.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J11974.98x98.jpg?9a9bafe0e73af20c263442b4d40945f9&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J11974.600x480.jpg?9a9bafe0e73af20c263442b4d40945f9&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J11974.1200.png?9a9bafe0e73af20c263442b4d40945f9&quot;,&quot;longest_side&quot;:1200}]" data-picture-id="0J11974" data-picture-longest_side="1200" src="Pololu_docs_files/0J11974.450.jpg"><span class="zoom"></span></a></td></tr></tbody></table><p></p>
+<h3>Motors and encoders</h3>
+<ol start="4">
+	<li>After installing the tires on the wheels, press the output shaft of
+ each motor into a wheel, with the flat side of the wheel hub facing the
+ motor. The end of the gearbox shaft should end up flush with the 
+outside of the wheel.  A good way to do this is to set the wheel on a 
+flat surface (like a table top) and press the motor shaft into the wheel
+ until it contacts the surface.</li>
+</ol>
+<p></p><table class="picture_with_caption center"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J11975.1200.png?362daa95df69515d29a38386b73ee55f" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J11975&quot;,&quot;caption&quot;:&quot;\u003cp\u003eAttaching wheels to the 3pi+ motors.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J11975.98x98.jpg?362daa95df69515d29a38386b73ee55f&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J11975.600x480.jpg?362daa95df69515d29a38386b73ee55f&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J11975.1200.png?362daa95df69515d29a38386b73ee55f&quot;,&quot;longest_side&quot;:1452}]" data-picture-id="0J11975" data-picture-longest_side="1452" src="Pololu_docs_files/0J11975.450.jpg"><span class="zoom"></span></a></td></tr></tbody></table><p></p>
+<ol start="5">
+	<li>Cut two of the included jumper wires in half to form four segments,
+ and trim off the ends that are covered in adhesive (the adhesive could 
+interfere with making a good electrical connection to the motor). These 
+wire segments will be used as motor leads.</li>
+	<li>Solder a pair of leads to each motor, paying attention to the way 
+the motor will eventually be oriented in the chassis (see below). You 
+might find it helpful to make a small bend at the tip of each lead to 
+hook into the hole in the motor lead tab to hold it in place for 
+soldering.</li>
+</ol>
+<p class="note_warning"><strong>Warning:</strong> Holding the soldering 
+iron against the motor lead for more than a few seconds can start to 
+damage the motor brushes, so try to be reasonably quick/efficient with 
+this soldering. If the first attempt does not go well, remove the 
+soldering iron and let the motor cool for a few seconds before trying 
+again.</p>
+<p></p><table class="picture_with_caption center"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J11976.1200.png?ac6521db136bb1f544d52a616caa4aeb" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J11976&quot;,&quot;caption&quot;:&quot;\u003cp\u003eSoldering leads on the 3pi+ motors.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J11976.98x98.jpg?ac6521db136bb1f544d52a616caa4aeb&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J11976.600x480.jpg?ac6521db136bb1f544d52a616caa4aeb&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J11976.1200.png?ac6521db136bb1f544d52a616caa4aeb&quot;,&quot;longest_side&quot;:1200}]" data-picture-id="0J11976" data-picture-longest_side="1200" src="Pololu_docs_files/0J11976.450.jpg"><span class="zoom"></span></a></td></tr></tbody></table><p></p>
+<p>Each motor’s positive terminal is indicated by a plus sign (+) in the
+ black plastic end of the motor. For consistency, we recommend soldering
+ the motors to the control board with the positive terminal closest to 
+the front, so you should attach the leads to allow the motors to be 
+oriented this way. (Don’t worry if you accidentally get the orientation 
+of one or both motors wrong, though. You can later correct for it in 
+software with our 3pi+ 2040 libraries.)</p>
+<ol start="7">
+	<li>Press a magnetic encoder disc onto the motor shaft of each motor so
+ that the end of the shaft is flush with the back of the disc. One easy 
+way to accomplish this is to press the motor onto the disc while the 
+disc is sitting on a flat surface, pushing until the shaft makes contact
+ with that surface.</li>
+</ol>
+<p></p><table class="picture_with_caption center"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J11977.1200.png?d0b75738bc1f330b61e0415d99755163" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J11977&quot;,&quot;caption&quot;:&quot;\u003cp\u003eInstalling encoder discs on the 3pi+ motors.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J11977.98x98.jpg?d0b75738bc1f330b61e0415d99755163&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J11977.600x480.jpg?d0b75738bc1f330b61e0415d99755163&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J11977.1200.png?d0b75738bc1f330b61e0415d99755163&quot;,&quot;longest_side&quot;:1200}]" data-picture-id="0J11977" data-picture-longest_side="1200" src="Pololu_docs_files/0J11977.450.jpg"><span class="zoom"></span></a></td></tr></tbody></table><p></p>
+<ol start="8">
+	<li>Place the motors into the channel in the middle of the chassis, 
+aligning each gearbox with the grooves in the channel. The outer plate 
+of the gearbox should be even with the edge of the chassis.</li>
+</ol>
+<p></p><table class="picture_with_caption center"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J11978.1200.png?71cfeaf35dfb2a2b3f7adece35b1eedc" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J11978&quot;,&quot;caption&quot;:&quot;\u003cp\u003eInstalling motors with encoder discs in the 3pi+ chassis.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J11978.98x98.jpg?71cfeaf35dfb2a2b3f7adece35b1eedc&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J11978.600x480.jpg?71cfeaf35dfb2a2b3f7adece35b1eedc&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J11978.1200.png?71cfeaf35dfb2a2b3f7adece35b1eedc&quot;,&quot;longest_side&quot;:1600}]" data-picture-id="0J11978" data-picture-longest_side="1600" src="Pololu_docs_files/0J11978.450.jpg"><span class="zoom"></span></a></td></tr></tbody></table><p></p>
+<h3>Control board and bumper skirt</h3>
+<ol start="9">
+	<li>Solder the buzzer to the 3pi+ 2040 control board.</li>
+</ol>
+<p></p><table class="picture_with_caption center"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J11979.1200.png?71e9f36de5938e52a84b344823c8f592" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J11979&quot;,&quot;caption&quot;:&quot;\u003cp\u003eInstalling the included buzzer on the 3pi+ 2040 control board.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J11979.98x98.jpg?71e9f36de5938e52a84b344823c8f592&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J11979.600x480.jpg?71e9f36de5938e52a84b344823c8f592&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J11979.1200.png?71e9f36de5938e52a84b344823c8f592&quot;,&quot;longest_side&quot;:1200}]" data-picture-id="0J11979" data-picture-longest_side="1200" src="Pololu_docs_files/0J11979.450.jpg"><span class="zoom"></span></a></td></tr></tbody></table><p></p>
+<ol start="10">
+	<li><strong>Optional:</strong> This is a convenient time to add any other optional electronics or headers.</li>
+	<li>Place the control board on the chassis. The motor leads and single 
+battery contacts should be inserted into the corresponding through 
+holes.</li>
+</ol>
+<p></p><table class="picture_with_caption center"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J11980.1200.png?a96e120dd765ab58d0e9d3333cd7b815" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J11980&quot;,&quot;caption&quot;:&quot;\u003cp\u003eMounting the 3pi+ 2040 control board onto the motors and chassis.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J11980.98x98.jpg?a96e120dd765ab58d0e9d3333cd7b815&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J11980.600x480.jpg?a96e120dd765ab58d0e9d3333cd7b815&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J11980.1200.png?a96e120dd765ab58d0e9d3333cd7b815&quot;,&quot;longest_side&quot;:1700}]" data-picture-id="0J11980" data-picture-longest_side="1700" src="Pololu_docs_files/0J11980.450.jpg"><span class="zoom"></span></a></td></tr></tbody></table><p></p>
+<ol start="12">
+	<li>Screw the control board to the chassis: we recommend using two 
+screws in the outermost holes of the front row and two standoffs in the 
+outermost holes of the back row. In each of the four mounting holes, 
+insert a #2-56 machine screw or standoff through the main board and 
+chassis, and tighten it against a nut under the chassis. It is usually 
+easier to place the nut into the recess first and hold it there with a 
+finger or piece of tape while inserting the screw or standoff.</li>
+</ol>
+<p></p><table class="picture_with_caption center"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J11981.1200.png?7046cab669f7c345dfdd8cbd41cfe93c" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J11981&quot;,&quot;caption&quot;:&quot;\u003cp\u003eScrewing together the 3pi+ 2040 control board and chassis.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J11981.98x98.jpg?7046cab669f7c345dfdd8cbd41cfe93c&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J11981.600x480.jpg?7046cab669f7c345dfdd8cbd41cfe93c&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J11981.1200.png?7046cab669f7c345dfdd8cbd41cfe93c&quot;,&quot;longest_side&quot;:1580}]" data-picture-id="0J11981" data-picture-longest_side="1580" src="Pololu_docs_files/0J11981.450.jpg"><span class="zoom"></span></a></td></tr></tbody></table><p></p>
+<ol start="13">
+	<li>Trim off the excess length of wire from each motor lead.</li>
+</ol>
+<p></p><table class="picture_with_caption center"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J11982.1200.png?4b144b9848d41c6796a839ccb2ddbbd9" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J11982&quot;,&quot;caption&quot;:&quot;\u003cp\u003eTrimming the motor leads on the 3pi+ 2040 robot.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J11982.98x98.jpg?4b144b9848d41c6796a839ccb2ddbbd9&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J11982.600x480.jpg?4b144b9848d41c6796a839ccb2ddbbd9&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J11982.1200.png?4b144b9848d41c6796a839ccb2ddbbd9&quot;,&quot;longest_side&quot;:1200}]" data-picture-id="0J11982" data-picture-longest_side="1200" src="Pololu_docs_files/0J11982.450.jpg"><span class="zoom"></span></a></td></tr></tbody></table><p></p>
+<ol start="14">
+	<li>Solder the motor leads to the main board.</li>
+</ol>
+<p></p><table class="picture_with_caption center"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J11983.1200.png?bb49b9a0c9d2838275cfe4c113cf1f92" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J11983&quot;,&quot;caption&quot;:&quot;\u003cp\u003eSoldering the motor leads to the 3pi+ 2040 control board.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J11983.98x98.jpg?bb49b9a0c9d2838275cfe4c113cf1f92&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J11983.600x480.jpg?bb49b9a0c9d2838275cfe4c113cf1f92&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J11983.1200.png?bb49b9a0c9d2838275cfe4c113cf1f92&quot;,&quot;longest_side&quot;:1200}]" data-picture-id="0J11983" data-picture-longest_side="1200" src="Pololu_docs_files/0J11983.450.jpg"><span class="zoom"></span></a></td></tr></tbody></table><p></p>
+<ol start="15">
+	<li>Double-check the alignment of the battery contacts, then solder the single battery contacts to the main board.</li>
+</ol>
+<p></p><table class="picture_with_caption center"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J11984.1200.png?b75f5b8a0fdceb11341cef69b67230b2" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J11984&quot;,&quot;caption&quot;:&quot;\u003cp\u003eSoldering the battery contacts to the 3pi+ 2040 control board.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J11984.98x98.jpg?b75f5b8a0fdceb11341cef69b67230b2&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J11984.600x480.jpg?b75f5b8a0fdceb11341cef69b67230b2&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J11984.1200.png?b75f5b8a0fdceb11341cef69b67230b2&quot;,&quot;longest_side&quot;:1200}]" data-picture-id="0J11984" data-picture-longest_side="1200" src="Pololu_docs_files/0J11984.450.jpg"><span class="zoom"></span></a></td></tr></tbody></table><p></p>
+<ol start="16">
+	<li><strong>Optional:</strong> We recommend cutting the three supports 
+for the flaps on the front of the bumper skirt, since the flaps need to 
+be able to deflect for the bump sensors on the 3pi+ 2040 to work. The 
+easiest way to do this is with a pair of flush cutters, but you can also
+ use diagonal cutters or a knife (which might leave behind bumps that 
+you need to clean up with a file).</li>
+</ol>
+<p></p><table class="picture_with_caption center"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J11985.1200.png?4ffe7f66073dd2e84516bd13fd9b5061" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J11985&quot;,&quot;caption&quot;:&quot;\u003cp\u003eCutting the supports for the bump sensor flaps on the 3pi+ bumper skirt.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J11985.98x98.jpg?4ffe7f66073dd2e84516bd13fd9b5061&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J11985.600x480.jpg?4ffe7f66073dd2e84516bd13fd9b5061&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J11985.1200.png?4ffe7f66073dd2e84516bd13fd9b5061&quot;,&quot;longest_side&quot;:1200}]" data-picture-id="0J11985" data-picture-longest_side="1200" src="Pololu_docs_files/0J11985.450.jpg"><span class="zoom"></span></a></td></tr></tbody></table><p></p>
+<ol start="17">
+	<li>Install the bumper skirt by pushing the clips on each side over the motor housings until they snap into place.</li>
+</ol>
+<p></p><table class="picture_with_caption center"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J11995.1200.png?b7ad153b9ec7ec5e3f96edef676d6689" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J11995&quot;,&quot;caption&quot;:&quot;\u003cp\u003eInstalling the bumper skirt on the 3pi+ 2040 robot.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J11995.98x98.jpg?b7ad153b9ec7ec5e3f96edef676d6689&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J11995.600x480.jpg?b7ad153b9ec7ec5e3f96edef676d6689&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J11995.1200.png?b7ad153b9ec7ec5e3f96edef676d6689&quot;,&quot;longest_side&quot;:1750}]" data-picture-id="0J11995" data-picture-longest_side="1750" src="Pololu_docs_files/0J11995.450.jpg"><span class="zoom"></span></a></td></tr></tbody></table><p></p>
+<h3>Display</h3>
+<ol start="18">
+	<li>Solder the 1×7 low-profile header to the OLED display.  The shorter
+ side of the header should be inserted fully through the corresponding 
+through holes from the bottom side of the display module until the 
+header is flush, and the solder joints should be made on the top 
+(screen) side of the display.  <strong>Tip:</strong> Solder a single pin
+ first and ensure the header is flush before making any additional 
+solder joints.  If the header is not flush, you can use the soldering 
+iron to re-melt the solder joint while you make the necessary 
+adjustments.  Be careful not to touch the pin you are soldering as the 
+heat will conduct all the way through to the other end!</li>
+</ol>
+<p></p><table class="picture_with_caption center"><tbody><tr><td style="max-width: 450px"><a href="https://a.pololu-files.com/picture/0J11986.1200.png?b7b61f785df40b7b6224e9358ec75782" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J11986&quot;,&quot;caption&quot;:&quot;\u003cp\u003eInstalling header pins on the OLED display.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J11986.98x98.jpg?b7b61f785df40b7b6224e9358ec75782&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J11986.600x480.jpg?b7b61f785df40b7b6224e9358ec75782&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J11986.1200.png?b7b61f785df40b7b6224e9358ec75782&quot;,&quot;longest_side&quot;:1200}]" data-picture-id="0J11986" data-picture-longest_side="1200" src="Pololu_docs_files/0J11986.450.jpg"><span class="zoom"></span></a></td></tr><tr><th style="max-width: 450px"><p>Installing header pins on the OLED display.</p></th></tr></tbody></table><p></p>
+<ol start="19">
+	<li>Plug the display into the matching female header on top of the main
+ board. You can optionally use two more #2-56 screws to secure the OLED 
+display to the standoffs.</li>
+</ol>
+<p class="note_warning"><strong>Warning:</strong> The display header 
+does not enforce proper orientation, so it is possible to plug the 
+display in offset or rotated 180° from its intended position.  Incorrect
+ positioning can damage the display or the control board, so please take
+ care during this step to ensure that the display is plugged in 
+properly.</p>
+<p></p><table class="picture_with_caption center"><tbody><tr><td style="max-width: 450px"><a href="https://a.pololu-files.com/picture/0J11987.1200.png?45688e274fd8999dc34b40158e37c370" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J11987&quot;,&quot;caption&quot;:&quot;\u003cp\u003eMounting the 3pi+ 2040 display.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J11987.98x98.jpg?45688e274fd8999dc34b40158e37c370&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J11987.600x480.jpg?45688e274fd8999dc34b40158e37c370&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J11987.1200.png?45688e274fd8999dc34b40158e37c370&quot;,&quot;longest_side&quot;:1472}]" data-picture-id="0J11987" data-picture-longest_side="1472" src="Pololu_docs_files/0J11987.450.jpg"><span class="zoom"></span></a></td></tr><tr><th style="max-width: 450px"><p>Mounting the 3pi+ 2040 display.</p></th></tr></tbody></table><p></p>
+<h3>Ball caster and battery covers</h3>
+<ol start="20">
+	<li>Press the ball caster into its socket on the bottom of the chassis.</li>
+</ol>
+<p></p><table class="picture_with_caption center"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J11988.1200.png?5d2b44a9c7a23938735602eefcef7a22" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J11988&quot;,&quot;caption&quot;:&quot;\u003cp\u003eInstalling the ball caster in the 3pi 2040 robot.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J11988.98x98.jpg?5d2b44a9c7a23938735602eefcef7a22&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J11988.600x480.jpg?5d2b44a9c7a23938735602eefcef7a22&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J11988.1200.png?5d2b44a9c7a23938735602eefcef7a22&quot;,&quot;longest_side&quot;:1200}]" data-picture-id="0J11988" data-picture-longest_side="1200" src="Pololu_docs_files/0J11988.450.jpg"><span class="zoom"></span></a></td></tr></tbody></table><p></p>
+<ol start="21">
+	<li>Install four new or freshly charged AAA batteries in the battery compartment (we recommend using rechargeable <a href="https://www.pololu.com/product/1002">AAA NiMH cells</a>).
+ The correct orientation for the batteries is indicated by the 
+silkscreen markings printed on the bottom of the control board, visible 
+through the slots in the chassis. <ins>Be careful not to reverse any of the batteries</ins>, or else the 3pi+ 2040 will not operate properly (although the control board will not be damaged).</li>
+</ol>
+<p></p><table class="picture_with_caption center"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J11989.1200.png?4bdfaa370b813e1c8bcfdfb43001f06e" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J11989&quot;,&quot;caption&quot;:&quot;\u003cp\u003eInstalling batteries in the 3pi+ 2040 robot.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J11989.98x98.jpg?4bdfaa370b813e1c8bcfdfb43001f06e&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J11989.600x480.jpg?4bdfaa370b813e1c8bcfdfb43001f06e&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J11989.1200.png?4bdfaa370b813e1c8bcfdfb43001f06e&quot;,&quot;longest_side&quot;:1550}]" data-picture-id="0J11989" data-picture-longest_side="1550" src="Pololu_docs_files/0J11989.450.jpg"><span class="zoom"></span></a></td></tr></tbody></table><p></p>
+<ol start="22">
+	<li>Secure the battery compartment covers by first hooking their tabs 
+into the corresponding slots at the outer edges of the battery 
+compartments…</li>
+</ol>
+<p></p><table class="picture_with_caption center"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J11990.1200.png?8c1f1598c71c171cf4c53c0a68f8fe46" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J11990&quot;,&quot;caption&quot;:&quot;\u003cp\u003eInstalling battery covers on the 3pi 2040 robot.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J11990.98x98.jpg?8c1f1598c71c171cf4c53c0a68f8fe46&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J11990.600x480.jpg?8c1f1598c71c171cf4c53c0a68f8fe46&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J11990.1200.png?8c1f1598c71c171cf4c53c0a68f8fe46&quot;,&quot;longest_side&quot;:1600}]" data-picture-id="0J11990" data-picture-longest_side="1600" src="Pololu_docs_files/0J11990.450.jpg"><span class="zoom"></span></a></td></tr></tbody></table><p></p>
+<ol start="23">
+	<li>…and then pivoting the covers down until the clips snap into place.</li>
+</ol>
+<p></p><table class="picture_with_caption center"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J11991.1200.png?5c475643f13e1354950e6fbb2797963e" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J11991&quot;,&quot;caption&quot;:&quot;\u003cp\u003eClosing battery covers on the 3pi+ 2040 robot.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J11991.98x98.jpg?5c475643f13e1354950e6fbb2797963e&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J11991.600x480.jpg?5c475643f13e1354950e6fbb2797963e&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J11991.1200.png?5c475643f13e1354950e6fbb2797963e&quot;,&quot;longest_side&quot;:1200}]" data-picture-id="0J11991" data-picture-longest_side="1200" src="Pololu_docs_files/0J11991.450.jpg"><span class="zoom"></span></a></td></tr></tbody></table><p></p>
+<p>The assembly of your 3pi+ 2040 robot is now complete, and it is ready to be used!</p>
+<p></p><table class="picture_with_caption center"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J11992.1200.png?c1383e186129d02d52b9c2110b702f42" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J11992&quot;,&quot;caption&quot;:&quot;\u003cp\u003eFully assembled 3pi+ 2040 robot.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J11992.98x98.jpg?c1383e186129d02d52b9c2110b702f42&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J11992.600x480.jpg?c1383e186129d02d52b9c2110b702f42&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J11992.1200.png?c1383e186129d02d52b9c2110b702f42&quot;,&quot;longest_side&quot;:1200}]" data-picture-id="0J11992" data-picture-longest_side="1200" src="Pololu_docs_files/0J11992.450.jpg"><span class="zoom"></span></a></td></tr></tbody></table><p></p>
+
+</div>
+<h2 class="document_section"><a name="4"></a>4. <span>Using the preloaded example programs</span></h2>
+<div class="document_section_text">
+<p>The 3pi+ 2040 Robot ships with a set of pre-installed programs that 
+demonstrate all of its features.  You can try them out without 
+installing any software, and later you can refer to them as programming 
+examples (see <a href="#5">Section 5</a>).  To get started, just power up the robot.  There are two alternative ways to power the 3pi+:</p>
+<ol>
+	<li>Install four charged AAA batteries and press the power button.  The
+ top blue LED next to the power button will illuminate, and the robot 
+will turn on.</li>
+	<li>Connect the robot to USB.  The green LED next to the reset button will illuminate, and the robot will turn on automatically.</li>
+</ol>
+<p>Note that if you are not using battery power, the motors will not run.</p>
+<p>On startup, the 3pi+ will show this splash screen on its OLED display:</p>
+<p></p><table class="picture_with_caption center wide"><tbody><tr><td><img alt="" class="wide" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12053&quot;,&quot;caption&quot;:&quot;\u003cp\u003eMicroPython demo splash screen for the 3pi+ 2040 robot.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12053.98x98.jpg?085f82c79e6759be2818af043ed99ece&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12053.600x480.jpg?085f82c79e6759be2818af043ed99ece&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12053.1200.png?085f82c79e6759be2818af043ed99ece&quot;,&quot;longest_side&quot;:264}]" data-picture-id="0J12053" data-picture-longest_side="264" src="Pololu_docs_files/0J12053.600.png"></td></tr></tbody></table><p></p>
+<p>After a few seconds it will switch to the menu of example programs, 
+or you can press button C to proceed to the menu immediately.  (On this 
+screen you can also press A to exit the program or B for bootloader 
+mode.)</p>
+<p></p><table class="picture_with_caption center wide"><tbody><tr><td><img alt="" class="wide" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12054&quot;,&quot;caption&quot;:&quot;\u003cp\u003eMicroPython demo menu for the 3pi+ 2040 robot.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12054.98x98.jpg?94da77a1bf6798807ebf6c1ede8c9aec&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12054.600x480.jpg?94da77a1bf6798807ebf6c1ede8c9aec&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12054.1200.gif?94da77a1bf6798807ebf6c1ede8c9aec&quot;,&quot;longest_side&quot;:264}]" data-picture-id="0J12054" data-picture-longest_side="264" src="Pololu_docs_files/0J12054.600.gif"></td></tr></tbody></table><p></p>
+<p>The menu shows a list of all the Python files installed at the top 
+level of the MicroPython drive.  As you can see above, it also tries to 
+show the battery voltage for convenience.  With batteries installed and 
+the power circuit on, it should generally show a value of 4.8&nbsp;V or 
+higher.  If batteries are not installed or the power circuit is off, 
+this number will be some low value that doesn’t mean anything.</p>
+<p>Navigate up and down the menu with buttons A and C, respectively, and
+ press button B to run the selected file.  When you are done with the 
+one program, you can press the reset button to restart and return to the
+ menu.</p>
+<p>Here is a list of the pre-installed programs:</p>
+<table class="reference">
+	<tbody><tr>
+		<th>File </th>
+		<th>Description </th>
+	</tr>
+	<tr>
+		<td> blink.py </td>
+		<td> Blinks the yellow LED on and off. </td>
+	</tr>
+	<tr>
+		<td> button_test.py </td>
+		<td> Lets you type letters with the three pushbuttons and the two bump
+ sensors.  Demonstrates debouncing by using a very slow setting for A: 
+if you tap A twice quickly only the first press will be registered. </td>
+	</tr>
+	<tr>
+		<td> encoder_test.py </td>
+		<td> You can gently rotate the wheels by hand to see the wheel 
+encoders measure rotation.  For additional feedback, the yellow LED also
+ toggles with each encoder tick. </td>
+	</tr>
+	<tr>
+		<td> error.py </td>
+		<td> Simply raises a Python exception.  This shows how the built-in 
+menu system helps debugging by emitting a sound and displaying the error
+ on the screen. </td>
+	</tr>
+	<tr>
+		<td> face_uphill.py </td>
+		<td> Detects slanted surfaces and turns the robot to face uphill. </td>
+	</tr>
+	<tr>
+		<td> gyro_turn.py </td>
+		<td> Press A or C to make the robot turn 90° using the gyroscope. </td>
+	</tr>
+	<tr>
+		<td> imu_test.py </td>
+		<td> Continuously reads the on-board accelerometer, gyro, and compass 
+and displays all 9 values to the screen.  The values are also available 
+with more resolution on the serial terminal. </td>
+	</tr>
+	<tr>
+		<td> ir_sensor_demo.py </td>
+		<td> Continuously reads the bump sensors and line sensors, displaying 
+the results as a bar graph.  You can press A to calibrate: the robot 
+will immediately calibrate its bump sensors (which should not be 
+pressed) then start continuously taking calibration readings from its 
+line sensors.  Slide the robot across a line, then press A when you are 
+done calibrating.  After calibration, press C to switch to calibrated 
+reads for the line sensors.  The bars for the bump sensors show as 
+outlines when not pressed, and once calibrated they will be solid when 
+detecting a press. </td>
+	</tr>
+	<tr>
+		<td> line_follower.py </td>
+		<td> A PID line follower designed to follow a black line on a white 
+surface.  Follow the on-screen instructions to calibrate and start it 
+running.  Note that it is intentionally not very well tuned; this is 
+intended as a starting point that you can improve. </td>
+	</tr>
+	<tr>
+		<td> motor_test.py </td>
+		<td> Lets you run the left and right motors using buttons A and C.  Hold a button to run the motor or tap it to change direction. </td>
+	</tr>
+	<tr>
+		<td> music.py </td>
+		<td> Plays a song on the buzzer while blinking the LEDs and displaying the beats and measure numbers. </td>
+	</tr>
+	<tr>
+		<td> rgb_demo.py </td>
+		<td> Demonstrates smoothly-changing rainbow effects on the RGB LEDs. </td>
+	</tr>
+	<tr>
+		<td> rotation_resist.py </td>
+		<td> Spins the robot to counteract rotation detected by the gyro.  Do 
+not move the while robot while it says “Calibrating…” on the display. </td>
+	</tr>
+	<tr>
+		<td> self_test.py </td>
+		<td> Tests basic functionality of the robot.  You can also access this by holding A during startup. </td>
+	</tr>
+	<tr>
+		<td> siren.py </td>
+		<td> Demonstrates sound and light effects. </td>
+	</tr>
+	<tr>
+		<td> spin.py </td>
+		<td> Runs one motor forward and the other backward to spin the robot 
+in place. Please disconnect your robot from USB for this one, and guard 
+it to prevent it slipping off of a table or otherwise causing damage. </td>
+	</tr>
+	<tr>
+		<td> sys_info.py </td>
+		<td> Shows CPU information, the flash serial ID, MicroPython firmware version, and disk/RAM usage. </td>
+	</tr>
+	<tr>
+		<td> wall_bumper.py </td>
+		<td> Drives the robot forward until a collision is detected with the bump sensors, then backs up, turns, and continues. </td>
+	</tr>
+</tbody></table>
+
+</div>
+<h2 class="document_section"><a name="5"></a>5. <span>Programming the 3pi+ with MicroPython</span></h2>
+<div class="document_section_text">
+
+
+</div>
+<h3 class="document_section"><a name="5.1"></a>5.1. <span>Updating the MicroPython firmware</span></h3>
+<div class="document_section_text">
+<p>The 3pi+ 2040 Robot comes preloaded with our custom MicroPython 
+firmware, which you can replace with your own programs or upgrade to a 
+later version of MicroPython.</p>
+<h4>Checking the installed MicroPython version</h4>
+<p>Connect your 3pi+ to a computer with a USB C cable.  If MicroPython 
+is installed on the 3pi+, it should show up as a drive called 
+“MicroPython” that contains a list of Python files:</p>
+<p></p><table class="picture_with_caption center wide"><tbody><tr><td><img alt="" class="wide" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12023&quot;,&quot;caption&quot;:&quot;\u003cp\u003eMicroPython drive showing 3pi+ 2040 demo programs.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12023.98x98.jpg?73f08f2ac88580e2cfa53129270b84bf&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12023.600x480.jpg?73f08f2ac88580e2cfa53129270b84bf&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12023.1200.png?73f08f2ac88580e2cfa53129270b84bf&quot;,&quot;longest_side&quot;:541}]" data-picture-id="0J12023" data-picture-longest_side="541" src="Pololu_docs_files/0J12023.584.png"></td></tr></tbody></table><p></p>
+<p>The dates shown for most of the files and folders will probably 
+correspond to your firmware version, but to check the exact installed 
+version of MicroPython, you will need to connect to the board with a 
+serial terminal program.  Here are some general-purpose terminal 
+programs that work with the 3pi+:</p>
+<ul>
+	<li><a href="https://googlechromelabs.github.io/serial-terminal/" target="_blank">Google Chrome Labs serial terminal</a> – very simple to get started with, web-based, for Chrome, Chromium, or Edge browsers only.</li>
+	<li><a href="https://ttssh2.osdn.jp/index.html.en" target="_blank">Tera Term</a> – Windows only.</li>
+	<li><a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html" target="_blank">PuTTY</a> – cross platform, available for Debian/Ubuntu with apt-get.</li>
+	<li>(The Thonny editor that we describe in <a href="#5.3">Section 5.3</a> also includes a serial terminal, but it requires a few more steps to get started.)</li>
+</ul>
+<p>Connect the 3pi+ to your computer with a USB cable, run one of these 
+serial terminal programs, and select the correct serial/COM port.  
+Unless you have other serial devices plugged in, this will usually be 
+the only serial port available, and since it’s a virtual serial port, 
+the detailed settings like baud rate do not matter.  Once you are 
+connected, press Ctrl+C to exit the running program and Ctrl+B to 
+display the current firmware version.  For example, here is what it 
+looks like in the Google Chrome Labs serial terminal:</p>
+<p></p><table class="picture_with_caption center wide"><tbody><tr><td style="max-width: 600px"><a href="https://a.pololu-files.com/picture/0J12022.1200.png?ba8c3bd41009844b2896af9f0e0c2808" class="noscript-fallback" target="_blank"><img alt="" class="wide zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12022&quot;,&quot;caption&quot;:&quot;\u003cp\u003eConnecting to the 3pi+ 2040 Robot with a serial terminal.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12022.98x98.jpg?ba8c3bd41009844b2896af9f0e0c2808&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12022.600x480.jpg?ba8c3bd41009844b2896af9f0e0c2808&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12022.1200.png?ba8c3bd41009844b2896af9f0e0c2808&quot;,&quot;longest_side&quot;:784}]" data-picture-id="0J12022" data-picture-longest_side="784" src="Pololu_docs_files/0J12022.600.jpg"><span class="zoom"></span></a></td></tr><tr><th style="max-width: 600px"><p>Connecting to the 3pi+ 2040 Robot with a serial terminal.</p></th></tr></tbody></table><p></p>
+<p>In this example, the 3pi+ is running build 230302-9f9cc75, which is a custom edition of MicroPython version 1.19.1, built from <a href="https://github.com/pololu/micropython-build/tree/9f9cc75" target="_blank">commit 9f9cc75</a> of our MicroPython build scripts.</p>
+<h4>Firmware versions</h4>
+<p>The current release is:</p>
+<ul>
+	<li>Build 240117-9512cf9 <a href="https://www.pololu.com/file/0J2027/micropython-pololu-3pi-2040-robot-v1.22.1-240117.uf2"><strong>micropython-pololu-3pi-2040-robot-v1.22.1-240117.uf2</strong></a> (2MB uf2)</li>
+</ul>
+<p>Earlier releases are available <a href="https://github.com/pololu/micropython-build/releases" target="_blank">on GitHub</a>.</p>
+<h4>Upgrade instructions</h4>
+<p class="note_warning"><strong>Note:</strong> Loading a firmware file 
+will delete all programs and data stored on your robot.  Make sure you 
+have anything you are working on backed up before you proceed.</p>
+<p>Download the latest firmware above and connect your computer to the 
+3pi+ with a USB C cable.  To get the board into bootloader mode, hold 
+down <strong>Button B</strong> while pressing Reset.  (You could also 
+hold down the button while plugging in the cable.)  You should see two 
+green lights (VBUS and 3V3) indicating power, but nothing else should 
+happen on the 3pi+.  A folder like this should show up on your computer:</p>
+<p></p><table class="picture_with_caption center wide"><tbody><tr><td><img alt="" class="wide" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12024&quot;,&quot;caption&quot;:&quot;\u003cp\u003eRP2040 bootloader drive.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12024.98x98.jpg?28299f36c44dbd12bca19d7945b8b967&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12024.600x480.jpg?28299f36c44dbd12bca19d7945b8b967&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12024.1200.png?28299f36c44dbd12bca19d7945b8b967&quot;,&quot;longest_side&quot;:532}]" data-picture-id="0J12024" data-picture-longest_side="532" src="Pololu_docs_files/0J12024.584.png"></td></tr></tbody></table><p></p>
+<p>There are a couple of files in there you can look at, but <em>this is not a real drive</em>
+ like the MicroPython drive. You can’t store arbitrary data in it. All 
+you can do is drop in a UF2-formatted binary to load that onto the 
+robot’s flash memory.</p>
+<p>Drop in the appropriate firmware file and in a few seconds you will 
+have MicroPython installed.  The RP2 drive will disconnect and 
+immediately reconnect again, showing our demo programs.</p>
+
+</div>
+<h3 class="document_section"><a name="5.2"></a>5.2. <span>Editing Python programs</span></h3>
+<div class="document_section_text">
+<p>With MicroPython installed on the robot, you can edit files directly on the board in any text editor.  To get started, open <code>blink.py</code> on the MicroPython drive:</p>
+<p></p><table class="picture_with_caption center wide"><tbody><tr><td style="max-width: 600px"><a href="https://a.pololu-files.com/picture/0J12025.1200.png?54ebfa9f8edccca443512c40531d2085" class="noscript-fallback" target="_blank"><img alt="" class="wide zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12025&quot;,&quot;caption&quot;:&quot;\u003cp\u003eThe blink.py demo program in a text editor.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12025.98x98.jpg?54ebfa9f8edccca443512c40531d2085&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12025.600x480.jpg?54ebfa9f8edccca443512c40531d2085&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12025.1200.png?54ebfa9f8edccca443512c40531d2085&quot;,&quot;longest_side&quot;:464}]" data-picture-id="0J12025" data-picture-longest_side="464" src="Pololu_docs_files/0J12025.600.png"><span class="zoom"></span></a></td></tr><tr><th style="max-width: 600px"><p>The blink.py demo program in a text editor.</p></th></tr></tbody></table><p></p>
+<p>This program turns the LED on for 100&nbsp;ms and off for 
+600&nbsp;ms, repeating forever.  You can run this program from the menu 
+of demo programs as described in <a href="#4">Section 4</a>.  Make a small change to it, such as replacing the 600 with 100, save the file, and select <code>blink.py</code>
+ from the menu again (you might need to reset the robot to get there.)  
+It will run your updated program with the new blinking pattern.</p>
+<p>Now, you can look around at the other files on the board, modify 
+them, make new files, and run any of them from the menu.  All of the 
+original demo programs and other files are also available in <a href="https://github.com/pololu/pololu-3pi-2040-robot" target="_blank">our GitHub repository</a>.</p>
+<div class="note_warning">
+<p><strong>Note:</strong> when editing files directly on the board, keep in mind that it is easy to lose them in various ways:</p>
+<ul>
+	<li>Resetting or disconnecting the board while saving a file</li>
+	<li>Editing files from within a MicroPython program and from your computer at the same time</li>
+	<li>Loading a new firmware file that erases all data</li>
+	<li>Software bugs or hardware failure</li>
+</ul>
+<p>To avoid losing work, we recommend saving backup copies periodically on your computer.</p>
+</div>
+
+</div>
+<h3 class="document_section"><a name="5.3"></a>5.3. <span>Using the Thonny editor</span></h3>
+<div class="document_section_text">
+<p>Thonny is a Python editor for beginners that also includes advanced 
+IDE features for editing and debugging code. After you download Thonny 
+and install our plugin as described below, Thonny will recognize the 
+3pi+ and help you interact with the MicroPython interpreter running on 
+its control board.</p>
+<h3>Installing Thonny and connecting to the 3pi+</h3>
+<p>Install the latest version from <a href="https://thonny.org/" target="_blank">the Thonny website</a>.  Start the program, open the Tools menu, and click “Manage plug-ins…”:</p>
+<p></p><table class="picture_with_caption center wide"><tbody><tr><td><img alt="" class="wide" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12039&quot;,&quot;caption&quot;:&quot;\u003cp\u003eOpening \u0026#8220;Manage plug-ins\u0026#8230;\u0026#8221; from the Tools menu of Thonny.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12039.98x98.jpg?cd5ec0ab8a552b98ef1f2b7093eafc05&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12039.600x480.jpg?cd5ec0ab8a552b98ef1f2b7093eafc05&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12039.1200.png?cd5ec0ab8a552b98ef1f2b7093eafc05&quot;,&quot;longest_side&quot;:432}]" data-picture-id="0J12039" data-picture-longest_side="432" src="Pololu_docs_files/0J12039.600.png"></td></tr></tbody></table><p></p>
+<p>Search for “<b>thonny-pololu</b>”, select the corresponding plugin from PyPi, and click “Install”:</p>
+<p></p><table class="picture_with_caption center wide"><tbody><tr><td><img alt="" class="wide" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12040&quot;,&quot;caption&quot;:&quot;\u003cp\u003eInstalling the thonny-pololu plugin.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12040.98x98.jpg?96af65f24173ea34049ec33e4255b8fc&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12040.600x480.jpg?96af65f24173ea34049ec33e4255b8fc&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12040.1200.png?96af65f24173ea34049ec33e4255b8fc&quot;,&quot;longest_side&quot;:536}]" data-picture-id="0J12040" data-picture-longest_side="536" src="Pololu_docs_files/0J12040.600.png"></td></tr></tbody></table><p></p>
+<p>Important: <em>Restart Thonny</em> after installing the plugin.  
+Next, connect your robot to your computer with a USB cable.  You should 
+be able to select an option for the 3pi+ from the interpreter menu in 
+the lower-right corner of Thonny:</p>
+<p></p><table class="picture_with_caption center wide"><tbody><tr><td><img alt="" class="wide" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12041&quot;,&quot;caption&quot;:&quot;\u003cp\u003eSelect the 3pi+ from the Thonny interpreter menu.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12041.98x98.jpg?9a3334d8e1783d5054a0f292abb0bfc1&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12041.600x480.jpg?9a3334d8e1783d5054a0f292abb0bfc1&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12041.1200.png?9a3334d8e1783d5054a0f292abb0bfc1&quot;,&quot;longest_side&quot;:422}]" data-picture-id="0J12041" data-picture-longest_side="422" src="Pololu_docs_files/0J12041.600.png"></td></tr></tbody></table><p></p>
+<p>Your currently-running program on the 3pi+ will stop, and the “Shell”
+ window will show a MicroPython prompt (“REPL”).  (If it doesn’t connect
+ or isn’t showing any output, try clicking “Stop” to get connected.)</p>
+<h3>Using Thonny to interact with the MicroPython interpreter</h3>
+<p>Next, you can try typing some commands in the Shell window:</p>
+<p class="note_warning"><b>Note:</b> If Thonny does not show the “Pololu
+ 3pi+ 2040 Robot” option here, something is wrong with the plugin 
+install.  You can program the board as a Pico or generic RP2040 board, 
+but there will be more confusing options for file loading and saving.</p>
+<p></p><table class="picture_with_caption center wide"><tbody><tr><td><img alt="" class="wide" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12042&quot;,&quot;caption&quot;:&quot;\u003cp\u003eInteracting with the MicroPython REPL in Thonny.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12042.98x98.jpg?ab5b6081297f0230066b1a9c0c22e9a9&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12042.600x480.jpg?ab5b6081297f0230066b1a9c0c22e9a9&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12042.1200.png?ab5b6081297f0230066b1a9c0c22e9a9&quot;,&quot;longest_side&quot;:653}]" data-picture-id="0J12042" data-picture-longest_side="653" src="Pololu_docs_files/0J12042.700.png"></td></tr></tbody></table><p></p>
+<p>If basic commands work, you can try using the hardware on the 3pi+:</p>
+<p></p><table class="picture_with_caption center wide"><tbody><tr><td><img alt="" class="wide" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12043&quot;,&quot;caption&quot;:&quot;\u003cp\u003eWriting to the 3pi+ OLED display with the MicroPython REPL in Thonny.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12043.98x98.jpg?9a72f65122a008dbef95282a906455ae&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12043.600x480.jpg?9a72f65122a008dbef95282a906455ae&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12043.1200.png?9a72f65122a008dbef95282a906455ae&quot;,&quot;longest_side&quot;:652}]" data-picture-id="0J12043" data-picture-longest_side="652" src="Pololu_docs_files/0J12043.700.png"></td></tr></tbody></table><p></p>
+<p>Next, open <code>blink.py</code> in the Thonny editor. Assuming you 
+are still connected and see the MicroPython prompt, you can click the 
+green Run button at the top or press F5 to run it immediately.  The LED 
+should begin blinking. To stop the program you can press Ctrl+C. Try 
+that now and run the code again with the Run button or F5. Make some 
+modifications and see that the blink pattern changes.</p>
+<p></p><table class="picture_with_caption center wide"><tbody><tr><td><img alt="" class="wide" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12044&quot;,&quot;caption&quot;:&quot;\u003cp\u003eThe blink.py example in the Thonny editor.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12044.98x98.jpg?cd38acd905fb642a5245624851bcd9bc&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12044.600x480.jpg?cd38acd905fb642a5245624851bcd9bc&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12044.1200.png?cd38acd905fb642a5245624851bcd9bc&quot;,&quot;longest_side&quot;:652}]" data-picture-id="0J12044" data-picture-longest_side="652" src="Pololu_docs_files/0J12044.700.png"></td></tr></tbody></table><p></p>
+<p>If you save your changes, you will be able to access them from the 
+demo menu system later. To start the demo program, press Ctrl+C (to stop
+ the running program) then Ctrl+D (“soft” reboot).</p>
+<h3>Upgrading firmware with Thonny</h3>
+<p class="note_warning"><strong>Note:</strong> Loading a firmware file 
+will delete all programs and data stored on your robot.  Make sure you 
+have anything you are working on backed up before you proceed.</p>
+<p>You can also upgrade the MicroPython firmware with Thonny.  Get the robot into bootloader mode as described in <a href="#5.1">Section 5.1</a>, and you will see an “Install MicroPython” option in the Thonny’s interpreter menu:</p>
+<p></p><table class="picture_with_caption center wide"><tbody><tr><td><img alt="" class="wide" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12045&quot;,&quot;caption&quot;:&quot;\u003cp\u003e\u0026#8220;Install MicroPython\u0026#8221; option in Thonny\u0026#8217;s interpreter menu.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12045.98x98.jpg?71036bf7965213c34071c69a778c8ad9&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12045.600x480.jpg?71036bf7965213c34071c69a778c8ad9&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12045.1200.png?71036bf7965213c34071c69a778c8ad9&quot;,&quot;longest_side&quot;:278}]" data-picture-id="0J12045" data-picture-longest_side="278" src="Pololu_docs_files/0J12045.600.png"></td></tr></tbody></table><p></p>
+<p>Select this option and then find the appropriate firmware in the list:</p>
+<p></p><table class="picture_with_caption center wide"><tbody><tr><td><img alt="" class="wide" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12046&quot;,&quot;caption&quot;:&quot;\u003cp\u003eSelecting the 3pi+ firmware from Thonny\u0026#8217;s \u0026#8220;Install MicroPython\u0026#8221; interface.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12046.98x98.jpg?1feb136f0365eb81bf258c0a34d62d7e&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12046.600x480.jpg?1feb136f0365eb81bf258c0a34d62d7e&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12046.1200.png?1feb136f0365eb81bf258c0a34d62d7e&quot;,&quot;longest_side&quot;:478}]" data-picture-id="0J12046" data-picture-longest_side="478" src="Pololu_docs_files/0J12046.600.png"></td></tr></tbody></table><p></p>
+<p>Thonny will automatically download and install our latest firmware version from the Internet.</p>
+
+</div>
+<h3 class="document_section"><a name="5.4"></a>5.4. <span>Using the Mu editor</span></h3>
+<div class="document_section_text">
+<p>Mu is a very simple Python editor. It does not have many 
+configuration options or keyboard shortcuts but is great for basic 
+editing and learning Python.  With a small modification described here, 
+Mu can connect to the 3pi+ and help you interact with the MicroPython 
+interpreter running on the board.</p>
+<p>Install the latest version from <a href="https://codewith.mu/" target="_blank">the Mu website</a>. Before you run it, locate the install folder (on Windows, this is probably <code>%AppData%\..\Local\Programs\Mu Editor</code>).  Search for files named “pico”:</p>
+<p></p><table class="picture_with_caption center wide"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J12026.1200.png?6faa6d4398a0fb7de261be2b4fe02fbd" class="noscript-fallback" target="_blank"><img alt="" class="wide zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12026&quot;,&quot;caption&quot;:&quot;\u003cp\u003eSearching for \u0026#8220;pico\u0026#8221; in the Mu editor files.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12026.98x98.jpg?6faa6d4398a0fb7de261be2b4fe02fbd&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12026.600x480.jpg?6faa6d4398a0fb7de261be2b4fe02fbd&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12026.1200.png?6faa6d4398a0fb7de261be2b4fe02fbd&quot;,&quot;longest_side&quot;:544}]" data-picture-id="0J12026" data-picture-longest_side="544" src="Pololu_docs_files/0J12026.600.png"><span class="zoom"></span></a></td></tr></tbody></table><p></p>
+<p>Remove the <code>.pyc</code> file if it exists, and edit <code>pico.py</code> in a text editor.  Add a line for the 3pi+ to the <code>valid_boards</code> section:</p>
+<div><div id="highlighter_220115" class="syntaxhighlighter  python"><div class="toolbar"><span><a href="#" class="toolbar_item command_help help">?</a></span></div><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="gutter"><span class="line number1 index0 alt2">1</span><br><span class="line number2 index1 alt1">2</span><br><span class="line number3 index2 alt2">3</span><br><span class="line number4 index3 alt1">4</span><br><span class="line number5 index4 alt2">5</span><br></td><td class="code"><div class="container"><span class="line number1 index0 alt2"><code class="python plain">valid_boards </code><code class="python keyword">=</code> <code class="python plain">[</code></span><br><span class="line number2 index1 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python comments"># VID&nbsp; , PID,&nbsp;&nbsp;&nbsp; Manufacturer string, Device name</code></span><br><span class="line number3 index2 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">(</code><code class="python value">0x2E8A</code><code class="python plain">, </code><code class="python value">0x0005</code><code class="python plain">, </code><code class="python color1">None</code><code class="python plain">, </code><code class="python string">"Raspberry Pi Pico"</code><code class="python plain">),</code></span><br><span class="line number4 index3 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">(</code><code class="python value">0x1FFB</code><code class="python plain">, </code><code class="python value">0x2043</code><code class="python plain">, </code><code class="python color1">None</code><code class="python plain">, </code><code class="python string">"Pololu 3pi+ 2040 Robot"</code><code class="python plain">), </code><code class="python comments"># &lt;-- add this line</code></span><br><span class="line number5 index4 alt2"><code class="python plain">]</code></span><br></div></td></tr></tbody></table></div></div>
+<p>Start Mu.  If it does not immediately identify the board, click 
+“Mode” and choose RP2040 from the menu.  Then click REPL to get to the 
+MicroPython prompt.  You can try typing some commands there:</p>
+<p></p><table class="picture_with_caption center wide"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J12027.1200.png?fc12723d50bcb40c0ce34bc7784bba64" class="noscript-fallback" target="_blank"><img alt="" class="wide zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12027&quot;,&quot;caption&quot;:&quot;\u003cp\u003eConnecting to the 3pi+ 2040 Robot with the Mu editor.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12027.98x98.jpg?fc12723d50bcb40c0ce34bc7784bba64&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12027.600x480.jpg?fc12723d50bcb40c0ce34bc7784bba64&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12027.1200.png?fc12723d50bcb40c0ce34bc7784bba64&quot;,&quot;longest_side&quot;:962}]" data-picture-id="0J12027" data-picture-longest_side="962" src="Pololu_docs_files/0J12027.600.jpg"><span class="zoom"></span></a></td></tr></tbody></table><p></p>
+<p>Next, open <code>blink.py</code> in the Mu editor. Assuming you are 
+still connected and see the MicroPython prompt, you can click the Run 
+button at the top or press F5 to run it immediately.  The LED should 
+begin blinking again. To stop the program you can click in the REPL area
+ and press Ctrl+C. Try that now and run the code again with the Run 
+button or F5. Make some modifications and see that the blink pattern 
+changes.</p>
+<p>If you save your changes, you will be able to access them from the 
+demo menu system later. To start the demo program, click in the REPL 
+area and press Ctrl+C (to stop the running program) then Ctrl+D (“soft” 
+reboot).</p>
+
+</div>
+<h2 class="document_section"><a name="6"></a>6. <span>The 3pi+ 2040 in detail</span></h2>
+<div class="document_section_text">
+<p></p><table class="picture_with_caption center"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J12017.1200.jpg?d1c609085b6b7fe8ca0e44a8ea946d2e" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12017&quot;,&quot;caption&quot;:&quot;\u003cp\u003e3pi+ 2040 Robot features, top view.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12017.98x98.jpg?d1c609085b6b7fe8ca0e44a8ea946d2e&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12017.600x480.jpg?d1c609085b6b7fe8ca0e44a8ea946d2e&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12017.1200.jpg?d1c609085b6b7fe8ca0e44a8ea946d2e&quot;,&quot;longest_side&quot;:1200}]" data-picture-id="0J12017" data-picture-longest_side="1200" src="Pololu_docs_files/0J12017.500.jpg"><span class="zoom"></span></a></td></tr></tbody></table>
+<table class="picture_with_caption center"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J12018.1200.jpg?40bb0a53e13fc25df4b5bda1dc77d390" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12018&quot;,&quot;caption&quot;:&quot;\u003cp\u003e3pi+ 2040 Robot features, bottom view.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12018.98x98.jpg?40bb0a53e13fc25df4b5bda1dc77d390&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12018.600x480.jpg?40bb0a53e13fc25df4b5bda1dc77d390&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12018.1200.jpg?40bb0a53e13fc25df4b5bda1dc77d390&quot;,&quot;longest_side&quot;:1200}]" data-picture-id="0J12018" data-picture-longest_side="1200" src="Pololu_docs_files/0J12018.500.jpg"><span class="zoom"></span></a></td></tr></tbody></table><p></p>
+
+</div>
+<h3 class="document_section"><a name="6.1"></a>6.1. <span>Microcontroller</span></h3>
+<div class="document_section_text">
+<p>The 3pi+ 2040 features an integrated Raspberry Pi RP2040 
+microcontroller, a 32-bit dual-core Arm Cortex-M0+ processor with 
+264&nbsp;kB of RAM, clocked with a 12&nbsp;MHz crystal. This is the same
+ microcontroller and crystal frequency used on the Raspberry Pi Pico. 
+The RP2040 typically runs with a default system clock speed of 
+125&nbsp;MHz, although it is rated for a maximum of 133&nbsp;MHz and can
+ sometimes be pushed even higher.</p>
+<p>The control board includes a 16-megabyte (128-megabit) flash memory 
+chip for program storage (non-volatile memory), and this comes preloaded
+ with a MicroPython interpreter and example programs to help you get 
+started quickly. For more information about programming the 3pi+ 2040 in
+ Python, see <a href="#5">Section 5</a>.</p>
+<p>The RP2040 has built-in USB support, and the control board has a USB 
+Type-C connector that can be used to connect it to a computer (cable not
+ included). This USB connection can be used to transmit and receive data
+ and program the board over USB. The USB connection can also provide 
+power for the microcontroller and most of the other hardware on the 
+board (but not motor power); see <a href="#6.7">Section 6.7</a> for more details.</p>
+<p>The board also exposes the RP2040’s Serial Wire Debug (SWD) 
+interface, which can be used to interactively debug a program running on
+ the 3pi+ or to program the flash memory as an alternative to using USB.
+ The debug port consists of two signals, SWDIO and SWCLK, along with a 
+ground pin; these pins are labeled on the bottom side of the control 
+board, and SWCLK is indicated with a small white triangle on the top 
+side. To use the SWD interface with a standard desktop or laptop 
+computer, you will need an external device, such as a Raspberry Pi Debug
+ Probe or a Raspberry Pi Pico running the Picoprobe firmware.</p>
+
+</div>
+<h3 class="document_section"><a name="6.2"></a>6.2. <span>User interface</span></h3>
+<div class="document_section_text">
+<table class="side_by_side_pics">
+	<tbody><tr>
+		<td><table class="picture_with_caption center"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J12009.1200.jpg?cf3eba548f3c28c351e15a918ca9211a" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12009&quot;,&quot;caption&quot;:&quot;\u003cp\u003e3pi+ 2040 Robot, top view.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12009.98x98.jpg?cf3eba548f3c28c351e15a918ca9211a&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12009.600x480.jpg?cf3eba548f3c28c351e15a918ca9211a&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12009.1200.jpg?cf3eba548f3c28c351e15a918ca9211a&quot;,&quot;longest_side&quot;:1200}]" data-picture-id="0J12009" data-picture-longest_side="1200" src="Pololu_docs_files/0J12009.275.jpg"><span class="zoom"></span></a></td></tr></tbody></table></td>
+		<td><table class="picture_with_caption center"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J12011.1200.jpg?b73c369bba6f54581f50f19cb8361d18" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12011&quot;,&quot;caption&quot;:&quot;\u003cp\u003e3pi+ 2040 Robot, bottom view.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12011.98x98.jpg?b73c369bba6f54581f50f19cb8361d18&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12011.600x480.jpg?b73c369bba6f54581f50f19cb8361d18&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12011.1200.jpg?b73c369bba6f54581f50f19cb8361d18&quot;,&quot;longest_side&quot;:1200}]" data-picture-id="0J12011" data-picture-longest_side="1200" src="Pololu_docs_files/0J12011.275.jpg"><span class="zoom"></span></a></td></tr></tbody></table></td>
+	</tr>
+</tbody></table>
+<h4>Pushbuttons</h4>
+<p>The 3pi+ 2040 control board has five pushbuttons: a <strong>power button</strong> on the left, a <strong>reset button</strong> on the right, and <strong>three user pushbuttons</strong>
+ located along the rear. Pressing the reset button connects the RUN pin 
+to ground, and pressing one of the user pushbuttons pulls the associated
+ I/O pin to ground through a resistor. The user pushbuttons, labeled A, 
+B, and C, are on GP25, QSPI_SS_N, and GP0, respectively. Button B 
+doubles as a BOOTSEL button to run the RP2040’s built-in USB bootloader 
+if held on startup.</p>
+<p>The three buttons’ I/O lines are also used for other purposes: GP0 is
+ a display interface line, GP25 controls the yellow user LED, and 
+QSPI_SS_N is the flash memory chip select pin (in addition to its 
+BOOTSEL function). These uses require the pins to be driven by the 
+RP2040, and reading QSPI_SS_N is not as straightforward as reading a 
+normal GPIO pin. However, resistors in the button circuits ensure that 
+the 3pi+ 2040 control board will not be damaged and operation will not 
+be disrupted even if the buttons are pressed while the corresponding 
+pins are being driven, and the functions in the <strong><a href="https://github.com/pololu/pololu-3pi-2040-robot" target="_blank">3pi+ 2040 Robot Libraries and Example Code</a></strong> take care of configuring the pins, reading and debouncing the buttons, and restoring the pins to their original states.</p>
+<h4>Indicator LEDs</h4>
+<p>The 3pi+ 2040 control board has six indicator LEDs, one of which is user-controllable:</p>
+<ul>
+	<li>A <span style="color:#b68f31"><strong>yellow</strong></span> user LED is connected to GP25. You can drive this pin <strong>low</strong>
+ in a user program to turn this LED on. The user LED is located near the
+ USB connector at the rear of the board, and the 3pi+ 2040 libraries 
+contain functions that make controlling it easier. The user LED shares 
+the GP25 pin with button A.</li>
+</ul>
+<p>The remaining five LEDs are power indicators:</p>
+<ul>
+	<li>A <span style="color:#0000ff"><strong>blue</strong></span> power 
+LED next to the power button indicates when the motor voltage regulator 
+is active and producing 8&nbsp;V (VM). The regulator is powered by the 
+3pi+’s batteries, so the power switching circuit must be turned on.</li>
+</ul>
+<ul>
+	<li>A <span style="color:#0000ff"><strong>blue</strong></span> power 
+LED on the left underside of the 3pi+ (closer to the power button) 
+indicates when the logic boost regulator is active and producing 
+8.3&nbsp;V (VBST). The regulator is powered by the 3pi+’s batteries, so 
+the power switching circuit must be turned on.</li>
+</ul>
+<ul>
+	<li>A <span style="color:#0000ff"><strong>blue</strong></span> power 
+LED on the right underside of the 3pi+ (farther from the power button) 
+indicates when the 3pi+’s 3.3&nbsp;V logic buck regulator is receiving 
+power (VB/VU). The input to the 3.3&nbsp;V regulator can come from 
+either the 8.3&nbsp;V boost regulator or from USB, so this LED will be 
+lit when either the power switching circuit is turned on <strong>or</strong> when the 3pi+ is plugged in to USB.</li>
+</ul>
+<ul>
+	<li>A <span style="color:#227c48"><strong>green</strong></span> power LED next to the USB connector indicates when the USB bus voltage (VBUS) is present.</li>
+</ul>
+<ul>
+	<li>A <span style="color:#227c48"><strong>green</strong></span> power 
+LED near the reset button indicates when the 3pi+’s logic circuit, 
+including the microcontroller, is receiving 3.3&nbsp;V power (3V3).</li>
+</ul>
+<h4>RGB LEDs</h4>
+<p>The 3pi+ 2040 control board also features six 
+individually-addressable RGB LEDs. Three of these are near the rear of 
+the board by the pushbuttons, while the other three are along the front 
+of the board. The RGB LEDs have integrated drivers compatible with the 
+popular APA102 addressable LED, and they are chained together in 
+alphabetical order (labeled A through F) and arranged counterclockwise 
+on the board.</p>
+<p>The control board uses SPI0, one of its two hardware SPI modules, on 
+GP3 and GP6 (TX and SCK, respectively) to control the RGB LEDs. The 3pi+
+ 2040 libraries include functions that make it easier to control the RGB
+ LEDs and use them together with the OLED display, which shares the SPI0
+ interface with the RGB LEDs. The display and RGB LEDs share a common 
+pin for SPI0 TX (data), but use different pins for SPI0 SCK (clock), 
+allowing them to be controlled separately.</p>
+<p>The output signals from the last RGB LED are brought out to the DO 
+(data out) and CO (clock out) pins, and you can use these pins to add 
+more <a href="https://www.pololu.com/category/178/addressable-rgb-leds-based-on-the-sk9822-apa102">APA102-compatible RGB LEDs</a> to the chain.</p>
+<h4>Buzzer</h4>
+<p>The <a href="https://www.pololu.com/product/1484">buzzer</a> included
+ with the 3pi+ 2040 control board can be soldered into the designated 
+through-holes and used to generate simple sounds and music (the buzzer 
+is pre-installed on the assembled versions of the robot). By default, it
+ is connected to GP7, which can be configured as PWM3 B to produce 
+hardware pulse width modulation. If you alternate between driving the 
+buzzer pin high and low at a given frequency, the buzzer will produce 
+sound at that frequency. You can play notes and music with the buzzer 
+using functions in the 3pi+ 2040  libraries. If you want to use GP7 for 
+an alternate purpose, you can disconnect the buzzer circuit by cutting 
+the surface-mount jumper next to the buzzer.</p>
+<h4>Display header</h4>
+<p>The 3pi+ 2040 control board has a 1×7 header where you can connect a 
+graphical OLED module with a low-profile male header. The kit and 
+assembled versions of the 3pi+ 2040 robot include an OLED display that 
+has a resolution of 128×64 pixels and uses an <a href="https://www.pololu.com/file/0J1813/SH1106.pdf">SH1106 controller</a> (1MB pdf), which the 3pi+ communicates with via its SPI0 module.</p>
+<p>The 3pi+ 2040 libraries provide functions to show data on a connected
+ display while also allowing the display interface lines to be used for 
+other purposes (such as pushbutton inputs and RGB LED data).</p>
+
+</div>
+<h3 class="document_section"><a name="6.3"></a>6.3. <span>Motors</span></h3>
+<div class="document_section_text">
+<p>The 3pi+ 2040 kit and robot are available with three different motor options:</p>
+<table style="line-height:100%; text-align: right;" class="reference">
+	<tbody><tr style="line-height: 150%;">
+		<th>3pi+ 2040 Version</th>
+		<th>Micro Metal Gearmotor</th>
+		<th>No-Load Performance at 6&nbsp;V</th>
+		<th>Stall Extrapolation at 6&nbsp;V</th>
+		<th>Top 3pi+ Speed</th>
+	</tr>
+	<tr>
+		<th>Standard Edition</th>
+		<td style="text-align:center;"><a href="https://www.pololu.com/product/2378">30:1 MP 6V</a></td>
+		<td style="text-align:center;">720&nbsp;RPM, 40&nbsp;mA </td>
+		<td style="text-align:center;">0.33&nbsp;kg⋅cm, 0.67&nbsp;A</td>
+		<td style="text-align:center;">1.5&nbsp;m/s</td>
+	</tr>
+	<tr>
+		<th>Turtle Edition</th>
+		<td style="text-align:center;"><a href="https://www.pololu.com/product/2209">75:1 LP 6V</a></td>
+		<td style="text-align:center;">180&nbsp;RPM, 20&nbsp;mA </td>
+		<td style="text-align:center;">0.64&nbsp;kg⋅cm, 0.36&nbsp;A </td>
+		<td style="text-align:center;">0.4&nbsp;m/s</td>
+	</tr>
+	<tr>
+		<th>Hyper Edition</th>
+		<td style="text-align:center;"><a href="https://www.pololu.com/product/4787">15:1 HPCB 6V</a></td>
+		<td style="text-align:center;">2100&nbsp;RPM, 100&nbsp;mA </td>
+		<td style="text-align:center;">0.25&nbsp;kg⋅cm, 1.5&nbsp;A </td>
+		<td style="text-align:center;">~4&nbsp;m/s</td>
+	</tr>
+</tbody></table>
+<p class="note_warning">The hyper edition is very difficult to control 
+and fast enough to damage itself from impacts, so it is only recommended
+ for advanced users.  <strong>We strongly recommend keeping motor speeds below 50% on this version.</strong> A spare gearbox is included with this edition and instructions for installing it can be found <a href="https://www.youtube.com/watch?v=tQbwaJjkHVs" target="_blank">here</a>
+ (note that this video was made for an older version of the 3pi+ robot, 
+but the mechanical instructions for replacing the gearbox still apply to
+ this newer 2040 version).</p>
+<p>You can also assemble the 3pi+ chassis and 3pi+ 2040 Control Board with <a href="https://www.pololu.com/category/141/micro-metal-gearmotors-with-extended-motor-shafts">different motor and gear ratio combinations</a>
+ to make your own custom 3pi+ 2040 robot.  Please keep in mind that 
+using faster or lower-torque motors will make your robot more difficult 
+to control.</p>
+<p></p><table class="picture_with_caption right"><tbody><tr><td><a href="https://a.pololu-files.com/picture/0J6830.1200.jpg?3a4674227a0cec37acfd2d30f3f091b1" class="noscript-fallback" target="_blank"><img alt="" class="zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J6830&quot;,&quot;caption&quot;:&quot;\u003cp\u003eMicro Metal Gearmotor HPCB with extended motor shaft.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J6830.98x98.jpg?3a4674227a0cec37acfd2d30f3f091b1&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J6830.600x480.jpg?3a4674227a0cec37acfd2d30f3f091b1&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J6830.1200.jpg?3a4674227a0cec37acfd2d30f3f091b1&quot;,&quot;longest_side&quot;:1200}]" data-picture-id="0J6830" data-picture-longest_side="1200" src="Pololu_docs_files/0J6830.250.jpg"><span class="zoom"></span></a></td></tr></tbody></table><p></p>
+<p>Two on-board motor drivers power the 3pi+ 2040’s two Micro Metal Gearmotors. Four GPIO pins are used to control the drivers:</p>
+<ul>
+	<li><strong>GP10</strong> controls the <strong>right motor direction</strong>.</li>
+	<li><strong>GP11</strong> controls the <strong>left motor direction</strong>.</li>
+	<li><strong>GP14</strong> controls the <strong>right motor speed</strong> with PWM (pulse width modulation) generated by the RP2040’s PWM7 A channel.</li>
+	<li><strong>GP15</strong> controls the <strong>left motor speed</strong> with PWM generated by the PWM7 B channel.</li>
+</ul>
+<p>The <a href="https://github.com/pololu/pololu-3pi-2040-robot" target="_blank">3pi+ 2040 Robot Libraries and Example Code</a>
+ provide functions that allow you to easily control the motors, and it 
+can optionally take care of flipping a direction signal for you if you 
+accidentally soldered in a motor backwards or are using a gear ratio 
+with an odd number of stages, so the output turns the opposite direction
+ from the input.</p>
+<div class="note">
+<p>The 15:1 motors used on the <strong>Hyper Edition</strong> of the 3pi+ 2040 robot have gearbox output shafts that rotate in the <strong>opposite direction</strong>
+ from the motors’ pinion gears (unlike the motors used in the other 
+editions, where the directions are the same). For consistency, we 
+install the motors with the positive terminal forward on all assembled 
+3pi+ 2040 robots, and we recommend building kits the same way.</p>
+<p>This means the same inputs will produce different motor directions on
+ a Hyper Edition robot compared to a non-Hyper robot, so a program 
+written for one might need to be modified to work well on the other (by 
+using the direction flipping functions provided by the 3pi+ 2040 
+libraries, for example).</p>
+</div>
+<h4>Batteries and motor performance</h4>
+<p>As your batteries discharge, the voltage they supply will decrease. 
+However, since the 3pi+ 2040 uses a regulated motor voltage (see <a href="#6.7">Section 6.7</a>
+ for more details), battery voltage does not typically have a major 
+impact on the performance of the motors; they will be powered with 
+8&nbsp;V as long as the motor voltage regulator is operating normally.</p>
+<p>Even with a regulated motor voltage, the condition of the batteries 
+starts to matter more as the motors draw more current (such as when 
+accelerating, reversing, or stalled). The increased current draw of the 
+motors causes the regulator to draw more current from the batteries in 
+turn, and if this causes the battery voltage to drop below the 
+regulator’s cutoff voltage, the regulator will turn off and stop 
+powering the motors.</p>
+<p>With the motor voltage regulator no longer drawing current, the 
+battery voltage usually recovers a little, at which point the regulator 
+is able to turn on again. As it starts drawing a high current to power 
+the motors once more, the regulator enters a cycle of repeatedly turning
+ off and back on many times a second, which effectively results in a 
+kind of current limiting for the motors.</p>
+<p>This behavior occurs more often with batteries that are drained than 
+with freshly charged batteries, which means you might notice the 
+performance of a 3pi+ 2040 decreasing as its batteries start to run out.
+ (For example, it might accelerate more slowly or even be unable to 
+reach as high of a top speed.) It can also come into play with older or 
+lower-quality batteries, which tend to have higher internal resistances 
+that cause more significant voltage drops. The Hyper Edition of the 3pi+
+ 2040 is most likely to be affected due to the greater current demanded 
+by its high-power motors.</p>
+
+</div>
+<h3 class="document_section"><a name="6.4"></a>6.4. <span>Quadrature encoders</span></h3>
+<div class="document_section_text">
+<p>Each drive motor on the 3pi+ 2040 has a corresponding quadrature 
+encoder system consisting of a magnetic disc attached to the extended 
+motor shaft and a pair of Hall effect sensors mounted on the control 
+board. Other than the sensor orientation, these encoders work similarly 
+to our <a href="https://www.pololu.com/product/3081">magnetic encoder kits for Micro Metal Gearmotors</a>. They can be used to track the rotational speed and direction of the robot’s wheels.</p>
+<p>The encoders provide a resolution of 12 counts per revolution of the 
+motor shaft when counting both edges of both channels. To compute the 
+counts per revolution of a wheel, multiply the motor’s gear ratio by 12.
+ For example, if <a href="https://www.pololu.com/product/2364">30:1 motors</a> (which have gear ratios more accurately specified as 29.86:1) are used, the encoders provide 29.86&nbsp;×&nbsp;12&nbsp;≈&nbsp;<strong>358.3&nbsp;CPR</strong>.  The exact gear ratios of our Micro Metal Gearmotors are specified on their product pages.</p>
+<p>Four GPIO pins are used to read the encoders:</p>
+<ul>
+	<li><strong>GP8</strong> reads the <strong>right encoder channel A</strong>.</li>
+	<li><strong>GP9</strong> reads the <strong>right encoder channel B</strong>.</li>
+	<li><strong>GP12</strong> reads the <strong>left encoder channel A</strong>.</li>
+	<li><strong>GP13</strong> reads the <strong>left encoder channel B</strong>.</li>
+</ul>
+<p>For both encoders on the Turtle Edition and Standard Edition, channel
+ B leads channel A when the motor is rotating in the forward direction; 
+that is, B rises before A rises and B falls before A falls.</p>
+<p class="note">Since the motor directions on the Hyper Edition are reversed (see <a href="#6.3">Section 6.3</a>), the behavior described above corresponds to backward rotation instead on that version.</p>
+<p>The <a href="https://github.com/pololu/pololu-3pi-2040-robot" target="_blank">3pi+ 2040 Robot Libraries and Example Code</a> provide appropriate functions for reading the encoders and keeping track of their counts.</p>
+
+</div>
+<h3 class="document_section"><a name="6.5"></a>6.5. <span>Line and bump sensors</span></h3>
+<div class="document_section_text">
+<p>The 3pi+ 2040 features five downward-facing line sensors and two forward-facing bump sensors.</p>
+<p>The five <strong>line sensors</strong> are on the underside of the 
+board along the front edge and can help the 3pi+ distinguish between 
+light and dark surfaces.  Each reflectance sensor consists of a 
+down-facing infrared (IR) emitter LED paired with a phototransistor that
+ can detect reflected infrared light from the LED.  The reflectance 
+sensors operate on the same principles as our RC-type <a href="https://www.pololu.com/category/123/pololu-qtr-reflectance-sensors">QTR reflectance sensors</a>:
+ the RP2040 uses an I/O line to drive the sensor output high, and then 
+measures the time for the output voltage to decay. You can read more 
+about the operating principles of these sensors in our <a href="https://www.pololu.com/docs/0J13">QTR Reflectance Sensor Application Note</a>.</p>
+<p>The five line sensors are numbered 1 through 5, with line sensor 1 
+being the robot’s left-most sensor.  In the schematics, they are 
+referred to as DOWN1, DOWN2, DOWN3, DOWN4, and DOWN5.  On the control 
+board, their signals are labeled DN1, DN2, DN3, DN4, and DN5. The 
+infrared emitters for the line sensors are controlled by the DOWNEMIT 
+signal, which is labeled DNE on the board.</p>
+<p>The two <strong>bump sensors</strong> are also reflectance sensors, 
+but rather than providing simple reflectance readings, these are 
+designed to measure changes in reflected light as the corresponding bump
+ sensor flaps on the front of the 3pi+’s bumper skirt are pressed 
+(deflected). This allows the 3pi+ to detect when it has contacted 
+another object in front of it and determine which side the contact is 
+on.</p>
+<p>The left and right bump sensors’ signals are labeled BUMPL and BUMPR 
+in the schematics and BL and BR on the control board. The infrared 
+emitters for the bump sensors are controlled by the BUMPEMIT signal, 
+which is labeled BE on the board.</p>
+<p>Each sensor output is protected by a 220&nbsp;Ω resistor to help 
+prevent short circuits when the RP2040 is driving the corresponding I/O 
+line.</p>
+<p>The infrared emitters for the line sensors can interfere with the 
+bump sensors’ readings when they are on, and the reverse is also true, 
+so it is best to only have one set of emitters on at a time. This means 
+that it is generally impractical to read both the line sensors and bump 
+sensors at the same time.</p>
+<p>The <a href="https://github.com/pololu/pololu-3pi-2040-robot" target="_blank">3pi+ 2040 Robot Libraries and Example Code</a> provide functions to help with reading the line sensors and bump sensors, and it handles control of the emitters appropriately.</p>
+<h4>Ambient light considerations</h4>
+<p>Since the line sensors and bump sensors rely on measurements of 
+reflected infrared light, they are strongly affected by ambient sources 
+of IR light in the surrounding environment (e.g. sunlight or strong 
+incandescent lighting).</p>
+<p>You can help compensate for ambient IR light by incorporating some 
+calibration procedures in your programs. For example, the line sensors 
+can measure the reflectance of light and dark surfaces during 
+calibration and then report subsequent readings relative to this range, 
+while the bump sensors can take baseline readings with the skirt flaps 
+in their unpressed positions and then detect presses based on 
+differences from the baselines. The 3pi+ 2040 libraries provide support 
+for calibrating both types of sensors in these ways.</p>
+<p>However, this calibration is not foolproof; too much ambient infrared
+ light can still prevent the line sensors and bump sensors from working 
+well, and the calibration will not remain effective if the ambient light
+ level changes, such as if the 3pi+ moves from a brightly lit area to a 
+more shaded area. The bump sensors can be especially susceptible to 
+spurious or missed detections since they work by detecting changes in 
+the IR light intensity.</p>
+<h4>Pin assignments and remapping</h4>
+<p>By default, the line and bump sensors support these pin assignments:</p>
+<ul>
+	<li>GP26 is connected to the line sensor emitter control pin (DNE).</li>
+	<li>GP22 is connected to line sensor 1 (DN1).</li>
+	<li>GP21 is connected to line sensor 2 (DN2).</li>
+	<li>GP20 is connected to line sensor 3 (DN3).</li>
+	<li>GP19 is connected to line sensor 4 (DN4).</li>
+	<li>GP18 is connected to line sensor 5 (DN5).</li>
+	<li>GP17 is connected to the left bump sensor (BL).</li>
+	<li>GP16 is connected to the right bump sensor (BR).</li>
+	<li>GP23 is connected to the bump sensor emitter control pin (BE).</li>
+</ul>
+<p>GP26 also doubles as an input to measure the battery level through a voltage divider (see <a href="#6.7">Section 6.7</a>), which uses a ratio low enough that the line sensor emitters will effectively be off while the pin is an input.</p>
+<p>The line and bump sensor connections are made through traces 
+connecting pairs of through-holes in the front expansion header of the 
+3pi+ 2040 control board. A connection can be remapped by cutting the 
+corresponding trace on the underside of the board and making a new 
+connection between the sensor signal and another GPIO pin of your 
+choice.</p>
+<p></p><table class="picture_with_caption center wide"><tbody><tr><td style="max-width: 600px"><a href="https://a.pololu-files.com/picture/0J12037.1200.jpg?67d5acd615d6181233d8fd4cba661e04" class="noscript-fallback" target="_blank"><img alt="" class="wide zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12037&quot;,&quot;caption&quot;:&quot;\u003cp\u003eBottom view of the 3pi+ 2040 Control Board, showing cuttable traces for remapping sensors.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12037.98x98.jpg?67d5acd615d6181233d8fd4cba661e04&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12037.600x480.jpg?67d5acd615d6181233d8fd4cba661e04&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12037.1200.jpg?67d5acd615d6181233d8fd4cba661e04&quot;,&quot;longest_side&quot;:900}]" data-picture-id="0J12037" data-picture-longest_side="900" src="Pololu_docs_files/0J12037.600.jpg"><span class="zoom"></span></a></td></tr><tr><th style="max-width: 600px"><p>Bottom view of the 3pi+ 2040 Control Board, showing cuttable traces for remapping sensors.</p></th></tr></tbody></table><p></p>
+
+</div>
+<h3 class="document_section"><a name="6.6"></a>6.6. <span>Inertial sensors</span></h3>
+<div class="document_section_text">
+<p>The 3pi+ 2040 includes on-board inertial sensors that allow it to 
+determine its own orientation by implementing an inertial measurement 
+unit (IMU). The first chip, an ST <a href="https://www.pololu.com/product/2798">LSM6DSO</a>, combines a 3-axis accelerometer and 3-axis gyro into a single package. The second chip is an ST <a href="https://www.pololu.com/product/2737">LIS3MDL</a> 3-axis magnetometer.</p>
+<p>The RP2040 can communicate with these two chips using I2C0, one of 
+its two hardware I²C modules.  The I²C clock lines (SCL) of both chips 
+are connected to GP5 and pulled up by a 10&nbsp;kΩ resistor. The I²C 
+data lines (SDA) of both chips are connected to GP4 and pulled up by a 
+10&nbsp;kΩ resistor.</p>
+<h4>Using the sensors</h4>
+<p>The example Python program <code>imu_test.py</code> in the <a href="https://github.com/pololu/pololu-3pi-2040-robot" target="_blank">3pi+ 2040 Robot Libraries and Example Code</a> shows how to configure the sensors, read data from them, and display the readings on the OLED display.</p>
+<h4>Notes on the magnetometer</h4>
+<p>Please note that the magnetometer on the 3pi+ 2040 can be affected by
+ magnetic fields from the 3pi+ itself.  These include magnets in the 
+motors and encoders, electrical currents through the board, and hard 
+iron distortions from metal (probably mostly from the batteries).  The 
+magnetometer is positioned as far away from the motors as possible to 
+avoid interference from them, but hard iron distortions can still 
+influence the readings significantly, making it difficult to accurately 
+determine the 3pi+’s absolute heading based on the raw magnetometer 
+data.</p>
+<p>This <a href="https://forum.pololu.com/t/correcting-the-balboa-magnetometer/14315" target="_blank">post on the Pololu forum</a>
+ details a technique for correcting for hard iron distortions, making it
+ possible to use the magnetometer as a compass for navigation in 
+environments that are not dominated by magnetic interference. (It is 
+written about our <a href="https://www.pololu.com/category/210/balboa-robot-and-accessories">Balboa 32U4 robot</a>, but the same principles apply to the 3pi+.)</p>
+
+</div>
+<h3 class="document_section"><a name="6.7"></a>6.7. <span>Power</span></h3>
+<div class="document_section_text">
+<p>The 3pi+ 2040 control board includes battery terminal connections 
+that provide access to power from the 3pi+ chassis’s four-AAA battery 
+compartment. We recommend using rechargeable AAA NiMH cells, which 
+results in a nominal voltage of 4.8&nbsp;V (1.2&nbsp;V per cell). You 
+can also use alkaline cells, which would nominally give you 6&nbsp;V.</p>
+<p>The negative battery voltage is connected to GND.  The positive battery voltage is designated <strong>VBAT</strong>.
+  VBAT feeds into a reverse protection circuit and then a power 
+switching circuit controlled by the on-board pushbutton.  The output of 
+the power switching circuit is designated <strong>VSW</strong>.</p>
+<p>VSW provides power to the on-board motor voltage regulator, and that 
+regulator’s output (VM) powers the DRV8838 motor drivers, so the motors 
+can only operate if the batteries are installed and the power switch 
+circuit is on.</p>
+<p>The reverse protected and switched battery voltage on VSW can be monitored through a voltage divider that is connected to <strong>GP26</strong>. The divider outputs a voltage that is equal to 1/11 of the battery voltage. The <a href="https://github.com/pololu/pololu-3pi-2040-robot" target="_blank">3pi+ 2040 Robot Libraries and Example Code</a>
+ provide functions that can be used to determine the battery voltage 
+from this reading. GP26 is also used to control the line sensor infrared
+ emitters (see <a href="#6.5">Section 6.5</a>); the low divider ratio 
+ensures that the emitters are effectively off even while the pin is 
+being used as an input to measure the battery voltage.</p>
+<h4>Power switch circuit</h4>
+<p>The 3pi+ 2040 control board uses the patented latching circuit from the <a href="https://www.pololu.com/product/2808">Pololu pushbutton power switch</a>,
+ which provides a solid-state power switch for your robot controlled 
+with the on-board pushbutton. By default, this pushbutton can be used to
+ toggle power: one push turns on power and another turns it off.  
+Alternatively, a separate pushbutton can be connected to the <strong>PWRA</strong> and <strong>PWRB</strong>
+ pins and used instead.  Multiple pushbuttons can be wired in parallel 
+for multiple control points, and each of the parallel pushbuttons, 
+including the one on the board itself, will be able to turn the switch 
+on or off.  <strong>The latching circuit performs some button 
+debouncing, but pushbuttons with excessive bouncing (several ms) might 
+not function well with it.</strong></p>
+<p>Alternatively, to disable the pushbutton, you can cut the button jumper labeled <strong>Btn Jmp</strong>;
+ this allows you to connect a slide or toggle switch to control the 
+board’s power instead. The switch should be wired such that it connects 
+the <strong>SW</strong> pin to GND when it is closed, and a set of three
+ through-holes along the left edge of the board provide a convenient 
+place to do so (the third hole is not connected to anything but helps 
+accommodate <a href="https://www.pololu.com/product/1408">3-pin switches</a>).</p>
+<p>The power switch circuit also offers several alternate pushbutton 
+connection options that result in push-on-only or push-off-only 
+operation, and additional inputs enable further power control options 
+like allowing your robot to turn off its own power. These advanced 
+control options are available through the button connection pins and 
+four control inputs:</p>
+<table class="specifications">
+	<tbody><tr>
+		<th>PIN</th>
+		<th>Description</th>
+	</tr>
+	<tr class="odd">
+		<td>PWRA</td>
+		<td>Connect through momentary switch to pin “PWRB” for standard 
+push-on/push-off operation. Connect through momentary switch to ground 
+for on-only operation.</td>
+	</tr>
+	<tr>
+		<td>PWRB</td>
+		<td>Connect through momentary switch to pin “PWRA” for standard push-on/push-off operation.</td>
+	</tr>
+	<tr class="odd">
+		<td>ON</td>
+		<td>A high pulse (&gt; 1&nbsp;V) on this pin turns on the switch circuit. <em>This pin only functions when pushbutton operation is enabled (i.e. the button jumper has not been cut).</em></td>
+	</tr>
+	<tr>
+		<td>OFF</td>
+		<td>A high pulse (&gt; 1&nbsp;V) on this pin turns off the switch 
+circuit (e.g. allowing a powered device to shut off its own power). <em>This pin only functions when pushbutton operation is enabled.</em></td>
+	</tr>
+	<tr class="odd">
+		<td>CTRL</td>
+		<td>With pushbutton operation enabled, this pin directly determines 
+the state of the switch circuit.  A high pulse  (&gt; 1&nbsp;V) on this 
+pin turns on the switch; a low pulse (e.g. driving the pin low with a 
+microcontroller output line or pushing a button connected from this pin 
+to ground) turns the switch off.  Leave this pin disconnected or 
+floating when not trying to set the switch state.  <ins>Note that this pin should not be driven high at the same time the “OFF” pin is driven high.</ins></td>
+	</tr>
+	<tr>
+		<td>SW</td>
+		<td>With pushbutton operation <ins>disabled</ins> (button jumper cut),
+ this pin controls the state of the switch circuit: driving it low turns
+ the switch on, while letting it float turns the switch off. Connect 
+through slide or toggle switch to ground for on/off operation. Leave 
+this pin disconnected or floating for proper pushbutton operation. We 
+recommend only ever driving this pin low or leaving it floating; <ins>this pin should <strong>never</strong> be driven high while the slide switch is in the “On” position.</ins></td>
+	</tr>
+</tbody></table>
+<h4>Motor voltage regulator</h4>
+<p>VSW supplies power to a regulator that provides 8&nbsp;V for the 
+3pi+’s DRV8838 motor drivers. This regulated motor voltage helps keep 
+the performance of the motors consistent as the batteries discharge and 
+their voltage drops. However, the condition of the batteries can still 
+have an impact on motor performance in some situations; see <a href="#6.3">Section 6.3</a> for more details.</p>
+<p>The 3pi+’s motor voltage regulator is designed to cut out at a higher
+ voltage than its 3.3&nbsp;V logic voltage regulator circuit. This way, 
+if there is a significant transient drop in battery voltage due to the 
+motors drawing a large amount of current, the motor voltage regulator 
+will turn off and ensure that the battery voltage does not continue to 
+fall. (Otherwise, the battery voltage could drop low enough to disable 
+the logic regulator and cause the RP2040 to reset.)</p>
+<h4>3.3&nbsp;V logic power circuit</h4>
+<p>The 3pi+ 2040’s logic power can come from either its batteries or its
+ USB connection. When VSW is available, it powers the logic boost 
+regulator, whose output is designated VBST and is normally 8.3&nbsp;V. 
+This output is not directly user-accessible, but both VBST and the 
+5&nbsp;V USB bus voltage VBUS are connected through diodes to a supply 
+called <strong>VB/VU</strong> (in other words, VB/VU is the result of ORing VBST and VBUS together).</p>
+<p>VB/VU provides power for the logic buck regulator, which converts it into the 3.3&nbsp;V logic voltage (designated <strong>3V3</strong>)
+ that supplies the control board’s logic circuitry, including the 
+RP2040, sensors, RGB LEDs, and buzzer. The rest of the 3.3&nbsp;V 
+regulator’s achievable output current can be used to power other 
+devices; under typical conditions, up to 1.5&nbsp;A of current is 
+available from 3V3 when the 3pi+ is running on battery power.</p>
+<p>Since VBST (when present) is normally higher than VBUS, the 3pi+ will
+ prefer to draw logic power from its batteries over USB when both are 
+present, but it will still receive logic power from USB even when the 
+power switch circuit is off. This can be useful if you want to upload or
+ test a program without drawing power from the batteries and without 
+operating the motors. It is safe to have USB connected and battery power
+ switched on at the same time.</p>
+<p></p><table class="picture_with_caption center wide"><tbody><tr><td style="max-width: 900px"><a href="https://a.pololu-files.com/picture/0J12038.1200.png?e3e19ac802438bcab6d8b46f0894d5b5" class="noscript-fallback" target="_blank"><img alt="" class="wide zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12038&quot;,&quot;caption&quot;:&quot;\u003cp\u003eTopology of the 3pi+ 2040 Control Board power circuits.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12038.98x98.jpg?e3e19ac802438bcab6d8b46f0894d5b5&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12038.600x480.jpg?e3e19ac802438bcab6d8b46f0894d5b5&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12038.1200.png?e3e19ac802438bcab6d8b46f0894d5b5&quot;,&quot;longest_side&quot;:1200}]" data-picture-id="0J12038" data-picture-longest_side="1200" src="Pololu_docs_files/0J12038.900.jpg"><span class="zoom"></span></a></td></tr><tr><th style="max-width: 900px"><p>Topology of the 3pi+ 2040 Control Board power circuits.</p></th></tr></tbody></table><p></p>
+<h4>Power distribution</h4>
+<ul>
+	<li><strong>VBAT</strong> is connected to the battery contact labeled <strong>BAT+</strong> and provides a direct connection to the battery supply.</li>
+	<li><strong>VSW</strong> is the battery voltage after reverse-voltage protection and the power switch circuit.</li>
+	<li><strong>VM</strong> is the output of the on-board 8&nbsp;V motor voltage regulator.</li>
+	<li><strong>VBST</strong> is the output of the on-board 8.3&nbsp;V logic boost regulator. (This output is not user-accessible.)</li>
+	<li><strong>VB/VU</strong> is the input for the 3.3&nbsp;V logic buck 
+regulator; it normally comes from VBST through a diode, but it can come 
+from 5&nbsp;V USB power (VBUS) if VBST is not present or too low.</li>
+	<li><strong>3V3</strong> is the output of the 3.3&nbsp;V logic buck regulator.</li>
+</ul>
+<p>See <a href="#6.8">Section 6.8</a> for a diagram of the board’s power access points.</p>
+
+</div>
+<h3 class="document_section"><a name="6.8"></a>6.8. <span>Expansion headers and power distribution</span></h3>
+<div class="document_section_text">
+<p>The 3pi+ 2040 control board has several expansion headers (primarily 
+in two areas toward the front of the board) that break out many of the 
+general-purpose I/O lines from the RP2040 microcontroller. Various power
+ inputs, outputs, and control pins are also accessible elsewhere on the 
+board. The following diagrams identify the locations of these pins and 
+the hardware associated with them.  These diagrams are also available as
+ a printable PDF:</p>
+<ul>
+	<li><a href="https://www.pololu.com/file/0J1941/3pi-2040-control-board-pinout.pdf"><strong>3pi+ 2040 Control Board pinout and power distribution diagrams</strong></a> (1MB pdf)</li>
+</ul>
+<p>For more information about the RP2040 microcontroller and its peripherals, see the <a href="https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf" target="_blank">RP2040 datasheet</a>.</p>
+<p></p><table class="picture_with_caption center wide"><tbody><tr><td style="max-width: 1000px"><a href="https://a.pololu-files.com/picture/0J12020.1200.jpg?92432387f54a3db7a07408489c8e6f5d" class="noscript-fallback" target="_blank"><img alt="" class="wide zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12020&quot;,&quot;caption&quot;:&quot;\u003cp\u003e3pi+ 2040 Control Board pinout and peripherals.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12020.98x98.jpg?92432387f54a3db7a07408489c8e6f5d&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12020.600x480.jpg?92432387f54a3db7a07408489c8e6f5d&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12020.1200.jpg?92432387f54a3db7a07408489c8e6f5d&quot;,&quot;longest_side&quot;:1200}]" data-picture-id="0J12020" data-picture-longest_side="1200" src="Pololu_docs_files/0J12020.1000.jpg"><span class="zoom"></span></a></td></tr><tr><th style="max-width: 1000px"><p>3pi+ 2040 Control Board pinout and peripherals.</p></th></tr></tbody></table>
+<table class="picture_with_caption center wide"><tbody><tr><td style="max-width: 600px"><a href="https://a.pololu-files.com/picture/0J12021.1200.jpg?e1ce9b6745a681a9e97781951cba89fb" class="noscript-fallback" target="_blank"><img alt="" class="wide zoomable" data-gallery-pictures="[{&quot;id&quot;:&quot;0J12021&quot;,&quot;caption&quot;:&quot;\u003cp\u003e3pi+ 2040 Control Board power distribution and control.\u003c/p\u003e&quot;,&quot;url_tiny&quot;:&quot;https://a.pololu-files.com/picture/0J12021.98x98.jpg?e1ce9b6745a681a9e97781951cba89fb&quot;,&quot;url_medium&quot;:&quot;https://a.pololu-files.com/picture/0J12021.600x480.jpg?e1ce9b6745a681a9e97781951cba89fb&quot;,&quot;url_full&quot;:&quot;https://a.pololu-files.com/picture/0J12021.1200.jpg?e1ce9b6745a681a9e97781951cba89fb&quot;,&quot;longest_side&quot;:1199}]" data-picture-id="0J12021" data-picture-longest_side="1199" src="Pololu_docs_files/0J12021.600.jpg"><span class="zoom"></span></a></td></tr><tr><th style="max-width: 600px"><p>3pi+ 2040 Control Board power distribution and control.</p></th></tr></tbody></table><p></p>
+
+</div>
+<h3 class="document_section"><a name="6.9"></a>6.9. <span>Pin assignments</span></h3>
+<div class="document_section_text">
+<p>The table below lists each general-purpose I/O pin on the RP2040 and 
+what it is connected to on the 3pi+ 2040.  This table is helpful if you 
+want to add your own electronics to the 3pi+ 2040 or write your own 
+low-level code for interfacing with the hardware.</p>
+<p>The “RP2040 functions” column lists the most relevant RP2040 
+peripheral functions.  The peripheral functions commonly used by our 
+example code are shown in <b>bold</b>.  For a complete list of these functions, see the “GPIO functions” section of the <a href="https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf" target="_blank">RP2040 datasheet</a>.</p>
+<p>The “3pi+ 2040 functions” column documents the electronics that the pin is connected to on an unmodified 3pi+.</p>
+<p>The “3pi+ header” column says which of the expansion headers, if any,
+ include the pin.  The locations of these headers are shown in <a href="#6.8">Section 6.8</a>.</p>
+<style type="text/css">
+table.pin_assignment_new {
+    margin-bottom: 1em;
+    border-collapse: collapse;
+}
+table.pin_assignment_new td {
+    border: 1px solid #aaa;
+    padding: 0.3em;
+    margin: 0em;
+    text-align: left;
+    font-family: Arial,sans-serif;
+    font-size: 90%;
+}
+table.pin_assignment_new th {
+    border: 1px solid #aaa;
+    font-family: Arial,sans-serif;
+    font-size: 90%;
+    padding-left: 3px;
+    padding-right: 3px
+}
+table.pin_assignment_new tr:nth-child(2n+1) {
+    background-color: #eee;
+}
+tr.new_section { border-top: 5px solid #aaa}
+tr.funcsel td:nth-child(n+2):nth-child(-n+6) {border-left: none; border-right: none; color: rgba(0, 0, 0, 0.6);}
+tr.funcsel td:nth-child(n+2):nth-child(-n+5) {padding-right: 1em;}
+tr.funcsel strong {color: black;}
+</style>
+<table class="pin_assignment_new">
+	<tbody><tr>
+		<th>Pin</th>
+		<th colspan="5">RP2040 functions</th>
+		<th>3pi+ 2040 functions</th>
+		<th>3pi+ header</th>
+	</tr>
+	<tr class="new_section funcsel">
+		<td>GP0</td>
+		<td>SPI0 RX</td>
+		<td>UART0 TX</td>
+		<td>I2C0 SDA</td>
+		<td>PWM0 A</td>
+		<td></td>
+		<td>Button C<br>Display data/command select (D/<span class="overline">C</span>)</td>
+		<td>Display</td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP1</td>
+		<td>SPI0 CSn</td>
+		<td>UART0 RX</td>
+		<td>I2C0 SCL</td>
+		<td>PWM0 B</td>
+		<td></td>
+		<td>Display reset (<span class="overline">RESET</span>)</td>
+		<td>Display</td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP2</td>
+		<td><strong>SPI0 SCK</strong></td>
+		<td>UART0 CTS</td>
+		<td>I2C1 SDA</td>
+		<td>PWM1 A</td>
+		<td></td>
+		<td>Display clock (SCK)</td>
+		<td>Display</td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP3</td>
+		<td><strong>SPI0 TX</strong></td>
+		<td>UART0 RTS</td>
+		<td>I2C1 SCL</td>
+		<td>PWM1 B</td>
+		<td></td>
+		<td>Display data (MOSI),<br>RGB LED data</td>
+		<td>Display,<br>RGB (indirect)</td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP4</td>
+		<td>SPI0 RX</td>
+		<td>UART1 TX</td>
+		<td><strong>I2C0 SDA</strong></td>
+		<td>PWM2 A</td>
+		<td></td>
+		<td>Inertial sensors SDA</td>
+		<td>Mid expansion</td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP5</td>
+		<td>SPI0 CSn</td>
+		<td>UART1 RX</td>
+		<td><strong>I2C0 SCL</strong></td>
+		<td>PWM2 B</td>
+		<td></td>
+		<td>Inertial sensors SCL</td>
+		<td>Mid expansion</td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP6</td>
+		<td><strong>SPI0 SCK</strong></td>
+		<td>UART1 CTS</td>
+		<td>I2C1 SDA</td>
+		<td>PWM3 A</td>
+		<td></td>
+		<td>RGB LED clock</td>
+		<td>Mid expansion,<br>RGB (indirect)</td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP7</td>
+		<td>SPI0 TX</td>
+		<td>UART1 RTS</td>
+		<td>I2C1 SCL</td>
+		<td><strong>PWM3 B</strong></td>
+		<td></td>
+		<td>Buzzer PWM</td>
+		<td>Mid expansion</td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP8</td>
+		<td>SPI1 RX</td>
+		<td>UART1 TX</td>
+		<td>I2C0 SDA</td>
+		<td>PWM4 A</td>
+		<td></td>
+		<td>Right encoder A</td>
+		<td></td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP9</td>
+		<td>SPI1 CSn</td>
+		<td>UART1 RX</td>
+		<td>I2C0 SCL</td>
+		<td>PWM4 B</td>
+		<td></td>
+		<td>Right encoder B</td>
+		<td></td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP10</td>
+		<td>SPI1 SCK</td>
+		<td>UART1 CTS</td>
+		<td>I2C1 SDA</td>
+		<td>PWM5 A</td>
+		<td></td>
+		<td>Right motor direction</td>
+		<td></td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP11</td>
+		<td>SPI1 TX</td>
+		<td>UART1 RTS</td>
+		<td>I2C1 SCL</td>
+		<td>PWM5 B</td>
+		<td></td>
+		<td>Left motor direction</td>
+		<td></td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP12</td>
+		<td>SPI1 RX</td>
+		<td>UART0 TX</td>
+		<td>I2C0 SDA</td>
+		<td>PWM6 A</td>
+		<td></td>
+		<td>Left encoder A</td>
+		<td></td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP13</td>
+		<td>SPI1 CSn</td>
+		<td>UART0 RX</td>
+		<td>I2C0 SCL</td>
+		<td>PWM6 B</td>
+		<td></td>
+		<td>Left encoder B</td>
+		<td></td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP14</td>
+		<td>SPI1 SCK</td>
+		<td>UART0 CTS</td>
+		<td>I2C1 SDA</td>
+		<td><strong>PWM7 A</strong></td>
+		<td></td>
+		<td>Right motor PWM</td>
+		<td></td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP15</td>
+		<td>SPI1 TX</td>
+		<td>UART0 RTS</td>
+		<td>I2C1 SCL</td>
+		<td><strong>PWM7 B</strong></td>
+		<td></td>
+		<td>Left motor PWM</td>
+		<td></td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP16</td>
+		<td>SPI0 RX</td>
+		<td>UART0 TX</td>
+		<td>I2C0 SDA</td>
+		<td>PWM0 A</td>
+		<td></td>
+		<td>Right bump sensor (BR)</td>
+		<td>Front expansion</td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP17</td>
+		<td>SPI0 CSn</td>
+		<td>UART0 RX</td>
+		<td>I2C0 SCL</td>
+		<td>PWM0 B</td>
+		<td></td>
+		<td>Left bump sensor (BL)</td>
+		<td>Front expansion</td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP18</td>
+		<td>SPI0 SCK</td>
+		<td>UART0 CTS</td>
+		<td>I2C1 SDA</td>
+		<td>PWM1 A</td>
+		<td></td>
+		<td>Line sensor 5 (DN5, rightmost)</td>
+		<td>Front expansion</td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP19</td>
+		<td>SPI0 TX</td>
+		<td>UART0 RTS</td>
+		<td>I2C1 SCL</td>
+		<td>PWM1 B</td>
+		<td></td>
+		<td>Line sensor 4 (DN4)</td>
+		<td>Front expansion</td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP20</td>
+		<td>SPI0 RX</td>
+		<td>UART1 TX</td>
+		<td>I2C0 SDA</td>
+		<td>PWM2 A</td>
+		<td></td>
+		<td>Line sensor 3 (DN3)</td>
+		<td>Front expansion</td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP21</td>
+		<td>SPI0 CSn</td>
+		<td>UART1 RX</td>
+		<td>I2C0 SCL</td>
+		<td>PWM2 B</td>
+		<td></td>
+		<td>Line sensor 2 (DN2)</td>
+		<td>Front expansion</td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP22</td>
+		<td>SPI0 SCK</td>
+		<td>UART1 CTS</td>
+		<td>I2C1 SDA</td>
+		<td>PWM3 A</td>
+		<td></td>
+		<td>Line sensor 1 (DN1, leftmost)</td>
+		<td>Front expansion</td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP23</td>
+		<td>SPI0 TX</td>
+		<td>UART1 RTS</td>
+		<td>I2C1 SCL</td>
+		<td>PWM3 B</td>
+		<td></td>
+		<td>Bump sensor emitter control (BE)</td>
+		<td>Front expansion</td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP24</td>
+		<td>SPI1 RX</td>
+		<td>UART1 TX</td>
+		<td>I2C0 SDA</td>
+		<td>PWM4 A</td>
+		<td></td>
+		<td></td>
+		<td>Mid expansion</td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP25</td>
+		<td>SPI1 CSn</td>
+		<td>UART1 RX</td>
+		<td>I2C0 SCL</td>
+		<td><strong>PWM4 B</strong></td>
+		<td></td>
+		<td>Yellow LED / Button A</td>
+		<td></td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP26</td>
+		<td>SPI1 SCK</td>
+		<td>UART1 CTS</td>
+		<td>I2C1 SDA</td>
+		<td>PWM5 A</td>
+		<td><strong>ADC0</strong></td>
+		<td>Battery level input (VBAT/11),<br>Line sensor emitter control (DNE)</td>
+		<td>Front expansion</td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP27</td>
+		<td>SPI1 TX</td>
+		<td>UART1 RTS</td>
+		<td>I2C1 SCL</td>
+		<td>PWM5 B</td>
+		<td>ADC1</td>
+		<td></td>
+		<td>Mid expansion</td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP28</td>
+		<td>SPI1 RX</td>
+		<td>UART0 TX</td>
+		<td>I2C0 SDA</td>
+		<td>PWM6 A</td>
+		<td>ADC2</td>
+		<td></td>
+		<td>Mid expansion</td>
+	</tr>
+	<tr class="funcsel">
+		<td>GP29</td>
+		<td>SPI1 CSn</td>
+		<td>UART0 RX</td>
+		<td>I2C0 SCL</td>
+		<td>PWM6 B</td>
+		<td>ADC3</td>
+		<td></td>
+		<td>Mid expansion</td>
+	</tr>
+	<tr class="new_section">
+		<td>QSPI_SS_N</td>
+		<td colspan="5">Flash chip select, BOOTSEL</td>
+		<td>Button B</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>RUN</td>
+		<td colspan="5">Active-low reset</td>
+		<td>Reset button</td>
+		<td>Debug header</td>
+	</tr>
+	<tr>
+		<td>SWCLK</td>
+		<td colspan="5">Serial Wire Debug (SWD): clock</td>
+		<td></td>
+		<td>Debug header</td>
+	</tr>
+	<tr>
+		<td>SWDIO</td>
+		<td colspan="5">Serial Wire Debug (SWD): data I/O</td>
+		<td></td>
+		<td>Debug header</td>
+	</tr>
+</tbody></table>
+<div class="clear">
+
+</div>
+<h3 class="document_section"><a name="6.10"></a>6.10. <span>Adding electronics</span></h3>
+<div class="document_section_text">
+<p>This section gives tips for how to expand the 3pi+ 2040 with additional electronics.</p>
+<h4>Free I/O pins</h4>
+<p>The pins GP24, GP27, GP28, and GP29 are free I/O pins that are not 
+used for anything on the 3pi+ 2040.  Each of these pins is accessible on
+ the mid expansion header, and can be used as a general purpose input, 
+digital output, or PWM output.  Three of the pins (GP27, GP28, and GP29)
+ can be used as analog inputs.</p>
+<p>The 3pi+ 2040 has several traces that you can cut to disconnect I/O 
+pins from their on-board functions, freeing them up for other uses.  The
+ front expansion header contains cuttable traces for the pins used by 
+the IR sensors: GP16, GP17, GP18, GP19, GP20, GP21, GP22, GP23, and 
+GP26.  In the OLED display area, there is a cuttable SMT jumper for GP7 
+labeled “7 = Buzzer” and one for GP26 labeled “BAT LEV = 26”.  The 
+RP2040 functions available on these pins are documented in <a href="#6.9">Section 6.9</a>.</p>
+<h4>Adding an I²C device</h4>
+<p>There are two types of devices that can connect to an I²C bus: a <em>controller</em> is a device that initiates transfers of data, generates clock signals, and terminates transfers, while a <em>target</em> is a device that is addressed by a controller.</p>
+<p>You can add I²C devices to the 3pi+ 2040 by connecting the SDA pin of
+ each device to GP4 and connecting the SCL pin of each device to GP5.  
+Both of those pins are available on the mid expansion header.  These are
+ the same pins used by the inertial sensors documented in <a href="#6.6">Section 6.6</a>,
+ so the I²C addresses of any targets you add here must be different than
+ the I²C addresses of the inertial sensors.  The LIS3MDL uses address 30
+ (0b0011110) and the LSM6DSO uses address 107 (0b1101011).  The GP4 and 
+GP5 pins are each pulled up to 3.3&nbsp;V with a 10&nbsp;kΩ resistor.</p>
+<p>The RP2040 acts as an I²C controller on the GP4/GP5 bus when it 
+accesses the inertial sensors.  If you are adding another I²C controller
+ to the bus, it is probably best to avoid the complexity of a 
+multi-controller setup and instead configure the RP2040 to be an I²C 
+target  (or not use the bus at all).</p>
+<p>Another option is to add an I²C device by connecting its SDA pin to 
+GP28 and connecting its SCL pin to GP29.  These are free I/O pins that 
+are not used for anything on the 3pi+ 2040.  However, note that if you 
+want to use hardware I2C on these pins, you would need to use the 
+RP2040’s I2C0 module, which is the same one used for the inertial 
+sensors on GP4 and GP5.  To work around this conflict, you could use a 
+software I²C implementation for one of the busses or consider adding 
+code to change the I2C0 pin function selections dynamically.</p>
+<p>Any I²C devices you add must be compatible with the 3.3&nbsp;V levels used by the RP2040 or use a <a href="https://www.pololu.com/product/2595">level shifter</a>.</p>
+<p><!-- After adding an I²C  target, you can use the "MicroPython I2C class":https://docs.micropython.org/en/latest/library/machine.I2C.html (which supports both hardware and software I²C) or the "Pico SDK hardware_i2c class":https://github.com/raspberrypi/pico-sdk/blob/master/src/rp2_common/hardware_i2c/include/hardware/i2c.h) to communicate with it.  --></p>
+<h4>Adding a UART serial device</h4>
+<p>The RP2040’s UART0 module is available on the free I/O pins GP28 (TX)
+ and GP29 (RX).  Alternatively, if you remove the OLED display, you can 
+use UART0 on GP0 (TX) and GP1 (RX).  Any UART serial devices you add 
+must be compatible with the 3.3&nbsp;V levels used by the RP2040 or use a
+ <a href="https://www.pololu.com/product/2595">level shifter</a>.  The RP2040’s I/O pins are not 5&nbsp;V tolerant.</p>
+<h4>Adding an SPI device</h4>
+<p>If you remove the OLED display, you can use the RP2040’s SPI0 module 
+on pins GP0 (RX), GP1 (CSn), GP2 (SCK), and GP3 (TX).  The RGB LEDs 
+typically use SPI0, but it is possible to work around this conflict by 
+changing the SPI0 pin function selections dynamically, and the libraries
+ we provide for the 3pi+ 2040 OLED and RGB LEDs show how to do this.</p>
+<p>Another option is to disconnect GP26 from the line sensor emitter 
+control line (DNE) by cutting a trace on the front expansion header.  
+Then you can use the RP2040’s SPI1 module on pins GP26 (SCK), GP27 (TX),
+ GP28 (RX), and GP29 (CSn).  The RP2040 normally uses GP26 to control 
+the line sensor emitters and read the battery voltage, so if you need 
+those functions then you would have to find an alternative way to 
+perform them.</p>
+
+</div>
+<h3 class="document_section"><a name="6.11"></a>6.11. <span>Schematics and dimensions</span></h3>
+<div class="document_section_text">
+<p>The schematic diagram for the 3pi+ 2040 Control Board is available as a PDF:</p>
+<ul>
+	<li><a href="https://www.pololu.com/file/0J1940/3pi-2040-control-board-schematic.pdf"><strong>3pi+ 2040 Control Board schematic diagram</strong></a> (305k pdf)</li>
+</ul>
+<h4>Dimensions</h4>
+<p>Basic dimension diagrams are available as PDFs for the 3pi+ 2040 
+Control Board by itself as well as the assembled 3pi+ 2040 robot:</p>
+<ul>
+	<li><a href="https://www.pololu.com/file/0J1945/3pi-2040-control-board-dimensions.pdf"><strong>3pi+ 2040 Control Board dimension diagram</strong></a> (2MB pdf)</li>
+	<li><a href="https://www.pololu.com/file/0J1948/3pi-2040-robot-dimensions.pdf"><strong>3pi+ 2040 Robot dimension diagram</strong></a> (2MB pdf)</li>
+</ul>
+<p>Dimensions that are not included in the above diagrams can be measured from the following DXF drawings:</p>
+<ul>
+	<li><a href="https://www.pololu.com/file/0J1947/3pi04a-drill.dxf"><strong>3pi+ 2040 Control Board drill guide</strong></a> (65k dxf)</li>
+	<li><a href="https://www.pololu.com/file/0J1950/3pi-2040-robot-assembled-dxf.zip"><strong>3pi+ 2040 Robot front, top, and side views</strong></a> (420k zip)</li>
+</ul>
+<p>3D models of the 3pi+ 2040 Control Board and robot are also available in STEP format:</p>
+<ul>
+	<li><a href="https://www.pololu.com/file/0J1946/3pi-2040-control-board.step"><strong>3pi+ 2040 Control Board 3D model</strong></a> (27MB step)</li>
+	<li><a href="https://www.pololu.com/file/0J1949/3pi-2040-robot-assembled.zip"><strong>3pi+ 2040 Robot 3D models</strong></a> (18MB zip)
+	<ul>
+		<li>Note: This model uses simplified models of the control electronics to reduce the file size.</li>
+	</ul></li>
+</ul>
+
+</div>
+<h2 class="document_section"><a name="7"></a>7. <span>Related resources</span></h2>
+<div class="document_section_text">
+<p>The <a href="https://github.com/pololu/pololu-3pi-2040-robot" target="_blank"><strong>Pololu 3pi+ 2040 Robot Libraries and Example Code</strong></a> repository is the main example code resource we provide, with examples in Python and C.</p>
+<p>To learn more about programming the RP2040 in <strong>Python</strong>, see the following resources:</p>
+<ul>
+	<li><a href="https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-python-sdk.pdf" target="_blank">Raspberry Pi Pico Python SDK</a> (PDF)</li>
+	<li><a href="https://docs.micropython.org/" target="_blank">MicroPython documentation</a>
+	<ul>
+		<li><a href="https://docs.micropython.org/en/latest/rp2/quickref.html" target="_blank">RP2 quick reference</a></li>
+		<li><a href="https://docs.micropython.org/en/latest/library/rp2.html" target="_blank">RP2 library</a></li>
+	</ul></li>
+	<li><a href="https://github.com/micropython/micropython" target="_blank">MicroPython source code</a></li>
+	<li><a href="https://docs.python.org/3/reference" target="_blank">The Python Lanuage Reference</a></li>
+	<li><a href="https://docs.python.org/3/library/" target="_blank">The Python Standard Library</a>: MicroPython implements a subset of this</li>
+</ul>
+<p>To learn more about programming the RP2040 in <strong>C</strong>, see the following resources:</p>
+<ul>
+	<li><a href="https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf" target="_blank">Getting started with Raspberry Pi Pico</a> (PDF)</li>
+	<li><a href="https://www.raspberrypi.com/documentation/pico-sdk/" target="_blank">Raspberry Pi Pico SDK documentation</a></li>
+	<li><a href="https://github.com/raspberrypi/pico-sdk" target="_blank">Raspberry Pi Pico SDK source code</a></li>
+	<li><a href="https://github.com/raspberrypi/pico-examples" target="_blank">Raspberry Pi Pico SDK examples</a></li>
+</ul>
+<p>These are some general resources about the RP2040:</p>
+<ul>
+	<li><a href="https://www.raspberrypi.com/documentation/microcontrollers" target="_blank">Raspberry Pi microcontrollers documentation</a></li>
+	<li><a href="https://github.com/raspberrypi/picotool" target="_blank">picotool</a> is a tool for interacting with RP2040 devices when they are in BOOTSEL mode</li>
+</ul>
+<p>Datasheets for some of the components of the 3pi+ 2040 are available below:</p>
+<ul>
+	<li><a href="https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf" target="_blank">RP2040 datasheet</a></li>
+	<li><a href="https://www.pololu.com/file/0J1813/SH1106.pdf">SH1106 OLED driver datasheet</a> (1MB pdf)</li>
+	<li><a href="https://www.ti.com/lit/ds/symlink/drv8838.pdf" target="_blank">Texas Instruments DRV8838 motor driver datasheet</a></li>
+	<li><a href="https://www.pololu.com/file/0J1089/LIS3MDL.pdf">ST LIS3MDL 3-axis magnetometer datasheet</a> (2MB pdf)</li>
+	<li><a href="https://www.pololu.com/file/0J1899/lsm6dso.pdf">ST LSM6DSO 3D accelerometer and 3D gyroscope datasheet</a> (3MB pdf)</li>
+</ul>
+<p>Finally, we would like to hear your comments and questions on the <a href="https://forum.pololu.com/" target="_blank">Pololu Robotics Forum</a>!</p>
+
+</div>
+<div id="small_related_items"><div><h2>Related products</h2>
+<div>
+<table class="linkable_item_list">
+<tbody><tr>
+<td class="img">
+<a href="https://www.pololu.com/product/5001"><img alt="" src="Pololu_docs_files/0J12003.50x40.jpg"></a>
+</td>
+<td><a href="https://www.pololu.com/product/5001">3pi+ 2040 Robot - Standard Edition (30:1 MP Motors), Assembled</a></td>
+</tr>
+<tr>
+<td class="img">
+<a href="https://www.pololu.com/product/5002"><img alt="" src="Pololu_docs_files/0J12003.50x40.jpg"></a>
+</td>
+<td><a href="https://www.pololu.com/product/5002">3pi+ 2040 Robot - Turtle Edition (75:1 LP Motors), Assembled</a></td>
+</tr>
+<tr>
+<td class="img">
+<a href="https://www.pololu.com/product/5000"><img alt="" src="Pololu_docs_files/0J12003.50x40.jpg"></a>
+</td>
+<td><a href="https://www.pololu.com/product/5000">3pi+ 2040 Robot - Hyper Edition (15:1 HPCB Motors), Assembled</a></td>
+</tr>
+<tr>
+<td class="img">
+<a href="https://www.pololu.com/product/5004"><img alt="" src="Pololu_docs_files/0J11996.50x40.jpg"></a>
+</td>
+<td><a href="https://www.pololu.com/product/5004">3pi+ 2040 Robot Kit with 30:1 MP Motors (Standard Edition Kit)</a></td>
+</tr>
+<tr>
+<td class="img">
+<a href="https://www.pololu.com/product/5005"><img alt="" src="Pololu_docs_files/0J11996.50x40.jpg"></a>
+</td>
+<td><a href="https://www.pololu.com/product/5005">3pi+ 2040 Robot Kit with 75:1 LP Motors (Turtle Edition Kit)</a></td>
+</tr>
+<tr>
+<td class="img">
+<a href="https://www.pololu.com/product/5003"><img alt="" src="Pololu_docs_files/0J11997.50x40.jpg"></a>
+</td>
+<td><a href="https://www.pololu.com/product/5003">3pi+ 2040 Robot Kit with 15:1 HPCB Motors (Hyper Edition Kit)</a></td>
+</tr>
+<tr>
+<td class="img">
+<a href="https://www.pololu.com/product/5006"><img alt="" src="Pololu_docs_files/0J11998.50x40.jpg"></a>
+</td>
+<td><a href="https://www.pololu.com/product/5006">3pi+ 2040 Control Board</a></td>
+</tr>
+</tbody></table>
+</div>
+</div></div>
+
+<!-- CONTENTS_END -->
+<div id="footer">
+<p class="share">
+<span class="image_text_link"><a href="https://www.pololu.com/docs/0J86/all?print=1"><img alt="" src="Pololu_docs_files/printer-448cebb2a5016700db2565421ada6e98f90fabe5885d8cd3cca1.png"></a><a href="https://www.pololu.com/docs/0J86/all?print=1">Print</a></span>
+<span class="image_text_link"><a href="mailto:?body=https%3A%2F%2Fwww.pololu.com%2Fdocs%2F0J86%2Fall&amp;subject"><img alt="" src="Pololu_docs_files/email-f2957b324fa09a7d81ed64679a6b9454647ad40514cd7b1ce501ae.png"></a><a href="mailto:?body=https%3A%2F%2Fwww.pololu.com%2Fdocs%2F0J86%2Fall&amp;subject">Email a friend</a></span>
+<span class="image_text_link"><a href="https://www.pololu.com/feeds"><img alt="" src="Pololu_docs_files/feed-icon-12x12-ad0e7f1965647f9414a76a1f32fb46dc73c1b2d29520.png"></a><a href="https://www.pololu.com/feeds">Feeds</a></span>
+</p>
+<p class="links">
+<a href="https://www.pololu.com/">Home</a>
+|
+<a href="https://forum.pololu.com/" target="_blank">Forum</a>
+|
+<a href="https://www.pololu.com/blog">Blog</a>
+|
+<a href="https://www.pololu.com/support">Support</a>
+|
+<a href="https://www.pololu.com/ordering">Ordering Information</a>
+|
+<a href="https://www.pololu.com/list">Lists</a>
+|
+<a href="https://www.pololu.com/distributors">Distributors</a>
+|
+<a href="https://www.pololu.com/catalog/bigorderform">BIG Order Form</a>
+|
+<a href="https://www.pololu.com/about">About</a>
+|
+<a href="https://www.pololu.com/contact">Contact</a>
+</p>
+<p id="copyright">© 2001<a rel="nofollow" style="text-decoration: none; color: inherit;" href="https://www.pololu.com/pot/0?from=https%3A%2F%2Fwww.pololu.com%2Fdocs%2F0J86%2Fall">–</a>2026 Pololu Corporation</p>
+</div>
+</div>
+</div>
+<div id="right_col">
+<div class="menu" data-my-quotes="1" style="display: none;"></div>
+<script>quote.display_list()</script>
+<div class="menu" data-mini-cart="1"></div>
+<script>cart.display_mini_cart_content()</script>
+<div><h2>Related Products</h2>
+<div>
+<table class="linkable_item_list">
+<tbody><tr>
+<td class="img">
+<a href="https://www.pololu.com/product/5001"><img alt="" src="Pololu_docs_files/0J12003.50x40.jpg"></a>
+</td>
+<td><a href="https://www.pololu.com/product/5001">3pi+ 2040 Robot - Standard Edition (30:1 MP Motors), Assembled</a></td>
+</tr>
+<tr>
+<td class="img">
+<a href="https://www.pololu.com/product/5002"><img alt="" src="Pololu_docs_files/0J12003.50x40.jpg"></a>
+</td>
+<td><a href="https://www.pololu.com/product/5002">3pi+ 2040 Robot - Turtle Edition (75:1 LP Motors), Assembled</a></td>
+</tr>
+<tr>
+<td class="img">
+<a href="https://www.pololu.com/product/5000"><img alt="" src="Pololu_docs_files/0J12003.50x40.jpg"></a>
+</td>
+<td><a href="https://www.pololu.com/product/5000">3pi+ 2040 Robot - Hyper Edition (15:1 HPCB Motors), Assembled</a></td>
+</tr>
+<tr>
+<td class="img">
+<a href="https://www.pololu.com/product/5004"><img alt="" src="Pololu_docs_files/0J11996.50x40.jpg"></a>
+</td>
+<td><a href="https://www.pololu.com/product/5004">3pi+ 2040 Robot Kit with 30:1 MP Motors (Standard Edition Kit)</a></td>
+</tr>
+<tr>
+<td class="img">
+<a href="https://www.pololu.com/product/5005"><img alt="" src="Pololu_docs_files/0J11996.50x40.jpg"></a>
+</td>
+<td><a href="https://www.pololu.com/product/5005">3pi+ 2040 Robot Kit with 75:1 LP Motors (Turtle Edition Kit)</a></td>
+</tr>
+<tr>
+<td class="img">
+<a href="https://www.pololu.com/product/5003"><img alt="" src="Pololu_docs_files/0J11997.50x40.jpg"></a>
+</td>
+<td><a href="https://www.pololu.com/product/5003">3pi+ 2040 Robot Kit with 15:1 HPCB Motors (Hyper Edition Kit)</a></td>
+</tr>
+<tr>
+<td class="img">
+<a href="https://www.pololu.com/product/5006"><img alt="" src="Pololu_docs_files/0J11998.50x40.jpg"></a>
+</td>
+<td><a href="https://www.pololu.com/product/5006">3pi+ 2040 Control Board</a></td>
+</tr>
+</tbody></table>
+</div>
+</div>
+</div>
+
+<div id="lightbox_holder">
+<div id="lightbox_gray_screen"></div>
+<div id="lightbox">
+<div id="lightbox_gallery"></div>
+<div id="lightbox_content"></div>
+<div id="lightbox_right"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+<div id="lightbox_left"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
+<div id="lightbox_close">
+<a href="#" title="Close"><i class="fa fa-times" aria-hidden="true"></i></a>
+</div>
+<div id="lightbox_full">
+<a href="#" title="View image"><i class="fa fa-expand" aria-hidden="true"></i></a>
+</div>
+</div>
+</div>
+
+<div id="header_small_top">
+<!-- / this has to go first since it takes up 100% of the width and would block clicking on other parts -->
+<div id="header_center_right">
+<span data-login-ui="login">
+<a href="https://www.pololu.com/account/login?account%5Burl%5D=https%3A%2F%2Fwww.pololu.com%2Fdocs%2F0J86%2Fall">Log In</a>
+</span>
+<span data-login-ui="my_account" style="display: none;">
+<a title="My account" data-login-ui="my_account_link" href="https://www.pololu.com/account"></a>
+</span>
+
+</div>
+<div id="header_small_left">
+<a href="https://www.pololu.com/"><img width="118" height="30" alt="Pololu Robotics &amp; Electronics" class="logo_pololu_only" src="Pololu_docs_files/header_pololu_only-fff6349c8769e6b2e59624d6dceacac4422156c5a.png"></a>
+</div>
+<div id="header_small_right">
+<a href="https://www.pololu.com/cart"><img width="30" height="30" alt="Shopping cart" src="Pololu_docs_files/cart-bf4bf66669c9b9288e6e972718067855ecdcdfc80622cfea29ac04b.png"></a>
+</div>
+</div>
+<div id="header_small_bottom">
+<div id="header_small_right">
+(702) 262-6648<br>
+<a href="https://www.pololu.com/ordering">Same-day shipping, worldwide</a>
+</div>
+<div id="header_small_left">
+<a id="menu_button" onclick="return false;" href="https://www.pololu.com/catalog/menu"><img width="30" height="30" alt="Menu" src="Pololu_docs_files/menu-2023bba099d8fd2a25d8e1803c5bdf0aa0a024d9d585000ff9aec2c.png"></a>
+</div>
+</div>
+<div id="header_small_menu">
+<div class="header_small_menu_columns">
+<a href="https://www.pololu.com/catalog/menu">Shop</a>
+<a href="https://www.pololu.com/blog">Blog</a>
+<a href="https://forum.pololu.com/" target="_blank">Forum</a>
+<a href="https://www.pololu.com/support">Support</a>
+</div>
+<!-- / specify local variable id to set an id for the form, mainly for use with testing -->
+<form action="/search" id="header_small_search">
+<div class="search"><input autocomplete="off" class="search_input mini_search_input" data-autocomplete-search="true" id="header_small_search_input" name="query" placeholder="Search" type="text"><input alt="" class="search_button" src="Pololu_docs_files/magglass-d28c6b7b9d1f35858a702b71e13b678bfdee962d795c7ad2426.png" type="image" value="go">
+</div>
+</form>
+
+<a title="My account" href="https://www.pololu.com/account">My account</a>
+<a data-feedback="true" href="https://www.pololu.com/feedback/new?account%5Burl%5D=https%3A%2F%2Fwww.pololu.com%2Fdocs%2F0J86%2Fall">Comments or questions?</a>
+<a href="https://www.pololu.com/about">About Pololu</a>
+<a href="https://www.pololu.com/contact">Contact</a>
+<a href="https://www.pololu.com/ordering">Ordering information</a>
+<a href="https://www.pololu.com/distributors">Distributors</a>
+</div>
+<div id="gray_screen"></div>
+<script>
+menuInit();
+</script>
+
+<div id="header_holder">
+<table id="header">
+<tbody><tr id="header_top">
+<td id="header_logo" rowspan="2">
+<a href="https://www.pololu.com/"><img width="219" height="69" alt="Pololu Robotics and Electronics" class="logo" style="max-width: 230px;" src="Pololu_docs_files/header_pololu_no_padding-e37eb899d2ec2ded9153a53ad9e0e6e1286.png"></a>
+</td>
+<td colspan="16" id="header_address">
+<div id="header_account_links">
+<span data-login-ui="login">
+<a href="https://www.pololu.com/account/login?account%5Burl%5D=https%3A%2F%2Fwww.pololu.com%2Fdocs%2F0J86%2Fall">Log In</a>
+</span>
+<span data-login-ui="my_account" style="display: none;">
+<a title="My account" data-login-ui="my_account_link" href="https://www.pololu.com/account"></a>
+|
+<a href="https://www.pololu.com/account">My Account</a>
+|
+</span>
+<div data-login-ui="logout" style="display: none;">
+<form data-login-ui="logout" action="https://www.pololu.com/account/logout" accept-charset="UTF-8" method="post" style="display: none;"><input type="hidden" name="utf8" value="✓"><input type="hidden" name="session_id" value="4eaab976425e62749f78c5169fab1485"><button class="btn-link" name="log-out-button">Log Out</button></form>
+</div>
+
+|
+<a href="https://www.pololu.com/cart">Shopping Cart <img width="16" height="16" alt="" src="Pololu_docs_files/cart-bf4bf66669c9b9288e6e972718067855ecdcdfc80622cfea29ac04b.png"></a>
+<script>dynamic_user_login.init()</script>
+</div>
+<p class="phone_number">
+US toll free: 1-877-7-POLOLU ~
+(702) 262-6648<br>
+<a href="https://www.pololu.com/ordering">Same-day shipping, worldwide</a>
+</p>
+</td>
+</tr>
+<tr id="header_links">
+<th class="">
+<a href="https://www.pololu.com/">Catalog</a>
+</th>
+<td>&nbsp;</td>
+<th>
+<a href="https://forum.pololu.com/" target="_blank">Forum</a>
+</th>
+<td>&nbsp;</td>
+<th class="">
+<a href="https://www.pololu.com/blog">Blog</a>
+</th>
+<td>&nbsp;</td>
+<th class="selected">
+<a href="https://www.pololu.com/support">Support</a>
+</th>
+<td>&nbsp;</td>
+<th class="">
+<a href="https://www.pololu.com/ordering">Ordering</a>
+</th>
+<td>&nbsp;</td>
+<th class="">
+<a href="https://www.pololu.com/distributors">Distributors</a>
+</th>
+<td>&nbsp;</td>
+<th class="">
+<a href="https://www.pololu.com/about">About</a>
+</th>
+<td>&nbsp;</td>
+<th class="">
+<a href="https://www.pololu.com/contact">Contact</a>
+</th>
+<td class="last"></td>
+</tr>
+</tbody></table>
+</div>
+<div id="left_col">
+<div class="menu" id="menu_search">
+<div>
+<!-- / specify local variable id to set an id for the form, mainly for use with testing -->
+<form action="/search" id="sidebar_search">
+<div class="search"><input autocomplete="off" class="search_input mini_search_input" data-autocomplete-search="true" id="sidebar_search_input" name="query" placeholder="Search" type="text"><input alt="" class="search_button" src="Pololu_docs_files/magglass-d28c6b7b9d1f35858a702b71e13b678bfdee962d795c7ad2426.png" type="image" value="go">
+</div>
+</form>
+
+</div>
+</div>
+<div class="menu">
+<h2><a data-feedback="true" href="">Feedback</a></h2>
+<div>
+<a class="menu_visible_link" data-feedback="true" href="">Comments or questions?</a>
+</div>
+</div>
+<div class="menu">
+<h2><a href="https://www.pololu.com/category/31/services">Services</a></h2>
+<div>
+<ul>
+<li>
+<a href="https://www.pololu.com/product/749">Custom Laser Cutting</a>
+</li>
+<li>
+<a href="https://www.pololu.com/product/446">SMT Stencils</a>
+</li>
+</ul>
+</div>
+</div>
+<div class="menu">
+<h2><a href="https://www.pololu.com/">Products</a></h2>
+<div>
+<!-- sidebar_categories --><h3><a href="https://www.pololu.com/category/42/new-products">New Products</a></h3>
+<h3><span class="specials_category"><a href="https://www.pololu.com/specials">Specials!</a></span></h3>
+<hr>
+<h3><a href="https://www.pololu.com/category/2/robot-kits">Robots</a></h3>
+<ul>
+	<li><a href="https://www.pololu.com/category/76/3pi-robots-and-accessories">3pi</a></li>
+	<li><a href="https://www.pololu.com/category/210/balboa-robot-and-accessories">Balboa</a></li>
+	<li><a href="https://www.pololu.com/category/327/collaborative-robots">Cobot</a></li>
+	<li><a href="https://www.pololu.com/category/202/romi-chassis-and-accessories">Romi</a></li>
+	<li><a href="https://www.pololu.com/category/129/zumo-robots-and-accessories">Zumo</a></li>
+	<li><a href="https://www.pololu.com/category/3/robot-kits-with-soldering">Kits, Soldering</a></li>
+	<li><a href="https://www.pololu.com/category/4/robot-kits-without-soldering">Kits, No Soldering</a></li>
+</ul>
+<h3><a href="https://www.pololu.com/category/6/electronics">Electronics</a></h3>
+<ul>
+	<li><a href="https://www.pololu.com/category/125/arduino-compatible">Arduino</a></li>
+	<li><a href="https://www.pololu.com/category/39/cables-and-wire">Cables and Wires</a></li>
+	<li><a href="https://www.pololu.com/category/13/computer-interface">Computer Interface</a></li>
+	<li><a href="https://www.pololu.com/category/19/connectors">Connectors</a></li>
+	<li><a href="https://www.pololu.com/category/64/development-boards-programmable-controllers">Development Boards</a></li>
+	<li><a href="https://www.pololu.com/category/20/leds">LEDs</a></li>
+	<li><a href="https://www.pololu.com/category/9/motion-control-modules">Motor Control</a></li>
+	<li><a href="https://www.pololu.com/category/321/power">Power</a></li>
+	<li><a href="https://www.pololu.com/category/14/electronics-prototyping">Prototyping</a></li>
+	<li><a href="https://www.pololu.com/category/150/raspberry-pi">Raspberry Pi</a></li>
+	<li><a href="https://www.pololu.com/category/135/relay-modules">Relays</a></li>
+	<li><a href="https://www.pololu.com/category/7/sensors">Sensors</a></li>
+	<li><a href="https://www.pololu.com/category/102/maestro-usb-servo-controllers">Servo Control</a></li>
+	<li><a href="https://www.pololu.com/category/136/voltage-regulators">Voltage Regulators</a></li>
+</ul>
+<h3><a href="https://www.pololu.com/category/21/mechanical-components">Mechanical</a></h3>
+<ul>
+	<li><a href="https://www.pololu.com/category/231/ball-casters">Ball Casters</a></li>
+	<li><a href="https://www.pololu.com/category/230/brackets">Brackets</a></li>
+	<li><a href="https://www.pololu.com/category/26/chassis">Chassis</a></li>
+	<li><a href="https://www.pololu.com/category/25/hardware">Hardware</a></li>
+	<li><a href="https://www.pololu.com/category/127/linear-actuators">Linear Actuators</a></li>
+	<li><a href="https://www.pololu.com/category/22/motors-and-gearboxes">Motors</a></li>
+	<li><a href="https://www.pololu.com/category/179/motor-shaft-adapters">Motor Shaft Adapters</a></li>
+	<li><a href="https://www.pololu.com/category/205/servos">Servos</a></li>
+	<li><a href="https://www.pololu.com/category/87/stepper-motors">Stepper Motors</a></li>
+	<li><a href="https://www.pololu.com/category/61/tamiya-products">Tamiya Products</a></li>
+	<li><a href="https://www.pololu.com/category/5/tools">Tools</a></li>
+	<li><a href="https://www.pololu.com/category/232/tracks">Tracks</a></li>
+	<li><a href="https://www.pololu.com/category/234/wheels">Wheels</a></li>
+</ul>
+<h3><a href="https://www.pololu.com/category/109/shirts">Shirts</a></h3>
+<ul>
+	<li><a href="https://www.pololu.com/category/237/pololu-balboa-t-shirts">Balboa T-Shirts</a></li>
+	<li><a href="https://www.pololu.com/category/194/pololu-zumo-t-shirts">Zumo T-Shirts</a></li>
+	<li><a href="https://www.pololu.com/category/193/pololu-circuit-logo-t-shirts">Logo T-Shirts</a></li>
+</ul>
+</div>
+</div>
+
+<div class="menu">
+<h2>Community</h2>
+<div>
+<ul>
+<li>
+<a data-lightbox-link="true" data-lightbox-height="34rem" data-lightbox-width="36rem" href="https://www.pololu.com/account/communication-preferences">Mailing list</a>
+</li>
+<li>
+<a href="https://www.pololu.com/blog">Pololu Blog</a>
+</li>
+<li>
+<a href="https://www.pololu.com/blog/engage-your-brain">Engage Your Brain</a>
+</li>
+<li>
+<a href="https://www.pololu.com/blog/community-projects">Community Projects</a>
+</li>
+<li>
+<span class="image_text_link"><a href="https://www.pololu.com/feeds"><img alt="" src="Pololu_docs_files/feed-icon-12x12-ad0e7f1965647f9414a76a1f32fb46dc73c1b2d29520.png"></a><a href="https://www.pololu.com/feeds">Feeds</a></span>
+</li>
+<li>
+<span class="image_text_link"><a href="mailto:?body=https%3A%2F%2Fwww.pololu.com%2Fdocs%2F0J86%2Fall&amp;subject"><img alt="" src="Pololu_docs_files/email-f2957b324fa09a7d81ed64679a6b9454647ad40514cd7b1ce501ae.png"></a><a href="mailto:?body=https%3A%2F%2Fwww.pololu.com%2Fdocs%2F0J86%2Fall&amp;subject">Email a friend</a></span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="mathjax"></div>
+
+
+</div></body></html>

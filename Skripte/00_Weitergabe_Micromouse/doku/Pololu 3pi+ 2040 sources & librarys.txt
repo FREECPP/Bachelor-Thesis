@@ -1,0 +1,36 @@
+Pololu 3pi+ 2040 sources
+https://github.com/adamgreen/pololu-3pi-plus-2040-arduino-library/tree/main
+
+
+Buttons
+https://github.com/pololu/pushbutton-arduino
+
+
+OLED
+https://pololu.github.io/pololu-oled-arduino/class_pololu_s_h1106_main.html
+https://github.com/pololu/pololu-oled-arduino
+
+
+IR Sensor
+https://github.com/pololu/opt3101-arduino?tab=readme-ov-file
+
+
+Gyro
+https://github.com/adamgreen/pololu-3pi-plus-2040-arduino-library/blob/main/src/Pololu3piPlus2040IMU.h
+https://github.com/pololu/lsm6-arduino
+
+
+PID
+https://www.pololu.com/docs/0J21/7.c
+
+
+Maze Solving
+https://www.pololu.com/docs/0J21/8.f
+https://github.com/pololu/libpololu-avr/tree/master/examples_templates/3pi-mazesolver
+https://github.com/pololu/zumo-32u4-arduino-library/tree/master/examples/MazeSolver
+
+
+Micromouse
+https://projects.ieeebruins.com/micromouse/
+
+

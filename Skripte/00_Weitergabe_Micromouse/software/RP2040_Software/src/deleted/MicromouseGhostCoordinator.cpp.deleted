@@ -1,0 +1,291 @@
+#include "MicromouseGhostCoordinator.h"
+
+#include "MicromouseGameIdentity.h"
+#include "MicromouseMappingState.h"
+
+struct GhostPeer
+{
+  bool active;
+  uint8_t id;
+  uint8_t x;
+  uint8_t y;
+  uint32_t lastSeenMs;
+
+  bool reservationActive;
+  uint8_t reservedX;
+  uint8_t reservedY;
+  uint32_t reservationSeenMs;
+};
+
+static const uint32_t PEER_TIMEOUT_MS = 2500;
+static const uint32_t RESERVATION_TIMEOUT_MS = 900;
+static GhostPeer peers[4];
+
+static bool peerIsFresh(const GhostPeer &peer, uint32_t nowMs)
+{
+  return peer.active && (uint32_t)(nowMs - peer.lastSeenMs) <= PEER_TIMEOUT_MS;
+}
+
+static int roleIndex(uint8_t role)
+{
+  if (role < GAME_ROLE_SHADOW || role > GAME_ROLE_POKEY)
+    return -1;
+  return (int)(role - GAME_ROLE_SHADOW);
+}
+
+static int rolePriority(uint8_t role)
+{
+  if (role < GAME_ROLE_SHADOW || role > GAME_ROLE_POKEY)
+    return 100;
+  return (int)(role - GAME_ROLE_SHADOW);
+}
+
+static bool peerReservationIsFresh(const GhostPeer &peer, uint32_t nowMs)
+{
+  return peer.reservationActive &&
+         (uint32_t)(nowMs - peer.reservationSeenMs) <= RESERVATION_TIMEOUT_MS;
+}
+
+static bool occupiedByPeerCurrent(int x, int y, uint32_t nowMs)
+{
+  for (int i = 0; i < 4; i++)
+  {
+    if (peerIsFresh(peers[i], nowMs) && peers[i].x == x && peers[i].y == y)
+      return true;
+  }
+  return false;
+}
+
+static bool reservedByBlockingPeer(int x, int y, uint32_t nowMs)
+{
+  const uint8_t ownRole = gameIdentityRole(gameIdentityPackedId());
+  const int ownPriority = rolePriority(ownRole);
+
+  for (int i = 0; i < 4; i++)
+  {
+    const GhostPeer &peer = peers[i];
+    if (!peerReservationIsFresh(peer, nowMs))
+      continue;
+    if (peer.reservedX != x || peer.reservedY != y)
+      continue;
+
+    const int peerPriority = rolePriority(gameIdentityRole(peer.id));
+    if (peerPriority <= ownPriority)
+      return true;
+  }
+
+  return false;
+}
+
+static bool blockedByPeer(int x, int y, uint32_t nowMs)
+{
+  return occupiedByPeerCurrent(x, y, nowMs) ||
+         reservedByBlockingPeer(x, y, nowMs);
+}
+
+static bool wallBlocks(int x, int y, int dir)
+{
+  return maze[x][y].known[dir] && maze[x][y].wall[dir];
+}
+
+static bool edgeLooksOpen(int x, int y, int nx, int ny)
+{
+  if (!inBounds(x, y) || !inBounds(nx, ny))
+    return false;
+
+  int dir = -1;
+  if      (nx == x     && ny == y - 1) dir = NORTH;
+  else if (nx == x + 1 && ny == y)     dir = EAST;
+  else if (nx == x     && ny == y + 1) dir = SOUTH;
+  else if (nx == x - 1 && ny == y)     dir = WEST;
+  else return false;
+
+  return !wallBlocks(x, y, dir) && !wallBlocks(nx, ny, oppositeOf(dir));
+}
+
+static int manhattan(int ax, int ay, int bx, int by)
+{
+  int dx = ax - bx;
+  int dy = ay - by;
+  if (dx < 0) dx = -dx;
+  if (dy < 0) dy = -dy;
+  return dx + dy;
+}
+
+void ghostCoordinatorReset()
+{
+  for (int i = 0; i < 4; i++)
+  {
+    peers[i].active = false;
+    peers[i].reservationActive = false;
+  }
+}
+
+void ghostCoordinatorObservePeer(uint8_t peerId, uint8_t x, uint8_t y, uint32_t nowMs)
+{
+  if (gameIdentityIsBroadcast(peerId) || peerId == gameIdentityPackedId())
+    return;
+
+  const int idx = roleIndex(gameIdentityRole(peerId));
+  if (idx < 0 || !inBounds(x, y))
+    return;
+
+  peers[idx].active = true;
+  peers[idx].id = peerId;
+  peers[idx].x = x;
+  peers[idx].y = y;
+  peers[idx].lastSeenMs = nowMs;
+}
+
+void ghostCoordinatorObservePeerReservation(uint8_t peerId, uint8_t x, uint8_t y, uint32_t nowMs)
+{
+  if (gameIdentityIsBroadcast(peerId) || peerId == gameIdentityPackedId())
+    return;
+
+  const int idx = roleIndex(gameIdentityRole(peerId));
+  if (idx < 0 || !inBounds(x, y))
+    return;
+
+  peers[idx].id = peerId;
+  peers[idx].reservationActive = true;
+  peers[idx].reservedX = x;
+  peers[idx].reservedY = y;
+  peers[idx].reservationSeenMs = nowMs;
+}
+
+bool ghostCoordinatorAdjustTarget(int ownX, int ownY,
+                                  int desiredX, int desiredY,
+                                  int &targetX, int &targetY,
+                                  uint32_t nowMs)
+{
+  targetX = desiredX;
+  targetY = desiredY;
+
+  if (!inBounds(desiredX, desiredY) || !blockedByPeer(desiredX, desiredY, nowMs))
+    return false;
+
+  const int dirs[4] = {NORTH, EAST, SOUTH, WEST};
+  int bestX = desiredX;
+  int bestY = desiredY;
+  int bestScore = 10000;
+  bool found = false;
+
+  for (int i = 0; i < 4; i++)
+  {
+    const int nx = desiredX + dxDir(dirs[i]);
+    const int ny = desiredY + dyDir(dirs[i]);
+    if (!inBounds(nx, ny)) continue;
+    if (blockedByPeer(nx, ny, nowMs)) continue;
+    if (!edgeLooksOpen(desiredX, desiredY, nx, ny)) continue;
+
+    const int score = manhattan(ownX, ownY, nx, ny);
+    if (!found || score < bestScore)
+    {
+      found = true;
+      bestScore = score;
+      bestX = nx;
+      bestY = ny;
+    }
+  }
+
+  if (!found)
+    return false;
+
+  targetX = bestX;
+  targetY = bestY;
+  return true;
+}
+
+bool ghostCoordinatorShouldPauseBeforeMove(int ownX, int ownY,
+                                           int nextX, int nextY,
+                                           uint32_t nowMs)
+{
+  (void)ownX;
+  (void)ownY;
+
+  if (!inBounds(nextX, nextY))
+    return false;
+  return blockedByPeer(nextX, nextY, nowMs);
+}
+
+bool ghostCoordinatorShouldYieldCurrentCell(int ownX, int ownY, uint32_t nowMs)
+{
+  if (!inBounds(ownX, ownY))
+    return false;
+
+  const uint8_t ownRole = gameIdentityRole(gameIdentityPackedId());
+  const int ownPriority = rolePriority(ownRole);
+
+  for (int i = 0; i < 4; i++)
+  {
+    const GhostPeer &peer = peers[i];
+    if (!peerReservationIsFresh(peer, nowMs))
+      continue;
+    if (peer.reservedX != ownX || peer.reservedY != ownY)
+      continue;
+
+    const int peerPriority = rolePriority(gameIdentityRole(peer.id));
+    if (peerPriority < ownPriority)
+      return true;
+  }
+
+  return false;
+}
+
+bool ghostCoordinatorFindYieldCell(int ownX, int ownY,
+                                   int &yieldX, int &yieldY,
+                                   uint32_t nowMs)
+{
+  yieldX = ownX;
+  yieldY = ownY;
+
+  if (!inBounds(ownX, ownY))
+    return false;
+
+  const int dirs[4] = {NORTH, EAST, SOUTH, WEST};
+  for (int i = 0; i < 4; i++)
+  {
+    const int nx = ownX + dxDir(dirs[i]);
+    const int ny = ownY + dyDir(dirs[i]);
+    if (!inBounds(nx, ny)) continue;
+    if (!edgeLooksOpen(ownX, ownY, nx, ny)) continue;
+    if (blockedByPeer(nx, ny, nowMs)) continue;
+
+    yieldX = nx;
+    yieldY = ny;
+    return true;
+  }
+
+  return false;
+}
+
+bool ghostCoordinatorIsPeerCell(int x, int y, uint32_t nowMs)
+{
+  if (!inBounds(x, y))
+    return false;
+  return blockedByPeer(x, y, nowMs);
+}
+
+// True, wenn auf (x,y) ein anderer Geist mit HOEHERER oder gleicher Prioritaet
+// als ownRole steht. Fuer die Heim-Pfadplanung: Ein Geist behandelt nur hoeher
+// priorisierte Geister als Wand und weicht ihnen aus; niederpriore weichen
+// ihrerseits ihm. Das verhindert gegenseitige Blockade (Live-Lock) in engen
+// Korridoren – der Hoeherpriore faehrt, der Niederpriore wartet/umfaehrt.
+bool ghostCoordinatorIsHomeBlockingPeer(int x, int y, uint8_t ownRole, uint32_t nowMs)
+{
+  if (!inBounds(x, y))
+    return false;
+
+  const int ownPriority = rolePriority(ownRole);
+  for (int i = 0; i < 4; i++)
+  {
+    const GhostPeer &peer = peers[i];
+    if (!peerIsFresh(peer, nowMs))
+      continue;
+    if (peer.x != x || peer.y != y)
+      continue;
+    if (rolePriority(gameIdentityRole(peer.id)) <= ownPriority)
+      return true;
+  }
+  return false;
+}

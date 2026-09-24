@@ -1,0 +1,76 @@
+#pragma once
+#include <Arduino.h>
+#include <COMMUNICATION_CODES.h>   // GC_* codes, GAME_BROADCAST_ID
+
+// ============================================================
+// GameConfig.h  –  Zentrale Spielkonfiguration
+//
+// Enthält:
+//  - Positionskodierung (Heading in MSBs von x und y)
+//  - Spielereignis-Codes für sendControlData
+//
+// Startpositionen und Rollen bleiben in den jeweiligen Modulen:
+//   Rollen     → MicromouseGameIdentity.h (GAME_ROLE_*)
+//   Positionen → MicromousePacman.h       (PAC_START_*, SHADOW_START_*, ...)
+// ============================================================
+
+// ============================================================
+// Positionskodierung mit Fahrtrichtung
+//
+// Alle Roboter (Pacman und Geister) nutzen sendPosData(targetId, enc_x, enc_y).
+// Die Fahrtrichtung (heading) wird bitcodiert in den MSBs:
+//
+//   enc_x = x  |  (heading & 1) << 7     ← heading Bit 0
+//   enc_y = y  |  (heading & 2) << 6     ← heading Bit 1
+//
+// Mapping (NORTH=0, EAST=1, SOUTH=2, WEST=3):
+//
+//   Heading  | bit7(x) | bit7(y) | Bedeutung
+//   ---------|---------|---------|------------------------------------
+//   NORTH(0) |    0    |    0    | keine positive Achse aktiv
+//   EAST (1) |    1    |    0    | positive x-Richtung  ← MSB(x) gesetzt
+//   SOUTH(2) |    0    |    1    | positive y-Richtung  ← MSB(y) gesetzt
+//   WEST (3) |    1    |    1    | beide gesetzt (Konvention für neg. x)
+//
+// x ∈ [0,9], y ∈ [0,4]  →  Bits 4-6 sind immer 0, kein Konflikt.
+// ============================================================
+
+constexpr uint8_t GAME_POS_X_MASK    = 0x0F;  // x-Koordinate: 4 Bits
+constexpr uint8_t GAME_POS_Y_MASK    = 0x0F;  // y-Koordinate: 4 Bits
+constexpr uint8_t GAME_POS_XHDG_BIT  = 0x80;  // heading Bit 0 im x-Byte
+constexpr uint8_t GAME_POS_YHDG_BIT  = 0x80;  // heading Bit 1 im y-Byte
+
+// Kodierung: Position + Heading → encoded bytes
+inline uint8_t gamePosEncodeX(uint8_t x, int heading)
+{
+    return (uint8_t)(x | (((uint8_t)heading & 1u) << 7));
+}
+inline uint8_t gamePosEncodeY(uint8_t y, int heading)
+{
+    return (uint8_t)(y | ((((uint8_t)heading >> 1u) & 1u) << 7));
+}
+
+// Dekodierung: encoded bytes → x, y, heading
+inline uint8_t gamePosDecodeX(uint8_t enc_x) { return enc_x & GAME_POS_X_MASK; }
+inline uint8_t gamePosDecodeY(uint8_t enc_y) { return enc_y & GAME_POS_Y_MASK; }
+inline int gamePosDecodeHeading(uint8_t enc_x, uint8_t enc_y)
+{
+    return (int)(((enc_y & GAME_POS_YHDG_BIT) ? 2 : 0) |
+                 ((enc_x & GAME_POS_XHDG_BIT) ? 1 : 0));
+}
+
+// ============================================================
+// Spielereignis-Codes  (Payload data[0] bei sendControlData)
+//
+// Format:   sendControlData(BROADCAST, 1+n, { GAME_EVT_*, opt. payload })
+// Empfang:  cbReceiveControlData(senderPackedId, length, data)
+//            → senderPackedId enthält Rolle (via gameIdentityRole())
+//            → data[0] = Ereigniscode, data[1..] = optionale Nutzdaten
+// ============================================================
+
+// Ghost hat Pacman gefangen (kein weiterer Payload nötig)
+constexpr uint8_t GAME_EVT_CAPTURE = GC_CATCHED_PACMAN;   // = 4
+
+// Roboter ist auf seinem Startnode angekommen, bereit zum Neustart
+// Payload: [homeX, homeY]  (2 Bytes)
+constexpr uint8_t GAME_EVT_AT_HOME = GC_RESET_POSITIONS;  // = 6
