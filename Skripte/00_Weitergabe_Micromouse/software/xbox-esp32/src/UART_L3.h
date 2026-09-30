@@ -54,6 +54,8 @@ public:
     void registerControllerAction(void (*callback)(uint8_t length, uint8_t *data));
     void registerSendControlData(void (*callback)(uint8_t length, uint8_t *value));
 
+    void forwardRaw(uint8_t length, uint8_t *data);
+
 
 };
 

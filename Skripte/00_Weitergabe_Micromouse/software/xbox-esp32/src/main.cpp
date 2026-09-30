@@ -6,6 +6,8 @@
 #include <esp_now.h>
 #include <btstack_run_loop.h>
 #include <btstack_run_loop_freertos.h>
+#include <WiFi.h>
+#include "wifi_tcp_stuff.h"
 extern "C" {
 #include <uni_hid_device.h>
 }
@@ -75,6 +77,7 @@ static void serviceControllerRumble() {
     btstack_run_loop_execute_on_main_thread(&rumbleCallbackRegistration);
     btstack_run_loop_freertos_trigger();
 }
+
 
 // ── Callbacks ────────────────────────────────────────────────────────────────
 
@@ -189,11 +192,16 @@ void setup() {
     uartL3.registerSendControlData(UL3CB_sendControlData);
 
     // ESP Now stuff
+    /*
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
     esp_wifi_init(&cfg);
     esp_wifi_set_storage(WIFI_STORAGE_RAM);
     esp_wifi_set_mode(WIFI_MODE_STA);
-    esp_wifi_start();
+    esp_wifi_start();*/
+    WiFi.persistent(false);
+    WiFi.mode(WIFI_STA);
+    WiFi.setSleep(true); 
+    initWifiTcp();
     esp_err_t ret = esp_now_init();
     if (ret != ESP_OK) {
         Serial.printf("esp_now_init failed: %s\n", esp_err_to_name(ret));
@@ -235,5 +243,7 @@ void loop() {
     uartL3.update();
     serviceControllerRumble();
     processNow();
+    processTcp();
+    //Serial.println(WiFi.status() == WL_CONNECTED ? WiFi.localIP().toString() : "WLAN: nicht verbunden");
 
 }

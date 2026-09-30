@@ -124,6 +124,9 @@ void UART_L3::receiveControlData(uint8_t length, uint8_t *data) {
     uartL2.txList.addMessage(mle);
 }
 
+void UART_L3::forwardRaw(uint8_t length, uint8_t *data){
+    uartL2.txList.addMessage(length, data);
+}
 
 
 
