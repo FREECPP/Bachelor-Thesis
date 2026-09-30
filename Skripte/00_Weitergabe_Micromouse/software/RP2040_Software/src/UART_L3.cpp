@@ -52,7 +52,13 @@ void UART_L3::update() {
                 break;
             case OPC_GAME_CONTROL:
                 if (cbReceiveControlData != nullptr) cbReceiveControlData(mle->message[1], mle->length -2, &mle->message[2]);
+                Serial.print("Ich habe ein Controlldata bekommen");
                 break;
+            case OPC_TESTDRIVER_CONTROL:
+                if (cbReceiveTestdriverData != nullptr) cbReceiveTestdriverData(mle->length -1, &mle->message[1]);
+                Serial.print("Ich habe Testdriverdata bekommen");
+                break;
+                
             default:
                 Serial.println("UART_L3::update: Received unknown opcode:");
                 for (uint8_t i = 0; i < mle->length; i++) {
@@ -164,4 +170,5 @@ void UART_L3::registerCbReceivePosData(void (*callback)(uint8_t id, uint8_t x, u
 void UART_L3::registerCbReceiveBtControllerData(void (*callback)(uint8_t length, uint8_t *data)) {cbReceiveBtControllerData = callback;}
 void UART_L3::registerCbError(void (*callback)(uint8_t errorId)) {cbError = callback;}
 void UART_L3::registerCbReceiveControlData(void (*callback)(uint8_t senderId, uint8_t length, uint8_t *data)) {cbReceiveControlData = callback;}
+void UART_L3::registerCbReceiveTestdriverData(void(*callback)(uint8_t length, uint8_t *data)){cbReceiveTestdriverData = callback;}
 

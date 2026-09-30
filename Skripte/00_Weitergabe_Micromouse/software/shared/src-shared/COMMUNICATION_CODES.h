@@ -19,6 +19,7 @@ const uint8_t OPC_SUBSCR_BT_CONTROLLER_DATA = 11;
 const uint8_t OPC_UNSUBSCR_BT_CONTROLLER_DATA = 12;
 const uint8_t OPC_BT_CONTROLLER_ACTION = 13;
 const uint8_t OPC_GAME_CONTROL = 14;        // Opcode, TargetId, GameControl Id, optional other stuff
+const uint8_t OPC_TESTDRIVER_CONTROL = 15;
 
 
 // Layer 3
