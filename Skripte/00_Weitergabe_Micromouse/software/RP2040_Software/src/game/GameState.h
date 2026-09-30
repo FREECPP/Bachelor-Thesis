@@ -11,13 +11,15 @@
 #define ROBOT_ID_BITS_PINK      0b01000000
 #define ROBOT_ID_BITS_CYAN      0b01100000
 #define ROBOT_ID_BITS_BROWN     0b10000000
+#define ROBOT_ID_BITS_TESTDRIVE 0b11000000
 
-enum GAME_ROLES {
+enum GAME_ROLES { // Hier werden die Rollen festgelegt
     ROLE_PACMAN,
     ROLE_RED,
     ROLE_PINK,
     ROLE_CYAN,
-    ROLE_BROWN
+    ROLE_BROWN,
+    TESTDRIVE
 };
 
 enum GAME_STATE {

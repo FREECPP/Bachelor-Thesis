@@ -195,4 +195,8 @@ void navigationCellRetreatAbort();
 // laufender turnTo/followLineToNextIntersectionFast nicht verfallen.
 void mappingRegisterBackgroundUpdate(void (*fn)());
 
+// Wrapper für setMotors
+void solveSetMotors(int left, int right);
+void motorsActiveBrake();
+
 #endif

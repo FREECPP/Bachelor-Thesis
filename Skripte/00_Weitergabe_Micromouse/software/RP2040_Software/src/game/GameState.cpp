@@ -8,6 +8,7 @@
 #include "GhostInteraction.h"
 #include "GhostGame.h"
 #include "PacmanGame.h"
+#include "TestDrive.h"
 
 #include "../Globals.h"
 #include "../ButtonAdvanced.h"
@@ -930,6 +931,10 @@ void gameActive() {
         case GAME_ROLES::ROLE_BROWN:
             gameInitialized = ghostGameInit(activeRole);
             break;
+        case GAME_ROLES::TESTDRIVE:
+            gameInitialized = true;
+            currentGameState = GAME_STATE::GS_RUNNING;
+            break;
     }
 
     if (gameInitialized) {
@@ -1218,6 +1223,10 @@ void gameLoop() {
             if (ghostGameLoop())
                 rpState = RP_STATE_MENU;
             return;
+        case GAME_ROLES::TESTDRIVE:
+                if (testLoop())
+                rpState = RP_STATE_MENU;
+            return;
     }
 }
 
@@ -1315,6 +1324,8 @@ GAME_ROLES getRoleFromId(uint8_t id) {
             return GAME_ROLES::ROLE_CYAN;
         case ROBOT_ID_BITS_BROWN:
             return GAME_ROLES::ROLE_BROWN;
+        case ROBOT_ID_BITS_TESTDRIVE:
+            return GAME_ROLES::TESTDRIVE;
         default:
             Serial.println("Unknown game role. Defaulting to pacman");
             return GAME_ROLES::ROLE_PACMAN;
@@ -1339,6 +1350,9 @@ void setOwnIdRole(GAME_ROLES newRole, uint8_t id) {
             return;
         case GAME_ROLES::ROLE_BROWN:
             robotId |= ROBOT_ID_BITS_BROWN;
+            return;
+        case GAME_ROLES::TESTDRIVE:
+            robotId |= ROBOT_ID_BITS_TESTDRIVE;
             return;
         default:
             return;

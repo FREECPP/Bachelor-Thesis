@@ -9,13 +9,14 @@ extern const MausModusInfo mausModi[] = {
   {"Speedy",  {51,  4, 29}},   // Pink
   {"Bashful", { 0, 20, 51}},   // Hellblau
   {"Pokey",   {51, 16,  0}},   // Orange
+  {"Testdriver",  {51, 40,  0}},   // Gelb
 };
-extern const int MODUS_COUNT = 5;
+extern const int MODUS_COUNT = 6;
 int  mausModusIdx  = 0;
-GAME_ROLES modusEnumFromIdx[] = {ROLE_PACMAN, ROLE_RED, ROLE_PINK, ROLE_CYAN, ROLE_BROWN};
+GAME_ROLES modusEnumFromIdx[] = {ROLE_PACMAN, ROLE_RED, ROLE_PINK, ROLE_CYAN, ROLE_BROWN, TESTDRIVE};
 uint8_t gameLocalId = 0;
 
-const char* optModus[] = {"Pacman","Shadow","Speedy","Bashful","Pokey"};
+const char* optModus[] = {"Pacman","Shadow","Speedy","Bashful","Pokey","Testdriver"};
 
 
 // Die Spiel-ID ist auf dem RP persistent (SavedSettings). Der ESP verliert
