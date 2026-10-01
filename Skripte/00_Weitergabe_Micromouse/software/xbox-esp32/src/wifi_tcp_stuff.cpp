@@ -8,6 +8,7 @@ extern UART_L3 uartL3;
 
 static WiFiServer tcpServer(TCP_PORT);
 static WiFiClient tcpClient;
+static bool haveClient = false;
 
 // Nachrichten Puffer
 static uint8_t    tcpBuf[256];
@@ -70,18 +71,21 @@ void processTcp() {
 
     // liefert einen wartenden Client (ist ein neuer da wird ein alter ggf. entfernt)
     WiFiClient c = tcpServer.available();     // neuer Client?
-    if (c) {
-        if (tcpClient) tcpClient.stop();
+    if (c.fd() >= 0) {  // gibt Socket-Dateideskriptor heraus(Nummer unter der das Betriebssystem die Netzwerkverbindung verwaltet) 
+                        // jede TCP-Verbindung ist intern ein Socket
+                        // fd() >= 0 : Es existiert en gültiger Socket (Client-Objekt hält echte Verbindung -> Auch eine, die der Gegner wieder geschlossen hat)
+                        // fd() == -1: Es gibt keinen Socket -> tcpServer.available() hat keinen wartenden Client geliefert
+
+        if (haveClient) tcpClient.stop();
         tcpClient = c;
+        haveClient = true;
         tcpClient.setNoDelay(true);
         tcpFill = 0;
         Serial.println("TCP: Client verbunden");
     }
 
     // Solange Client verbunden und Daten vorhanden sind, diese in den Puffer schreiben
-    while (tcpClient && (tcpClient.connected() || tcpClient.available())) {
-
-        if(!tcpClient.available()) break;
+    while (haveClient && tcpClient.available()) {
 
         // nächstes Byte auslesen und in b speichern
         uint8_t b = tcpClient.read();
@@ -96,5 +100,9 @@ void processTcp() {
             handleTcpFrame(&tcpBuf[1], tcpBuf[0]);
             tcpFill = 0;
         }
+    }
+    if (haveClient && !tcpClient.available() && !tcpClient.connected()){
+        tcpClient.stop();
+        haveClient = false;
     }
 }

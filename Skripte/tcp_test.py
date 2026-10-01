@@ -22,12 +22,12 @@ def send_packet():
     s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 
     # Nutzdaten werden zusammengebaut (Wichtig zuerst Op-Code und dann Nachricht)
-    payload = bytes([OPC_TESTDRIVER_CONTROL, 2])
+    payload = bytes([OPC_TESTDRIVER_CONTROL, 1])
 
     # Mit längenbyte anreichern damit Empfänger weiß, wann das Paket zu ende ist + senden
     s.sendall(bytes([len(payload)]) + payload)
 
-    time.sleep(1)     # ESP32 Zeit geben, das Paket zu lesen
+   # time.sleep(1)     # ESP32 Zeit geben, das Paket zu lesen
 
     # Verbindung beenden
     s.close()
