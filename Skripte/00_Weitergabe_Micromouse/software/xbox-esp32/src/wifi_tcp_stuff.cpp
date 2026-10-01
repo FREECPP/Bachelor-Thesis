@@ -79,7 +79,9 @@ void processTcp() {
     }
 
     // Solange Client verbunden und Daten vorhanden sind, diese in den Puffer schreiben
-    while (tcpClient && tcpClient.connected() && tcpClient.available()) {
+    while (tcpClient && (tcpClient.connected() || tcpClient.available())) {
+
+        if(!tcpClient.available()) break;
 
         // nächstes Byte auslesen und in b speichern
         uint8_t b = tcpClient.read();
