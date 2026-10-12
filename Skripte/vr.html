@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AR-Stream VR</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #000; color: #eee;
+               font-family: sans-serif; display: flex; flex-direction: column;
+               align-items: center; justify-content: center; }
+  button { font-size: 2rem; padding: 1rem 2.5rem; border: 0; border-radius: .6rem;
+           background: #2d7ff9; color: #fff; }
+  button:disabled { background: #444; color: #888; }
+  #status { margin-top: 1.2rem; opacity: .75; max-width: 30rem; text-align: center; }
+</style>
+</head>
+<body>
+<button id="enter" disabled>Enter VR</button>
+<div id="status">Prüfe WebXR ...</div>
+
+<script>
+const statusEl = document.getElementById('status');
+const btn = document.getElementById('enter');
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+// ---------------------------------------------------------------- WebGL
+const gl = document.createElement('canvas').getContext('webgl', { xrCompatible: true });
+
+const vsSrc = `
+  attribute vec2 p;
+  uniform mat4 mvp;
+  varying vec2 uv;
+  void main() {
+    uv = vec2(p.x + 0.5, 0.5 - p.y);      // Bild nicht auf dem Kopf
+    gl_Position = mvp * vec4(p.x, p.y, 0.0, 1.0);
+  }`;
+const fsSrc = `
+  precision mediump float;
+  uniform sampler2D tex;
+  varying vec2 uv;
+  void main() { gl_FragColor = texture2D(tex, uv); }`;
+
+function shader(type, src) {
+  const s = gl.createShader(type);
+  gl.shaderSource(s, src);
+  gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+  return s;
+}
+
+const prog = gl.createProgram();
+gl.attachShader(prog, shader(gl.VERTEX_SHADER, vsSrc));
+gl.attachShader(prog, shader(gl.FRAGMENT_SHADER, fsSrc));
+gl.linkProgram(prog);
+if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+
+const uMvp = gl.getUniformLocation(prog, 'mvp');
+const aPos = gl.getAttribLocation(prog, 'p');
+
+// Quadrat von -0.5 bis 0.5, wird per Modellmatrix auf die gewünschte Größe skaliert
+const quad = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, quad);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-.5,-.5, .5,-.5, -.5,.5, .5,.5]), gl.STATIC_DRAW);
+
+const tex = gl.createTexture();
+gl.bindTexture(gl.TEXTURE_2D, tex);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);   // nötig, da 1280x720 keine 2er-Potenz
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+// ---------------------------------------------------------------- Matrizen (spaltenweise wie WebGL)
+function mul(a, b) {
+  const o = new Float32Array(16);
+  for (let c = 0; c < 4; c++)
+    for (let r = 0; r < 4; r++) {
+      let s = 0;
+      for (let k = 0; k < 4; k++) s += a[k * 4 + r] * b[c * 4 + k];
+      o[c * 4 + r] = s;
+    }
+  return o;
+}
+
+// ---------------------------------------------------------------- Bilder holen
+let aspect = 16 / 9;
+let haveFrame = false;
+
+async function pollFrames() {
+  while (true) {
+    try {
+      const r = await fetch('/frame.jpg?' + Date.now(), { cache: 'no-store' });
+      if (r.ok) {
+        const bmp = await createImageBitmap(await r.blob());
+        aspect = bmp.width / bmp.height;
+        gl.bindTexture(gl.TEXTURE_2D, tex);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, bmp);
+        bmp.close();
+        haveFrame = true;
+      } else {
+        await sleep(100);       // noch kein Bild vom Skript
+      }
+    } catch (e) {
+      await sleep(500);
+    }
+  }
+}
+pollFrames();
+
+// ---------------------------------------------------------------- WebXR
+const DIST = 2.0;                       // Abstand der Fläche in Metern
+const widths = [1.6, 2.4, 3.6, 5.0];    // Breiten, Trigger schaltet durch
+let widthIdx = 1;
+
+let refSpace = null;
+
+function onFrame(t, frame) {
+  const session = frame.session;
+  session.requestAnimationFrame(onFrame);
+
+  const pose = frame.getViewerPose(refSpace);
+  if (!pose) return;
+
+  const layer = session.renderState.baseLayer;
+  gl.bindFramebuffer(gl.FRAMEBUFFER, layer.framebuffer);
+  gl.clearColor(0, 0, 0, 1);            // alles schwarz
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  if (!haveFrame) return;
+
+  const w = widths[widthIdx];
+  const h = w / aspect;
+  // Modellmatrix: Skalierung (w, h) und Verschiebung 2 m nach vorn (-z)
+  const model = new Float32Array([w,0,0,0,  0,h,0,0,  0,0,1,0,  0,0,-DIST,1]);
+
+  gl.useProgram(prog);
+  gl.bindBuffer(gl.ARRAY_BUFFER, quad);
+  gl.enableVertexAttribArray(aPos);
+  gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+
+  for (const view of pose.views) {
+    const vp = layer.getViewport(view);
+    gl.viewport(vp.x, vp.y, vp.width, vp.height);
+    const mvp = mul(view.projectionMatrix, mul(view.transform.inverse.matrix, model));
+    gl.uniformMatrix4fv(uMvp, false, mvp);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  }
+}
+
+async function enterVR() {
+  try {
+    const session = await navigator.xr.requestSession('immersive-vr');
+    await gl.makeXRCompatible();
+    session.updateRenderState({ baseLayer: new XRWebGLLayer(session, gl) });
+    refSpace = await session.requestReferenceSpace('local');
+    session.addEventListener('select', () => { widthIdx = (widthIdx + 1) % widths.length; });
+    session.addEventListener('end', () => { statusEl.textContent = 'VR beendet.'; });
+    session.requestAnimationFrame(onFrame);
+  } catch (e) {
+    statusEl.textContent = 'VR konnte nicht gestartet werden: ' + e.message;
+  }
+}
+
+async function init() {
+  if (!navigator.xr) {
+    statusEl.textContent = 'WebXR nicht verfügbar. Die Seite muss über HTTPS geöffnet sein (https://...).';
+    return;
+  }
+  try {
+    const ok = await navigator.xr.isSessionSupported('immersive-vr');
+    if (!ok) { statusEl.textContent = 'immersive-vr wird von diesem Browser nicht unterstützt.'; return; }
+  } catch (e) {
+    statusEl.textContent = 'WebXR-Prüfung fehlgeschlagen: ' + e.message;
+    return;
+  }
+  statusEl.textContent = 'Bereit. Trigger im VR schaltet die Größe um.';
+  btn.disabled = false;
+  btn.addEventListener('click', enterVR);
+}
+init();
+</script>
+</body>
+</html>
