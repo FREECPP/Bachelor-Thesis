@@ -4,6 +4,10 @@ import trimesh
 import subprocess
 import os
 import tcp_test as tt
+import load_npz as npz
+import load_3d_geometry as geo
+import handle_marker as hm
+import mjpeg_server
 
 # ==============================================================================
 # 1. KALIBRIERUNGSDATEN & PARAMETER KONFIGURIEREN
@@ -15,25 +19,13 @@ WIDTH = 1280
 HEIGHT = 720
 
 # Laden der .npz-Datei & automatische Erkennung gängiger Variablen-Namen
-data = np.load(CALIB_FILE)
-camera_matrix = data.get("camera_matrix") if "camera_matrix" in data else data.get("mtx")
-dist_coeffs = data.get("dist_coeffs") if "dist_coeffs" in data else data.get("dist")
-
-if camera_matrix is None or dist_coeffs is None:
-    raise KeyError(
-        f"Konnte Kamera-Matrix oder Verzerrungskoeffizienten in '{CALIB_FILE}' nicht finden. "
-        f"Enthaltene Schlüssel: {list(data.keys())}"
-    )
+camera_matrix, dist_coeffs = npz.get_matrix_and_dist_coeffs(CALIB_FILE)
 
 # ==============================================================================
 # 2. 3D-GEOMETRIE AUS FUSION 360 LADEN (.obj-Datei)
 # ==============================================================================
-mesh = trimesh.load("Ar_test_obj.obj", force="mesh")
-mesh.apply_scale(0.001)  # mm in Meter umrechnen
-
-crystal_3d_pts = np.array(mesh.vertices, dtype=np.float32)
-faces = mesh.faces.tolist()
-edges = mesh.edges_unique
+OBJ_FILE = "Ar_test_obj.obj"
+crystal_3d_pts, faces, edges = geo.get_mesh_data(OBJ_FILE)
 
 # 3D-Ecken des ArUco-Markers (Z=0 Ebene)
 marker_3d_edges = np.array([
@@ -46,7 +38,8 @@ marker_3d_edges = np.array([
 # ==============================================================================
 # 3. MPV BACKEND STREAM & AR-TRACKING LOOP
 # ==============================================================================
-# Startet mpv im Hintergrund mit Ihren exakten Low-Latency Parametern
+# ---- Startet mpv im Hintergrund ----
+# Befehl der ausfgeführt werden soll
 mpv_cmd = [
     'mpv',
     'udp://@0.0.0.0:12345',
@@ -58,18 +51,22 @@ mpv_cmd = [
     '--o=-'                    # Ausgabe über stdout
 ]
 
+# Erstellen eines Subprozesses mit dem oben definierten Befehl
 process = subprocess.Popen(
-    mpv_cmd, 
-    stdout=subprocess.PIPE, 
-    stderr=subprocess.DEVNULL, 
-    bufsize=10**7
+    mpv_cmd,                    # Befehl von oben 
+    stdout=subprocess.PIPE,     # Videodaten werden nicht aufs Terminal gebracht sondern landen in einer Pipe die über process.stdout.read(frame_bytes) ausgelsen wird 
+    stderr=subprocess.DEVNULL,  # Fehlermeldungen werden unterdrückt 
+    bufsize=10**7               # Großer Buffer soll verhindern, das die Pipe vollläuft
 )
 
+# ---- OpenCV-Fenster erstellen ----
 window_name = "AR Red Crystal Tracking (mpv Backend)"
-cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
+cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)     # Es wird ein Normales Fenster erzeugt, das vergrößert oder verkleinert werden kann
 
-dictionary = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
+# ----  ArUco Detector einrichten ----
+dictionary = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)   #Gibt an welches Dictionary genutzt wird  
 
+# Verzweigung die prüft welche cv2 Version genutzt wird und demensprechend einen detector erstellt oder nicht 
 try:
     parameters = cv2.aruco.DetectorParameters()
     detector = cv2.aruco.ArucoDetector(dictionary, parameters)
@@ -83,6 +80,11 @@ print("AR-Tracking mit mpv-Backend gestartet. Drücke 'q' oder 'ESC' zum Beenden
 frame_bytes = WIDTH * HEIGHT * 3
 
 marker_was_visible = False
+triggered = False
+
+# ---- MJPEG-server starten unter dem Port 8080 ----
+# Besonders geeignet wenn der Stream auf einem Gerät läuft auf dem ich nicht viel coden kann sondern als Anzeigemedium nur einen Browser habe (VR-Brille, Handy, Tablet)
+mjpeg_server.start(8080)
 
 while True:
     # Exakt die Bytes für ein einzelnes Frame aus dem mpv-Datenstrom lesen
@@ -97,44 +99,20 @@ while True:
 
     # Marker erkennen
     if not legacy_mode:
-        corners, ids, _ = detector.detectMarkers(frame)
+        corners, ids, _ = detector.detectMarkers(frame) # Zwei Arrays werden zurückgegeben eins für die gefundenen Ecken(Corners) und eins für die ID's dabei stehen jeweils zugehörige Ecken und ID's am selben Indexplatz
     else:
-        corners, ids, _ = cv2.aruco.detectMarkers(frame, dictionary, parameters=parameters)
+        corners, ids, _ = cv2.aruco.detectMarkers(frame, dictionary, parameters=parameters) # Zwei Arrays werden zurückgegeben eins für die gefundenen Ecken(Corners) und eins für die ID's dabei stehen jeweils zugehörige Ecken und ID's am selben Indexplatz
 
+    dist = None
     if ids is not None:
         for i, marker_id in enumerate(ids.flatten()):
             if marker_id == TARGET_ID:
-                marker_visible = ids is not None and TARGET_ID in ids.flatten()
-                if marker_visible and not marker_was_visible:
-                    tt.send_packet()
-                marker_was_visible = marker_visible
-                corners_2d = corners[i][0].astype(np.float32)
+                
+               dist = hm.handle_marker(corners, i, crystal_3d_pts, marker_3d_edges,
+                                 camera_matrix, dist_coeffs, frame, faces, edges)
+    triggered = hm.send_packet_by_distance(dist, triggered)
 
-                # Position des Markers relativ zur Kamera bestimmen
-                success, rvec, tvec = cv2.solvePnP(
-                    marker_3d_edges, corners_2d, camera_matrix, dist_coeffs
-                )
-
-                if success:
-                    img_pts, _ = cv2.projectPoints(
-                        crystal_3d_pts, rvec, tvec, camera_matrix, dist_coeffs
-                    )
-                    img_pts = np.int32(img_pts.reshape(-1, 2))
-
-                    overlay = frame.copy()
-                    for face in faces:
-                        pts = img_pts[face]
-                        cv2.fillPoly(overlay, [pts], (20, 20, 180))
-
-                    cv2.addWeighted(overlay, 0.4, frame, 0.6, 0, frame)
-
-                    for edge in edges:
-                        pt1 = tuple(img_pts[edge[0]])
-                        pt2 = tuple(img_pts[edge[1]])
-                        cv2.line(frame, pt1, pt2, (0, 0, 100), 1, cv2.LINE_AA)
-
-                    cv2.polylines(frame, [np.int32(corners_2d)], True, (0, 255, 0), 2)
-
+    mjpeg_server.update_frame(frame)
     cv2.imshow(window_name, frame)
 
     # Da mpv bereits das Timing übernimmt, reicht cv2.waitKey(1) völlig aus
