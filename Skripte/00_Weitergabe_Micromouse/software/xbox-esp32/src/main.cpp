@@ -190,7 +190,6 @@ void setup() {
     uartL3.registerCbSubscribeController(UL3CB_subscribeBtController);
     uartL3.registerControllerAction(UL3CB_controllerAction);
     uartL3.registerSendControlData(UL3CB_sendControlData);
-
     // ESP Now stuff
     /*
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
@@ -200,6 +199,7 @@ void setup() {
     esp_wifi_start();*/
     WiFi.persistent(false);
     WiFi.mode(WIFI_STA);
+    Serial.println(WiFi.macAddress());
     WiFi.setSleep(true); 
     initWifiTcp();
     esp_err_t ret = esp_now_init();

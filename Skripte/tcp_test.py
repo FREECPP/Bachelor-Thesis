@@ -7,14 +7,25 @@ OPC_TESTDRIVER_CONTROL = 15
 # Versucht TCP-Verbindung zum ESP32 aufzubauen, dieser ist nicht immer 
 # Erreichbar, da sich Wifi wie auch Bluetooth die Funkantenne teilen daher wird 
 # der Verbindungsaufbau 10x versucht
-def connect(retries=5, delay=0.1):
+"""def connect(retries=5, delay=0.3):
     for i in range(retries):
         try:
             return socket.create_connection(("192.168.10.50", 4210), timeout=2)
         except OSError as e:
             print(f"Versuch {i+1} fehlgeschlagen: {e}")
             time.sleep(delay)
-    raise SystemExit("ESP32 nicht erreichbar")
+    raise ConnectionError("ESP32 nicht erreichbar") 
+"""
+def connect(timeout_total=6.0, delay=0.3):
+    deadline = time.time() + timeout_total
+    last_error = None
+    while time.time() < deadline:
+        try:
+            return socket.create_connection(("192.168.10.50", 4210), timeout=1)
+        except OSError as e:
+            last_error = e
+            time.sleep(delay)
+    raise ConnectionError(f"Connect: ESP32 nicht erreichbar ({last_error})")
 
 def send_packet():
     # Verbindung zu ESP32 herstellen
