@@ -34,7 +34,7 @@ def get_mesh_data(obj_path:str):
         edges: Kanten des Objekts
     """
     mesh = trimesh.load(obj_path, force="mesh")
-    mesh.apply_scale(0.001)  # mm in Meter umrechnen
+    mesh.apply_scale(0.001 * 0.5)  # mm in Meter umrechnen
 
     points = np.array(mesh.vertices, dtype=np.float32)
     faces = mesh.faces.tolist()
