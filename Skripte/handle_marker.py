@@ -108,7 +108,7 @@ def draw_object(frame, rvec, tvec, corners_2d, crystal_3d_pts, faces, edges,
 
     cv2.polylines(frame, [np.int32(corners_2d)], True, (0, 255, 0), 2)
 
-def send_packet_by_distance(dist, triggered, send_below=0.5, reset_above=0.6):
+def send_packet_by_distance(dist, triggered, value, send_below=0.5, reset_above=0.6):
     """Sendet ein Netzwerkpaket an den ESP32 abhängig vom Abstand zum Marker.
     
     Wenn sich der Roboter einem Marker nähert sollen verschiedene Aktionen 
@@ -121,9 +121,10 @@ def send_packet_by_distance(dist, triggered, send_below=0.5, reset_above=0.6):
     Returns: 
         triggered: Gibt den neuen Zustand von triggered zurück.
     """
+   
     if dist is not None and dist < send_below and not triggered:
         try:
-            tt.send_packet()
+            tt.send_packet(value)
         except Exception as e:
             print(f"ESP kann nicht erreicht werden{e}")
         return True
@@ -155,14 +156,18 @@ def calc_pac_pos(rvec, tvec, marker_id, config: dict):
     mx, my, direction = config["markers"][key]
     factor = config["factor"]
 
-    rot, _ = cv2.Rodrigues(rvec)
-    cam = (-rot.T @ tvec).ravel()        # Kamera im Markersystem (x rechts, y oben, z aus der Wand)
+    rot, _ = cv2.Rodrigues(rvec)          # Wandelt rvec (Rotationsvektor) in eine 3x3 Rotationsmatrix um -> Ermöglicht direktes verrechnen mit Punkten durch das Skalarprodukt
+    cam = (-rot.T @ tvec).ravel()        # setzt die Punkte aus dem Kamerakoordinatensystem in das Markerkoordinatensystem (x rechts, y oben, z aus der Wand) -> rvec und tvec gehen ausgehend vom Kamerakoordinatensystem
 
     match direction:
-        case "n": offset = (-cam[0],  cam[2])
-        case "e": offset = ( cam[2],  cam[0])
-        case "s": offset = ( cam[0], -cam[2])
-        case "w": offset = (-cam[2], -cam[0])
+        case "n": 
+            offset = (cam[0],  -cam[2])
+        case "e": 
+            offset = ( -cam[2],  -cam[0])
+        case "s": 
+            offset = ( -cam[0], cam[2])
+        case "w": 
+            offset = (cam[2], cam[0])
 
     x = round((mx * factor + offset[0]) / factor)
     y = round((my * factor + offset[1]) / factor)

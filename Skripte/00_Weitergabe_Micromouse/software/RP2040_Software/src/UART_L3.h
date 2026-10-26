@@ -21,6 +21,7 @@ class UART_L3 {
     void (*cbError)(uint8_t errorId) = nullptr;
     void (*cbReceiveControlData)(uint8_t senderId, uint8_t length, uint8_t *data) = nullptr;
     void (*cbReceiveTestdriverData)(uint8_t length, uint8_t *data) = nullptr;
+    void (*cbReceiveTestdriverDataPosition)(uint8_t length, uint8_t *data) = nullptr;
 
     uint8_t ownId = 0;      // Real id is stored on ESP
     bool ownIdKnown = false;
@@ -49,7 +50,7 @@ class UART_L3 {
     void registerCbError(void (*callback)(uint8_t errorId));
     void registerCbReceiveControlData(void (*callback)(uint8_t senderId, uint8_t length, uint8_t *data));
     void registerCbReceiveTestdriverData(void(*callback)(uint8_t length, uint8_t *data));
-
+    void registerCbReceiveTestdriverDataPosition(void(*callback)(uint8_t length, uint8_t *data));
 
 };
 

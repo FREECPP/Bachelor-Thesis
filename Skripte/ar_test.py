@@ -80,12 +80,14 @@ print("AR-Tracking mit mpv-Backend gestartet. Drücke 'q' oder 'ESC' zum Beenden
 frame_bytes = WIDTH * HEIGHT * 3
 
 marker_was_visible = False
-triggered = False
 
 # ---- MJPEG-server starten unter dem Port 8080 ----
 # Besonders geeignet wenn der Stream auf einem Gerät läuft auf dem ich nicht viel coden kann sondern als Anzeigemedium nur einen Browser habe (VR-Brille, Handy, Tablet)
 mjpeg_server.start(8080)
 config = hm.load_labyrinth_config("labyrinth_config.json")
+last_sent_cell = None
+triggered = {}
+
 while True:
     # Exakt die Bytes für ein einzelnes Frame aus dem mpv-Datenstrom lesen
     raw_frame = process.stdout.read(frame_bytes)
@@ -103,7 +105,7 @@ while True:
     else:
         corners, ids, _ = cv2.aruco.detectMarkers(frame, dictionary, parameters=parameters) # Zwei Arrays werden zurückgegeben eins für die gefundenen Ecken(Corners) und eins für die ID's dabei stehen jeweils zugehörige Ecken und ID's am selben Indexplatz
 
-    dist = None
+    seen = set()
     if ids is not None:
         for i, marker_id in enumerate(ids.flatten()):
             pose = hm.estimate_marker_pose(corners, i, marker_3d_edges,
@@ -111,24 +113,37 @@ while True:
             if pose is None:
                 continue
             rvec, tvec, distance, corners_2d = pose
+            marker_id = int(marker_id)
 
             # Position senden wenn Distanz zum Marker einen gewissen Wert unterschreitet
             if distance < 0.18:
                 try: 
-                    pac_x, pac_y = hm.calc_pac_pos(rvec, tvec, marker_id, config)
+                    cell = hm.calc_pac_pos(rvec, tvec, marker_id, config)
+                    pac_x, pac_y = cell
                     print(f"pac_x:{pac_x}, pac_y:{pac_y}")
-                except:
-                    pass
+                except ValueError:
+                    cell = None
+                if cell is not None and cell != last_sent_cell:
+                    try: 
+                        tt.send_position(*cell)
+                        last_sent_cell = cell
+                    except OSError as e:
+                        print(f"ESP kann nicht erreicht werden: {e}") 
             
             # Objekte bei bestimmtem Marker Zeichnen
             match marker_id: 
                 case 0: 
-                    dist = distance
+                    action_value = 2 
                     hm.draw_object(frame, rvec, tvec, corners_2d, crystal_3d_pts, 
                                    faces, edges, camera_matrix, dist_coeffs)
-                case _: print("Für diesen Marker ist keine spezielle funktion hinterlegt")
+                case 7: 
+                    action_value = 1
+                case _: 
+                    action_value = None
 
-    #triggered = hm.send_packet_by_distance(dist, triggered)
+            if action_value is not None:
+                seen.add(marker_id)
+                triggered[marker_id] = hm.send_packet_by_distance(distance, triggered.get(marker_id, False), action_value)
 
     mjpeg_server.update_frame(frame)
     cv2.imshow(window_name, frame)

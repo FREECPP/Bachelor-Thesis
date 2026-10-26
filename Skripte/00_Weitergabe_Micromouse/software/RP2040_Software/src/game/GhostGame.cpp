@@ -1287,7 +1287,7 @@ void ghostGameObservePacman(uint8_t senderId, uint8_t x, uint8_t y, int heading)
   if (!s_active || !inBounds(x, y))
     return;
 
-  if (getRoleFromId(senderId) != GAME_ROLES::ROLE_PACMAN)
+  if (!isPacmanRole(getRoleFromId(senderId)))
     return;
 
   const bool changed = !s_pacmanKnown || x != s_pacmanX || y != s_pacmanY;

@@ -1,6 +1,58 @@
 //
 // Created by robo on 05.06.26.
 //
+// ============================================================
+// GameState.cpp
+//
+// Zentrale Steuerung des Spielmodus. Die Datei entscheidet nicht selbst,
+// wie Pacman oder ein Geist faehrt, sondern koordiniert den Ablauf einer
+// Runde und verteilt die Arbeit an die rollenspezifischen Module.
+//
+// Aufgaben:
+//   1. Einstieg und Ausstieg
+//      gameActive() wird von main.cpp beim Wechsel Menue -> Spiel aufgerufen.
+//      Es registriert die Callbacks fuer Taster und Funknachrichten
+//      (UART_L3), abonniert die Controller-Tasten beim ESP32 und leitet
+//      aus der eigenen Roboter-ID die Rolle ab (Pacman, Geist, Testdriver).
+//      gameLeave() stoppt alles beim Rueckweg ins Menue.
+//
+//   2. Zustandsautomat (gameLoop)
+//      currentGameState (siehe GAME_STATE in GameState.h) bestimmt, was
+//      in jedem Schleifendurchlauf passiert:
+//        GS_LOBBY               nur Pacman: warten auf die Xbox-Taste
+//        GS_IDLE_AT_HOME        Geist steht zu Hause und wartet auf den Start
+//        GS_RUNNING             Runde laeuft: Aufruf von pacmanGameLoop(),
+//                               ghostGameLoop() oder testLoop() je nach Rolle
+//        GS_CATCHT              Pacman wurde gefangen (Anzeige, Pause)
+//        GS_RETREATING_TO_CELL  nach Fang/Timerende in die naechste Zelle
+//        GS_WAITING_TO_RETURN   warten, bis man mit der Heimfahrt dran ist
+//        GS_RETURNING_TO_HOME   Heimfahrt zur Startposition
+//        GS_MANUAL_HOME_CONFIRM Maus wurde von Hand zurueckgesetzt
+//        GS_ERROR               Fehler, Maus bleibt stehen
+//
+//   3. Kommunikation mit den anderen Robotern
+//      Empfangene Nachrichten kommen ueber die Callbacks an:
+//        gameCbPosReceived      Positionen der anderen Roboter -> an die
+//                               Spiellogik von Pacman bzw. Geist weiterreichen
+//        gameCbControlReceived  Spielsteuerung (GC_*-Codes): Start, Fang,
+//                               Pacman gewinnt, Timerende, Heimfahrt usw.
+//        gameCbSubscribedReceived  Tastenzustand des Xbox-Controllers
+//      Gesendet werden u. a. der Spielstart (GC_START_GAME), Fangmeldungen
+//      und die Nachrichten zur Heimfahrt.
+//
+//   4. Ende einer Runde und koordinierte Heimfahrt
+//      Nach einem Fang, dem Sieg von Pacman oder dem Timerende fahren alle
+//      Roboter zurueck zur Startposition. Damit sie sich nicht gegenseitig
+//      blockieren, vergibt Pacman die Reihenfolge (returnQueue aus den
+//      zuletzt gesehenen Geistern, seenGhosts) und gibt jedem Geist per
+//      Nachricht frei, wann er fahren darf.
+//
+//   5. Hilfsfunktionen fuer andere Module
+//      getRoleFromId() leitet aus den oberen 3 Bits einer Roboter-ID die
+//      Rolle ab, gameGetCtrlSwitches() liefert die Controller-Tasten,
+//      gameReportCapture() / gameReportPacmanWin() melden Ereignisse aus
+//      der Spiellogik an diesen Zustandsautomaten.
+// ============================================================
 
 #include "GameState.h"
 
@@ -226,12 +278,32 @@ static void gameCbSubscribedReceived(uint8_t length, uint8_t *data)
     gameCtrlSw = (uint16_t)data[1] | ((uint16_t)data[2] << 8);
 }
 
+// Callback fuer OPC_POS_DATA: Ein anderer Roboter hat seine Position per
+// ESP-NOW-Broadcast gemeldet (Weg: fremder RP2040 -> ESP32 -> ESP-NOW ->
+// eigener ESP32 -> UART -> UART_L3::update() -> hier).
+// Registriert in gameActive() ueber uartL3.registerCbReceivePosData().
+//   senderId: ID des Absenders. Die oberen 3 Bits geben seine Rolle an
+//             (siehe ROBOT_ID_BITS_* in GameState.h).
+//   encodedX/encodedY: Zellkoordinaten mit eingebetteter Blickrichtung
+//             (Kodierung siehe GamePosition.h).
 static void gameCbPosReceived(uint8_t senderId, uint8_t encodedX, uint8_t encodedY)
 {
+    // Beide Bytes zerlegen: Die unteren 4 Bit sind die Zellkoordinate (0..15),
+    // das oberste Bit von x und y zusammen ergibt die Blickrichtung
+    // (0 = Nord, 1 = Ost, 2 = Sued, 3 = West).
     const uint8_t x = gamePositionDecodeX(encodedX);
     const uint8_t y = gamePositionDecodeY(encodedY);
     const int heading = gamePositionDecodeHeading(encodedX, encodedY);
+
+    // Rolle des Absenders aus seiner ID ableiten (Pacman, einer der Geister
+    // oder Testdriver).
     const GAME_ROLES senderRole = getRoleFromId(senderId);
+
+    // Kommt die Nachricht von einem Geist, wird vermerkt, dass dieser Geist
+    // aktiv ist und wann er zuletzt gesehen wurde. Jede Geisterfarbe hat einen
+    // festen Platz (RED = 0, PINK = 1, CYAN = 2, BROWN = 3). Pacman braucht diese
+    // Liste spaeter, um die Reihenfolge der Heimfahrt aller aktiven Geister
+    // festzulegen (buildActiveGhostReturnQueue).
     if (senderRole >= GAME_ROLES::ROLE_RED &&
         senderRole <= GAME_ROLES::ROLE_BROWN)
     {
@@ -240,11 +312,24 @@ static void gameCbPosReceived(uint8_t senderId, uint8_t encodedX, uint8_t encode
         seenGhosts[slot] = {true, senderId, millis()};
     }
 
-    if (senderRole == GAME_ROLES::ROLE_PACMAN)
+    // Position an die passende Spiellogik weiterreichen. Entscheidend ist, wer
+    // gesendet hat und welche Rolle dieser Roboter selbst spielt:
+    if (isPacmanRole(senderRole))
+        // Absender ist Pacman -> wir sind ein Geist und merken uns, wo Pacman
+        // ist, um ihn zu verfolgen (GhostGame.cpp).
         ghostGameObservePacman(senderId, x, y, heading);
     else if (activeRole == GAME_ROLES::ROLE_PACMAN)
+        // Wir selbst sind Pacman und ein Geist hat gesendet -> Pacman merkt
+        // sich die Geisterposition, z. B. fuer die Fang-Erkennung (PacmanGame.cpp).
         pacmanGameObserveGhost(senderId, x, y);
     else
+        // Wir sind ein Geist und ein anderer Geist hat gesendet -> Position
+        // fuer die Abstimmung der Geister untereinander (Kollisionen, belegte
+        // Zellen) weitergeben (GhostGame.cpp / GhostInteraction.cpp).
+        // Sendet ein Testdriver, landet seine Position bei einem Geist ebenfalls
+        // hier (er wird wie ein anderer Geist behandelt, nicht wie Pacman).
+        // Bei Pacman faellt sie im Zweig darueber heraus, weil
+        // pacmanGameObserveGhost() nur die vier Geisterrollen annimmt.
         ghostGameObservePeer(senderId, x, y, heading);
 }
 
@@ -255,7 +340,7 @@ static void gameCbControlReceived(uint8_t senderId, uint8_t length, uint8_t *dat
 
     if (data[0] == GC_START_GAME) {
         if (activeRole == GAME_ROLES::ROLE_PACMAN ||
-            getRoleFromId(senderId) != GAME_ROLES::ROLE_PACMAN ||
+            !isPacmanRole(getRoleFromId(senderId)) ||
             currentGameState != GAME_STATE::GS_IDLE_AT_HOME)
         {
             return;
@@ -1331,6 +1416,11 @@ GAME_ROLES getRoleFromId(uint8_t id) {
             return GAME_ROLES::ROLE_PACMAN;
     }
 }
+
+bool isPacmanRole(GAME_ROLES role) {
+    return role == GAME_ROLES::ROLE_PACMAN || role == GAME_ROLES::TESTDRIVE;
+}
+
 
 
 void setOwnIdRole(GAME_ROLES newRole, uint8_t id) {

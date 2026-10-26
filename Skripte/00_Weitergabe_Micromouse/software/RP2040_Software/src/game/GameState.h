@@ -52,4 +52,8 @@ void gameReportPacmanWin();
 GAME_ROLES getRoleFromId(uint8_t id);
 void setOwnIdRole(GAME_ROLES newRole, uint8_t id);
 
+// true für Pacman und Testdriver: Beide werden von den Geistern verfolgt.
+bool isPacmanRole(GAME_ROLES role);
+
+
 #endif //RP2040_SOFTWARE_MICROMOUSEGAMESTATE_H

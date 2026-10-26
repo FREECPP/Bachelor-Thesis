@@ -53,6 +53,7 @@ static void handleTcpFrame(uint8_t *data, uint8_t len) {
         case OPC_MAZE_DATA:
         case OPC_POS_DATA:
         case OPC_TESTDRIVER_CONTROL:
+        case OPC_TESTDRIVER_POSITION:
         // Daten die Empfangen werden, werden direkt über UART Weitergeleitet
             uartL3.forwardRaw(len, data);
             break;

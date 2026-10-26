@@ -3,6 +3,7 @@ import socket, time
 # Op-Code muss händisch eingetragen werden, da python die COMMUNICATION_CODES.h 
 # nicht liest
 OPC_TESTDRIVER_CONTROL = 15
+OPC_TESTDRIVER_POSITION = 16
 
 # Versucht TCP-Verbindung zum ESP32 aufzubauen, dieser ist nicht immer 
 # Erreichbar, da sich Wifi wie auch Bluetooth die Funkantenne teilen daher wird 
@@ -27,7 +28,7 @@ def connect(timeout_total=6.0, delay=0.3):
             time.sleep(delay)
     raise ConnectionError(f"Connect: ESP32 nicht erreichbar ({last_error})")
 
-def send_packet():
+def send_packet(value):
     # Verbindung zu ESP32 herstellen
     s = connect()
 
@@ -37,9 +38,8 @@ def send_packet():
     # deaktiviert da wir nur kleine Pakete schicken
     s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 
-    # Nutzdaten werden zusammengebaut (Wichtig zuerst Op-Code und dann 
-    # Nachricht)
-    payload = bytes([OPC_TESTDRIVER_CONTROL, 2])
+    
+    payload = bytes([OPC_TESTDRIVER_CONTROL, value]) 
 
     # Mit längenbyte anreichern damit Empfänger weiß, wann das Paket zu ende 
     # ist + senden
@@ -52,3 +52,10 @@ def send_packet():
 
     # Melden das Skript durchgelaufen ist
     print("done")
+
+def send_position(x, y):
+    s = connect()
+    s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    payload = bytes([OPC_TESTDRIVER_POSITION, x, y])
+    s.sendall(bytes([len(payload)]) + payload)
+    s.close()
