@@ -17,6 +17,12 @@ static int s_posX = -1, s_posY = -1;
 static int s_heading = 0; // 0 = Nord, 1 = Ost, 2 = Süd, 3 = West
 static uint32_t s_lastPosTxMs = 0;
 
+static const int   STICK_DEADZONE   = 12;    // von 127: kleine Stickausschläge ignorieren
+static const int   TRIGGER_DEADZONE = 10;    // von 255
+// 1.0 = bei vollem Lenkeinschlag steht das innere Rad, 2.0 = es dreht voll rückwärts
+static const float STEER_GAIN       = 1.0f;
+static const int   SPIN_SPEED       = 60;    // Drehen auf der Stelle bei vollem Stickausschlag
+
 static void position(uint8_t length, uint8_t *data){
     if (length < 2 || data == nullptr)
         return;
@@ -63,7 +69,7 @@ static void powerup(uint8_t length, uint8_t *data){
 
 // Fährt geradeaus und korrigiert PWM-Differenz anhand der
 // Encoder-Zaehlerdifferenz seit dem letzten Aufruf (P-Regler).
-static void driveStraightCorrected()
+static void driveStraightCorrected(int speed)
 {
     //static int32_t prevLeft  = 0;
     //static int32_t prevRight = 0;
@@ -87,20 +93,66 @@ static void driveStraightCorrected()
     const int32_t error = deltaRight - deltaLeft;
     const int correction = (int)(error * STRAIGHT_KP);
 
-    int leftSpeed  = BASE_SPEED + correction;
-    int rightSpeed = BASE_SPEED - correction;
+    int leftSpeed  = speed + correction;
+    int rightSpeed = speed - correction;
 
     solveSetMotors(leftSpeed, rightSpeed);
+}
+
+// RT = Gas (0..BASE_SPEED), linker Stick x = Lenkung.
+// Mit Gas wird wie beim Auto gelenkt (kurveninneres Rad langsamer),
+// ohne Gas dreht der Stick den Roboter auf der Stelle.
+static void driveWithController()
+{
+    const int trigger = gameGetTriggerR();
+    int steer = gameGetStickLX();
+    if (abs(steer) < STICK_DEADZONE)
+        steer = 0;
+
+    const float s = steer / 127.0f;              // -1 (links) .. +1 (rechts)
+
+    // Kein Gas: auf der Stelle drehen oder stehen
+    if (trigger < TRIGGER_DEADZONE) {
+        initialized = false;
+        if (steer == 0) {
+            stopMotors();
+            return;
+        }
+        const int spin = (int)(SPIN_SPEED * s);
+        solveSetMotors(spin, -spin);             // rechts: linkes Rad vor, rechtes zurück
+        return;
+    }
+
+    const int speed = BASE_SPEED * trigger / 255;
+
+    // Ohne Lenkung: Geradeauslauf über Encoder korrigieren
+    if (steer == 0) {
+        driveStraightCorrected(speed);
+        return;
+    }
+
+    initialized = false;
+    int left  = speed;
+    int right = speed;
+    if (s > 0)
+        right = (int)(speed * (1.0f - STEER_GAIN * s));
+    else
+        left  = (int)(speed * (1.0f + STEER_GAIN * s));
+
+    solveSetMotors(left, right);
 }
 
 bool testLoop(){
     uartL3.registerCbReceiveTestdriverData(powerup);
     uartL3.registerCbReceiveTestdriverDataPosition(position);
+    // Falls der Controller schon verbunden ist: Stick und RT abonnieren
+    uartL3.subscribeBtController(CONTROLLER_STICK_L, 2, true);
+    uartL3.subscribeBtController(CONTROLLER_TRIGGER_R, 2, true);
 
     broadcastStartGame(); // Geister starten
 
     while(true){
-        uint16_t sw = gameGetCtrlSwitches();
+        gameGetCtrlSwitches();   // ruft uartL3.update() auf -> Callbacks laufen
 
         // Position regelmäßig senden(geister verwerfen sie nach 2 s)
         if (s_posX >= 0 && millis() - s_lastPosTxMs >= 400){
@@ -110,22 +162,7 @@ bool testLoop(){
                 gamePositionEncodeY((uint8_t)s_posY, s_heading));
         }
 
-        // Vorwärts fahren
-        if ((sw & CSW_BUTTON_SHOULDER_R) && (sw & CSW_BUTTON_SHOULDER_L)){
-            driveStraightCorrected();
-        }
-        // Rechts fahren
-        else if (sw & CSW_BUTTON_SHOULDER_R){
-            solveSetMotors(60,-60);
-        }
-        // Links fahren
-        else if (sw & CSW_BUTTON_SHOULDER_L){
-            solveSetMotors(-60,60);
-        }
-        else{
-            stopMotors();
-            initialized = false;
-        }
+        driveWithController();
     }
     
 

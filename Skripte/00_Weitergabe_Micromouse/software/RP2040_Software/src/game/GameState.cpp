@@ -84,6 +84,8 @@ extern UART_L3 uartL3;
 static GAME_ROLES activeRole = GAME_ROLES::ROLE_PACMAN;
 static bool gameInitialized = false;
 static uint16_t gameCtrlSw = 0;
+static int8_t  gameStickLX  = 0;   // linker Stick x: -128 (links) .. 127 (rechts)
+static uint8_t gameTriggerR = 0;   // RT: 0 .. 255
 static bool capturePending = false;
 static bool pacmanWon = false;
 static bool winRetreatStartPending = false;
@@ -267,15 +269,36 @@ static void gameCbBtControllerStateChanged(uint8_t stateId)
 {
     if (stateId == CONN_SUCCESS) {
         uartL3.subscribeBtController(CONTROLLER_SWITCHES, 0, true);
+        if (activeRole == GAME_ROLES::TESTDRIVE) {
+            uartL3.subscribeBtController(CONTROLLER_STICK_L, 2, true);
+            uartL3.subscribeBtController(CONTROLLER_TRIGGER_R, 2, true);
+        }
+    } else {
+        // Controller weg -> nicht mit dem letzten Gaswert weiterfahren
+        gameCtrlSw = 0;
+        gameStickLX = 0;
+        gameTriggerR = 0;
     }
 }
 
 static void gameCbSubscribedReceived(uint8_t length, uint8_t *data)
 {
-    if (length < 3 || data[0] != CONTROLLER_SWITCHES)
+    if (length < 2 || data == nullptr)
         return;
 
-    gameCtrlSw = (uint16_t)data[1] | ((uint16_t)data[2] << 8);
+    switch (data[0]) {
+        case CONTROLLER_SWITCHES:
+            if (length >= 3)
+                gameCtrlSw = (uint16_t)data[1] | ((uint16_t)data[2] << 8);
+            break;
+        case CONTROLLER_STICK_L:
+            if (length >= 3)
+                gameStickLX = (int8_t)data[1];
+            break;
+        case CONTROLLER_TRIGGER_R:
+            gameTriggerR = data[1];
+            break;
+    }
 }
 
 // Callback fuer OPC_POS_DATA: Ein anderer Roboter hat seine Position per
@@ -981,6 +1004,8 @@ void gameActive() {
     g_abortRequested = false;
     buttonAdvanced.clearEvents();
     gameCtrlSw = 0;
+    gameStickLX = 0;
+    gameTriggerR = 0;
     capturePending = false;
     pacmanWon = false;
     winRetreatStartPending = false;
@@ -1395,6 +1420,9 @@ uint16_t gameGetCtrlSwitches()
     uartL3.update();
     return gameCtrlSw;
 }
+
+int8_t gameGetStickLX()   { return gameStickLX; }
+uint8_t gameGetTriggerR() { return gameTriggerR; }
 
 GAME_ROLES getRoleFromId(uint8_t id) {
     id = id & 0b11100000;

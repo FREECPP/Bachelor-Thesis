@@ -46,6 +46,8 @@ bool gameGetPressedA();
 bool gameGetPressedB();
 bool gameGetPressedC();
 uint16_t gameGetCtrlSwitches();
+int8_t gameGetStickLX();
+uint8_t gameGetTriggerR();
 void gameReportCapture(uint8_t ghostId, uint8_t captureX, uint8_t captureY);
 void gameReportPacmanWin();
 

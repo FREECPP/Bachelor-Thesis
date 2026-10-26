@@ -17,6 +17,7 @@ MARKER_SIZE = 0.05  # Physikalische Kantenlänge des Markers in Metern (z. B. 0.
 TARGET_ID = 0       # ID des Markers, über dem das Objekt schweben soll
 WIDTH = 1280
 HEIGHT = 720
+MAX_POS_DISTANCE = 0.45  # Marker weiter weg als das werden für die Position ignoriert (Meter)
 
 # Laden der .npz-Datei & automatische Erkennung gängiger Variablen-Namen
 camera_matrix, dist_coeffs = npz.get_matrix_and_dist_coeffs(CALIB_FILE)
@@ -106,6 +107,7 @@ while True:
         corners, ids, _ = cv2.aruco.detectMarkers(frame, dictionary, parameters=parameters) # Zwei Arrays werden zurückgegeben eins für die gefundenen Ecken(Corners) und eins für die ID's dabei stehen jeweils zugehörige Ecken und ID's am selben Indexplatz
 
     seen = set()
+    best = None     # nächster Positions-Marker in diesem Bild: (distance, rvec, tvec, marker_id)
     if ids is not None:
         for i, marker_id in enumerate(ids.flatten()):
             pose = hm.estimate_marker_pose(corners, i, marker_3d_edges,
@@ -115,21 +117,11 @@ while True:
             rvec, tvec, distance, corners_2d = pose
             marker_id = int(marker_id)
 
-            # Position senden wenn Distanz zum Marker einen gewissen Wert unterschreitet
-            if distance < 0.18:
-                try: 
-                    cell = hm.calc_pac_pos(rvec, tvec, marker_id, config)
-                    pac_x, pac_y = cell
-                    print(f"pac_x:{pac_x}, pac_y:{pac_y}")
-                except ValueError:
-                    cell = None
-                if cell is not None and cell != last_sent_cell:
-                    try: 
-                        tt.send_position(*cell)
-                        last_sent_cell = cell
-                    except OSError as e:
-                        print(f"ESP kann nicht erreicht werden: {e}") 
-            
+            # Nächsten Marker aus der Config merken, gesendet wird nach der Schleife
+            if str(marker_id) in config["markers"] and distance < MAX_POS_DISTANCE:
+                if best is None or distance < best[0]:
+                    best = (distance, rvec, tvec, marker_id)
+
             # Objekte bei bestimmtem Marker Zeichnen
             match marker_id: 
                 case 0: 
@@ -144,6 +136,21 @@ while True:
             if action_value is not None:
                 seen.add(marker_id)
                 triggered[marker_id] = hm.send_packet_by_distance(distance, triggered.get(marker_id, False), action_value)
+
+    # Position aus dem nächsten Marker berechnen und bei Zellwechsel senden
+    if best is not None:
+        _, best_rvec, best_tvec, best_id = best
+        try:
+            cell = hm.calc_pac_pos(best_rvec, best_tvec, best_id, config)
+            print(f"Marker {best_id}: pac_x:{cell[0]}, pac_y:{cell[1]}")
+        except ValueError:
+            cell = None
+        if cell is not None and cell != last_sent_cell:
+            try:
+                tt.send_position(*cell)
+                last_sent_cell = cell
+            except OSError as e:
+                print(f"ESP kann nicht erreicht werden: {e}")
 
     mjpeg_server.update_frame(frame)
     cv2.imshow(window_name, frame)
