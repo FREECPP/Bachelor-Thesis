@@ -1,0 +1,11 @@
+{
+  "scriptsDir": "..",
+  "python": "/Users/felixrehm/miniconda3/envs/bachelor_thesis/bin/python",
+  "arScript": "ar_test.py",
+  "cameraWarmupMs": 2500,
+  "pi": {
+    "user": "pi-cam-user",
+    "host": "pi-kamera-micromouse.local",
+    "cameraCommand": "rpicam-vid -t 0 --inline -g 2 --width 1280 --height 720 --framerate 30 --bitrate 2000000 -o udp://192.168.10.2:12345 --shutter 10000 --gain 2.0 --autofocus-mode manual --lens-position 4.0 --rotation 180"
+  }
+}
