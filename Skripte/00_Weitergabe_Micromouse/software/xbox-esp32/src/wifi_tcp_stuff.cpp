@@ -6,6 +6,9 @@
 
 extern UART_L3 uartL3;
 
+// MAC des ESP32 auf dem Testdriver (Großbuchstaben, wie von WiFi.macAddress() geliefert)
+static const char *TESTDRIVER_MAC = "10:B4:1D:E8:D2:20";
+
 static WiFiServer tcpServer(TCP_PORT);
 static WiFiClient tcpClient;
 static bool haveClient = false;
@@ -20,15 +23,19 @@ static bool serverStarted = false;
 
 void initWifiTcp() {
 
-    // Feste IP vergeben
-    IPAddress ip(192, 168, 10, 50);
+    // Nur der Testdriver bekommt die feste IP, sonst belegen alle ESP32 dieselbe Adresse.
+    // Die anderen holen sich per DHCP eine IP vom Router (WLAN bleibt an, ESP-NOW braucht den Kanal).
+    if (WiFi.macAddress() == TESTDRIVER_MAC) {
+        // Feste IP vergeben
+        IPAddress ip(192, 168, 10, 50);
 
-    // Gateway und Subnet festlegen
-    IPAddress gateway(192, 168, 10, 1);
-    IPAddress subnet(255, 255, 255, 0);
+        // Gateway und Subnet festlegen
+        IPAddress gateway(192, 168, 10, 1);
+        IPAddress subnet(255, 255, 255, 0);
 
-    // Wifi-Konfiguration anwenden
-    WiFi.config(ip, gateway, subnet);        // MUSS vor begin() stehen
+        // Wifi-Konfiguration anwenden
+        WiFi.config(ip, gateway, subnet);    // MUSS vor begin() stehen
+    }
 
     // Sorgt dafür das ein automatisches Neustarten möglich ist
     WiFi.setAutoReconnect(true);

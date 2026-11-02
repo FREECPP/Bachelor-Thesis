@@ -8,7 +8,7 @@ import load_npz as npz
 import load_3d_geometry as geo
 import handle_marker as hm
 import mjpeg_server
-
+import time
 # ==============================================================================
 # 1. KALIBRIERUNGSDATEN & PARAMETER KONFIGURIEREN
 # ==============================================================================
@@ -18,6 +18,7 @@ TARGET_ID = 0       # ID des Markers, über dem das Objekt schweben soll
 WIDTH = 1280
 HEIGHT = 720
 MAX_POS_DISTANCE = 0.45  # Marker weiter weg als das werden für die Position ignoriert (Meter)
+RESEND_INTERVAL = 0.5 # aktuelle Zelle spätestens alle 0,5s erneut senden
 
 # Laden der .npz-Datei & automatische Erkennung gängiger Variablen-Namen
 camera_matrix, dist_coeffs = npz.get_matrix_and_dist_coeffs(CALIB_FILE)
@@ -87,6 +88,8 @@ marker_was_visible = False
 mjpeg_server.start(8080)
 config = hm.load_labyrinth_config("labyrinth_config.json")
 last_sent_cell = None
+current_cell = None # Zuletzt erkannte Zelle bleibt erhalten, wenn kein Marker im Bild ist
+last_tx_time = 0.0 # Zeitpunkts des letzten Sendeversuchs
 triggered = {}
 
 while True:
@@ -143,14 +146,19 @@ while True:
         try:
             cell = hm.calc_pac_pos(best_rvec, best_tvec, best_id, config)
             print(f"Marker {best_id}: pac_x:{cell[0]}, pac_y:{cell[1]}")
+            current_cell = cell
         except ValueError:
-            cell = None
-        if cell is not None and cell != last_sent_cell:
-            try:
-                tt.send_position(*cell)
-                last_sent_cell = cell
-            except OSError as e:
-                print(f"ESP kann nicht erreicht werden: {e}")
+            pass
+
+    now = time.monotonic()
+    if current_cell is not None and (current_cell != last_sent_cell or now - last_tx_time >= RESEND_INTERVAL):
+        last_tx_time = now
+        try: 
+            tt.send_position(*current_cell)
+            last_sent_cell = current_cell
+
+        except OSError as e:
+            print(f"ESP kann nicht erreicht werden: {e}")
 
     mjpeg_server.update_frame(frame)
     cv2.imshow(window_name, frame)

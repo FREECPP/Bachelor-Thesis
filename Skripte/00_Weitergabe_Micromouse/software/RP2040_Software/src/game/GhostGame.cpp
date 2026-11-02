@@ -654,7 +654,14 @@ bool ghostGameLoop()
                            solveCurrentX(), solveCurrentY(),
                            targetX, targetY);
 
-  if (!s_routeActive && ghostCanReplan() &&
+  // Steht der Geist bereits auf dem unveraenderten Ziel, nicht in jedem
+  // Durchlauf neu starten: startGhostTarget() wuerde sonst jedes Mal eine
+  // erzwungene Position in die UART-Sendeliste haengen und diese fluten.
+  const bool atTarget = !s_routeActive && !s_waitingForPeer &&
+                        targetX == s_activeTargetX && targetY == s_activeTargetY &&
+                        targetX == solveCurrentX() && targetY == solveCurrentY();
+
+  if (!atTarget && !s_routeActive && ghostCanReplan() &&
       (!s_waitingForPeer ||
        (int32_t)(millis() - s_nextPeerReplanMs) >= 0))
   {

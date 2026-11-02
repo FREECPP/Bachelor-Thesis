@@ -28,6 +28,11 @@ static void position(uint8_t length, uint8_t *data){
         return;
     const int newX = data[0];
     const int newY = data[1];
+    Serial.println("Empfangen: X");
+    Serial.println(newX);
+    
+    Serial.println("Empfangen: Y");
+    Serial.println(newY);
 
     if(s_posX >=0){
         const int dx = newX - s_posX;
